@@ -1,41 +1,27 @@
 # CHANGELOG
 
-## 2026-11-13 — Initial project and storefront foundation
+## 2026-11-13 — Backend integration foundation (`c38f358`, local commit; push pending)
 
-### Created
+- Added Supabase browser/server/public/admin client boundaries and Next.js 16 auth proxy.
+- Added database-backed product search, server-side listing filters/pagination and cart-ID-only product lookup.
+- Added variant selection, variant price resolver and admin variant management; variant stock is shared with parent product.
+- Added checkout, guest order access, order status and manual payment API routes with validation, origin checks, HMAC idempotency and rate limiting.
+- Expanded admin routes/actions for catalogue, categories, variants, private image management, inventory, orders, payment verification and settings.
+- Expanded PostgreSQL migration with products/categories/variants/images/specifications, stock states and movement history, customers/addresses, delivery configuration, orders/snapshots, reservations, payments/events, audit events, rate limiting, RLS, explicit grants and private Storage policies.
+- Added 23 pgTAP security-contract assertions (not executed; SQL environment unavailable).
+- Added candidate product import proposal outside Git; 74 candidates, with 8 pricing cases held for review; zero published.
+- Commit `c38f358` created on `feat/storefront-foundation`; worktree clean. GitHub push not completed because this runtime could not resolve `github.com`.
+- Unit tests: 23 passed; `git diff --check` passed. Full lint/typecheck/build and SQL tests remain unverified in this runtime.
 
-- Local project `kundu-electronics` and Git branches `main`, `feat/storefront-foundation`.
-- Root onboarding: `START_HERE.md`, `README.md`, `.env.example`, `.gitignore`, `.nvmrc`.
-- Next.js/React/TypeScript/Tailwind configuration.
-- Responsive global header/search/footer and homepage illustration/layout.
-- Optional ৳0–৳200 quick price preset (no price filtering by default) and relevance-ranked partial search.
-- Preserved the previous roadmap snapshot as `APPROVED_ROADMAP_SNAPSHOT.md`.
-- Shop listing empty state and functional client-side search/filter/sort pipeline against supplied catalogue records.
-- Empty cart, About, Support, Contact, Shipping & Returns and Product-not-found route shells.
-- Central public-safe business configuration and public catalogue types/data.
-- Catalogue search/filter unit tests using test-only Breadboard/LED fixtures (6 pass).
-- `AGENTS.md` and `CLAUDE.md` project instructions.
-- Proposed Supabase core schema migration.
-- Project continuity documents and copied reference research.
+## 2026-11-12 — Storefront foundation
 
-### Changed
+- Initialized project documentation and Git baseline.
+- Added responsive storefront shell, home/shop/about/support/contact/shipping/cart/product route foundations.
+- Added public-safe business configuration, empty catalogue and search/filter utilities.
+- Preserved SparkFun research package under `documentation/research/`.
 
-- None of the original local Kundu source files were available to change. All code is in the new project.
+## 2026-11-13 — Owner verification and repository connection
 
-### Tests
-
-- ZIP integrity: passed (`unzip -t`).
-- Node/npm/git availability checked: Node v22.16.0, npm 10.9.2, Git 2.47.3.
-- npm registry metadata request timed out; dependencies not installed. Typecheck/lint/unit tests/build not executed successfully yet.
-- No browser screenshot or interaction test executed.
-
-### Git history
-
-- `d883393` — initial documentation/architecture baseline on `main`.
-- `5e59330` — responsive storefront foundation on `feat/storefront-foundation`.
-- `12e94d6` — catalogue filter refinements and project handoff updates on `feat/storefront-foundation`.
-
-### Important outcomes
-
-- GitHub private remote is not created; connected GitHub API has no create-repository action.
-- No product/business/payment values are fabricated; public catalogue is empty.
+- Confirmed connected GitHub identity `KaranJoyKundu` and private repository `KaranJoyKundu/kundu-electronics`.
+- Confirmed remote `main` and `feat/storefront-foundation` branch heads.
+- Corrected stale repository recovery assumptions in current handoff; remote push is still pending local ref/worktree reconciliation.

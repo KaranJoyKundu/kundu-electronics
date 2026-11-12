@@ -1,4 +1,6 @@
 export type ProductAvailability =
+  | "unknown"
+  | "availability_on_request"
   | "in_stock"
   | "low_stock"
   | "out_of_stock"
@@ -14,9 +16,17 @@ export interface ProductImage {
 }
 
 /** Public product shape. Supplier cost and private stock notes are deliberately absent. */
+export interface ProductVariant {
+  id: string;
+  sku: string | null;
+  name: string;
+  optionValues: Record<string, string>;
+  priceOverrideBdt: number | null;
+}
+
 export interface Product {
   id: string;
-  sku: string;
+  sku?: string;
   slug: string;
   name: string;
   brand?: string;
@@ -26,7 +36,9 @@ export interface Product {
   categorySlug: string;
   availability: ProductAvailability;
   images: ProductImage[];
+  variants?: ProductVariant[];
   published: boolean;
+  orderable?: boolean;
   updatedAt: string;
 }
 

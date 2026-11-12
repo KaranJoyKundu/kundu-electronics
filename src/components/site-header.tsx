@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { Product } from "@/lib/catalog/types";
 import { CartIcon, CloseIcon, MenuIcon, SparkIcon } from "@/components/icons";
 import { SearchBox } from "@/components/search-box";
+import { useCart } from "@/components/cart/cart-provider";
 
 const primaryLinks = [
   { href: "/shop", label: "Shop" },
@@ -12,8 +12,9 @@ const primaryLinks = [
   { href: "/about", label: "About us" },
 ];
 
-export function SiteHeader({ products }: { products: readonly Product[] }) {
+export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { itemCount } = useCart();
 
   return (
     <>
@@ -24,9 +25,9 @@ export function SiteHeader({ products }: { products: readonly Product[] }) {
             <span className="brand-mark"><SparkIcon /></span>
             <span className="brand-copy"><strong>KUNDU</strong><small>ELECTRONICS</small></span>
           </Link>
-          <div className="header-search"><SearchBox products={products} /></div>
+          <div className="header-search"><SearchBox /></div>
           <div className="header-actions">
-            <Link href="/cart" className="cart-link"><CartIcon /><span>Cart</span><span className="cart-count">0</span></Link>
+            <Link href="/cart" className="cart-link"><CartIcon /><span>Cart</span><span className="cart-count">{itemCount}</span></Link>
             <button className="mobile-menu-toggle" type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}>
               {menuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>

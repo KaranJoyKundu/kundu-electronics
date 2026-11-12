@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { getPublishedProducts } from "@/data/catalogue";
+import { CartProvider } from "@/components/cart/cart-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,13 +16,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
-  const products = getPublishedProducts();
   return (
-    <html lang="en-BD">
+    <html lang="en-BD" data-scroll-behavior="smooth">
       <body>
-        <SiteHeader products={products} />
-        <main>{children}</main>
-        <SiteFooter />
+        <CartProvider>
+          <SiteHeader />
+          <main>{children}</main>
+          <SiteFooter />
+        </CartProvider>
       </body>
     </html>
   );

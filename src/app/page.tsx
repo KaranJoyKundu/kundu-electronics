@@ -1,11 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import { HomeIllustration } from "@/components/home-illustration";
 import { ArrowRightIcon } from "@/components/icons";
-import { getPublishedProducts } from "@/data/catalogue";
+import { getStorefrontCatalogue } from "@/data/storefront";
 import { formatPriceBdt } from "@/lib/format";
 
-export default function HomePage() {
-  const products = getPublishedProducts();
+export default async function HomePage() {
+  const { products } = await getStorefrontCatalogue(8);
   return (
     <>
       <section className="hero-section">
@@ -52,9 +53,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="help-strip"><div className="container help-strip-inner"><div><span className="section-kicker">04 — NEED SOMETHING?</span><h2>Not sure which part you need?</h2><p>Contact and support details will be added after the business confirms the public channels.</p></div><Link href="/contact" className="button button-outline">Contact the shop <ArrowRightIcon /></Link></div></section>
+      <section className="help-strip"><div className="container help-strip-inner"><div><span className="section-kicker">04 — NEED SOMETHING?</span><h2>Not sure which part you need?</h2><p>Get product guidance or ask about availability through the shop’s verified contact channels.</p></div><Link href="/contact" className="button button-outline">Contact the shop <ArrowRightIcon /></Link></div></section>
 
-      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">JUST ADDED</span><h2>From the catalogue</h2></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid">{products.slice(0, 4).map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image">{product.images[0] ? <img src={product.images[0].src} alt={product.images[0].alt} /> : <span>IMAGE PENDING</span>}</div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
+      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">JUST ADDED</span><h2>From the catalogue</h2></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid">{products.slice(0, 4).map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image">{product.images[0] ? <Image src={product.images[0].src} alt={product.images[0].alt} width={480} height={360} unoptimized /> : <span>IMAGE PENDING</span>}</div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
     </>
   );
 }

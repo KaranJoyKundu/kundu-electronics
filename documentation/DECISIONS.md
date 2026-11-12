@@ -1,64 +1,88 @@
 # DECISIONS
 
-## D-001 — Create a replacement project if no existing Kundu repository can be recovered
+## D-001 — Continue in the owner-authorized Kundu repository and feature branch
 
 - **Date:** 2026-11-13
-- **Context:** Connected GitHub search and current uploads did not expose the prior Kundu Electronics source project; owner explicitly authorized a new project.
-- **Decision:** Initialize a local `kundu-electronics` project and Git repository; preserve the ability to compare/merge the original later.
-- **Reason:** Keep implementation moving without claiming access to or overwriting an unknown original.
-- **Alternatives:** Wait for original ZIP; use an unrelated public repository (rejected).
-- **Consequences:** Local work exists; GitHub remote still needs creation because connector lacks that operation.
+- **Context:** Owner confirmed the correct GitHub identity is `KaranJoyKundu`, not `k-j-kundu`; the private repository `KaranJoyKundu/kundu-electronics` is accessible and contains the existing baseline/feature history.
+- **Decision:** Continue on `feat/storefront-foundation`, preserve existing changes and commits, keep `main` stable, fetch/reconcile remote refs before pushing.
+- **Reason:** Avoid repository duplication or history loss and work in the exact owner repo.
+- **Alternatives:** Use similarly named `k-j-kundu` repository (rejected; wrong owner and empty); create new project/repo (no longer needed).
+- **Consequences:** Local worktree origin is currently a Git bundle path; set/verify GitHub remote deliberately before pushing.
 
 ## D-002 — Use Next.js App Router, React, TypeScript and Tailwind CSS 4
 
 - **Date:** 2026-11-13
-- **Context:** The store needs SEO-friendly product/category pages, server-side order validation, responsive interactive UI and maintainable routing.
-- **Decision:** Next.js 16.4.6 with React 19.3.0, strict TypeScript and Tailwind CSS 4.3.3.
-- **Reason:** Next.js App Router supports server/client components and route handlers; React 19.3 is stable; Tailwind 4 integrates through its PostCSS plugin. Version choice avoids canary builds and uses the latest listed stable 16.4.6 patch rather than pre-release 16.5 canary.
-- **Alternatives:** Vite SPA (less suitable for server-side order handling/SEO routing); custom backend from scratch (more maintenance); pure static site (not enough for orders/admin).
-- **Consequences:** Node 20.9+ required; Node 22 LTS recommended. npm dependencies must be installed in a network-enabled environment. Sources: https://nextjs.org/docs/app/getting-started/installation, https://react.dev/versions, https://github.com/vercel/next.js/releases.
+- **Decision:** Next.js 16.4.6, React 19.3.0, strict TypeScript and Tailwind CSS 4.3.3.
+- **Reason:** Server-rendered product/category pages, route handlers, reusable responsive UI and maintainable typed code.
+- **Consequences:** Node 22.6+ for current test command; owner uses Node 24.14.0. Dependencies require lockfile verification.
 
-## D-003 — Plan Supabase Postgres and Auth for production data and orders
+## D-003 — Modular monolith with Supabase Postgres, Auth and Storage
 
 - **Date:** 2026-11-13
-- **Context:** Orders must persist and be protected; manual payment verification needs restricted staff access.
-- **Decision:** Use Supabase Postgres, Supabase Auth and server-only privileged operations once owner creates the project and config is available.
-- **Reason:** Managed PostgreSQL and session support fit the data model; Supabase's current Next.js docs support App Router with `@supabase/ssr`.
-- **Alternatives:** LocalStorage-only orders (rejected; no reliable protected persistence); own server/database (more operational burden); spreadsheet-only order flow (not reliable for checkout).
-- **Consequences:** Migration is proposed but not applied. Supabase project and secrets are still required. Source: https://supabase.com/docs/guides/auth/quickstarts/nextjs.
+- **Decision:** Use Next.js server actions/route handlers and Supabase PostgreSQL/Auth/Storage; do not introduce microservices.
+- **Reason:** Small business operational scale, atomic SQL transactions and manageable deploy surface.
+- **Consequences:** Migration is not applied; project credentials and DB integration tests remain required.
 
-## D-004 — Keep catalogue empty until owner-approved data is received
+## D-004 — Public business configuration is separate from private inventory
 
 - **Date:** 2026-11-13
-- **Context:** Existing business product/inventory source is not attached; the earlier business notes mention buying prices may be included.
-- **Decision:** Export zero published products initially; public Product type contains selling price only and excludes buying cost.
-- **Reason:** Avoid fabricated stock/pricing and prevent accidental disclosure of purchase cost.
-- **Alternatives:** Create example products for the live shop (rejected); guess stock (rejected).
-- **Consequences:** Search/filter implementation can be developed and fixture-tested but live results remain empty until import.
+- **Decision:** Public details live in `src/config/business.ts`; private source files/costs remain outside Git. Public Product data has selling price only.
+- **Reason:** Prevent supplier/purchase/profit information from leaking in frontend/API or Git.
+- **Consequences:** Keep import proposal outside repository until reviewed; strip private columns before ingestion.
 
-## D-005 — Manual payment is not payment verification
+## D-005 — Empty published catalogue until verified product data is approved
 
 - **Date:** 2026-11-13
-- **Context:** Checkout uses bKash/Nagad Send Money and transaction references.
-- **Decision:** A submitted reference creates an order with payment status `pending_verification`; only authorized manual action can mark payment verified.
-- **Reason:** Reference text is customer-submitted and is not confirmation from bKash/Nagad.
-- **Alternatives:** Auto-mark paid after reference input (rejected); imply gateway API integration (rejected).
-- **Consequences:** Need protected admin workflow and confirmed receiving numbers before activation.
+- **Decision:** All 74 candidate component/kit rows and nine robot price ranges remain separate review material; no product is published.
+- **Reason:** The brief lacks stock, full SKUs, images/specs, and some prices are ambiguous or estimated.
+- **Consequences:** Shop remains genuinely empty until verified data and availability are approved.
 
-## D-006 — Provisional Kundu visual tokens, not claims about SparkFun's exact CSS
+## D-006 — Integer BDT and server-authoritative checkout
 
 - **Date:** 2026-11-13
-- **Context:** Research contains text/IA observations but zero screenshots or measured CSS values.
-- **Decision:** Use a provisional warm-neutral / deep-forest / terracotta Kundu design system and reference SparkFun's structural patterns.
-- **Reason:** Avoid fabricated exact color/font/dimension claims or direct copying of third-party assets.
-- **Alternatives:** Claim unmeasured SparkFun hex values (rejected); embed SparkFun assets (rejected without permission).
-- **Consequences:** Refine tokens after browser screenshot comparison and owner logo/branding assets are available.
+- **Decision:** Monetary values are integer BDT in `BIGINT`; server loads current prices, delivery charges and stock, then computes totals inside a transaction.
+- **Reason:** Avoid floating-point drift and browser price tampering.
+- **Consequences:** Browser cart is a convenience only; database checkout RPC is authoritative.
 
-## D-007 — Local Git branches until private remote creation is possible
+## D-007 — Unknown stock is a first-class state
 
 - **Date:** 2026-11-13
-- **Context:** GitHub tools have no repository-create operation.
-- **Decision:** Keep local `main` as baseline and implement on `feat/storefront-foundation`; do not claim remote creation or push.
-- **Reason:** Preserve history and keep main stable without fabricating GitHub completion.
-- **Alternatives:** Create public repository (not possible); push to unrelated repo (rejected).
-- **Consequences:** Owner must create private `kundu-electronics` remote or grant a connector that can create repositories.
+- **Decision:** Inventory tracking modes are `unknown`, `tracked`, `untracked`; unknown quantity is null, not zero or in-stock.
+- **Reason:** Avoid false stock claims.
+- **Consequences:** Admin must configure stock/tracking before an orderable product is offered.
+
+## D-008 — Variants share parent-product inventory for first release
+
+- **Date:** 2026-11-13
+- **Decision:** Variant-specific prices/options are supported, but stock count is at product level and shared among variants.
+- **Reason:** No source data currently establishes per-variant quantities.
+- **Alternatives:** Variant inventory now (not justified by provided sources).
+- **Consequences:** Revisit before importing any product whose variants need distinct inventory.
+
+## D-009 — Manual payment is not proof of payment
+
+- **Date:** 2026-11-13
+- **Decision:** bKash/Nagad start disabled. Submissions stay `pending_verification`; only authorized staff can verify/reject, with actor/time/audit history.
+- **Reason:** Transaction reference is user-entered and there is no gateway verification API.
+- **Consequences:** Owner must configure receiving details and verification process before checkout activation.
+
+## D-010 — Delivery and stock reservation policy are not assumed
+
+- **Date:** 2026-11-13
+- **Decision:** Delivery zones/charges are nullable/disabled; reservation TTL is null (no automatic expiry) until owner chooses a policy.
+- **Reason:** Avoid inventing delivery prices, areas or reservation duration.
+- **Consequences:** Checkout stays disabled until owner configures delivery and payment.
+
+## D-011 — Product image bucket is private
+
+- **Date:** 2026-11-13
+- **Decision:** Use private Storage bucket with RLS that allows public access only to image paths linked to published product/category rows; staff can preview draft images.
+- **Reason:** Public buckets bypass object-level read control and could expose draft assets.
+- **Consequences:** Verify signed URL reads with Supabase Storage integration tests.
+
+## D-012 — Visual design measurements remain provisional
+
+- **Date:** 2026-11-13
+- **Decision:** Use original Kundu design tokens and SparkFun page structures; do not claim exact reference CSS metrics.
+- **Reason:** Browser screenshot/viewport/CSS inspection did not occur in research environment.
+- **Consequences:** Visual tuning and responsive QA remain explicit tasks.
