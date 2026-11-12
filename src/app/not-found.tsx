@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function NotFound() { return <section className="container simple-page"><span className="section-kicker">404 / NOT FOUND</span><h1>This page is not available.</h1><p className="simple-lead">The link may be outdated, or the product has not been published in the catalogue.</p><Link href="/shop" className="button button-primary">Browse the shop</Link></section>; }

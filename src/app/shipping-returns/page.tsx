@@ -1,0 +1,3 @@
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Shipping & returns" };
+export default function ShippingReturnsPage() { return <section className="container simple-page"><span className="section-kicker">DELIVERY & AFTER-SALES</span><h1>Shipping & returns</h1><p className="simple-lead">Delivery charges, timelines and return conditions will be shown here once the shop confirms its policies.</p><div className="notice-panel"><strong>Policy details not configured</strong><p>No delivery charge, delivery promise, warranty or return window is being advertised until verified business rules are provided.</p></div></section>; }
