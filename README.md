@@ -16,7 +16,7 @@ The repository is initialized locally. The initial foundation includes the appli
 
 ## Requirements
 
-- Node.js 20.9+ (Node 22 LTS recommended)
+- Node.js 22.6+ (Node 22 LTS recommended)
 - npm
 
 ## Run locally

@@ -8,6 +8,8 @@
 - Root onboarding: `START_HERE.md`, `README.md`, `.env.example`, `.gitignore`, `.nvmrc`.
 - Next.js/React/TypeScript/Tailwind configuration.
 - Responsive global header/search/footer and homepage illustration/layout.
+- Optional ৳0–৳200 quick price preset (no price filtering by default) and relevance-ranked partial search.
+- Preserved the previous roadmap snapshot as `APPROVED_ROADMAP_SNAPSHOT.md`.
 - Shop listing empty state and functional client-side search/filter/sort pipeline against supplied catalogue records.
 - Empty cart, About, Support, Contact, Shipping & Returns and Product-not-found route shells.
 - Central public-safe business configuration and public catalogue types/data.
@@ -26,6 +28,11 @@
 - Node/npm/git availability checked: Node v22.16.0, npm 10.9.2, Git 2.47.3.
 - npm registry metadata request timed out; dependencies not installed. Typecheck/lint/unit tests/build not executed successfully yet.
 - No browser screenshot or interaction test executed.
+
+### Git history
+
+- `d883393` — initial documentation/architecture baseline on `main`.
+- `5e59330` — responsive storefront foundation on `feat/storefront-foundation`.
 
 ### Important outcomes
 

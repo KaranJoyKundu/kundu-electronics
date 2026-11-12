@@ -20,10 +20,11 @@ Build a production-capable, responsive electronics-components storefront for Kun
 - `TEST_REPORT.md` — actual checks and results.
 - `ISSUES_AND_LIMITATIONS.md` — known blockers and missing information.
 - `research/` — complete SparkFun research package copied unchanged from the verified ZIP.
+- `APPROVED_ROADMAP_SNAPSHOT.md` — historical planning snapshot preserved for continuity; current plan lives in `IMPLEMENTATION_PLAN.md`.
 
 ## Repository recovery
 
-A final connected-GitHub search did not find an existing Kundu Electronics repository accessible under the user's connected GitHub identity. No project ZIP/source upload was available in this session. The owner authorized creation of a replacement project. A local project and Git repository have been created. The GitHub integration does not expose a create-repository operation, so a private remote still requires owner creation or a connector permission/capability change.
+A final connected-GitHub search found no `Kundu electronics` repository in the installed-repository search. The only broad `Kundu` match was `k-j-kundu/k-j-kundu.github.io`; its repository tree contains only a tiny `CNAME` and `README.md`, not the electronics-shop application. No original Kundu project ZIP/source upload was available in this session. The owner authorized creation of a replacement project. A local project and Git repository have been created. The GitHub integration exposes no create-repository operation, so a private remote still requires the owner to create it at GitHub or a connector permission/capability change. Local commits use the temporary commit identity `Local Project Bootstrap <bootstrap@localhost>` until the owner chooses to re-author if desired.
 
 Do not replace or discard this work if the original project later becomes accessible. Compare it first and merge useful prior work deliberately.
 
@@ -35,7 +36,7 @@ Do not replace or discard this work if the original project later becomes access
 - Public-safe business settings are centralized in `src/config/business.ts`.
 - Public catalogue data is centralized in `src/data/catalogue.ts`; it is empty until confirmed inventory and selling prices are supplied.
 - Product public type excludes purchase cost / buying price.
-- Search and combined category/price/sort utilities exist in `src/lib/catalog/search.ts` with test fixtures that do not appear in the live catalogue.
+- Search and combined category/price/sort utilities exist in `src/lib/catalog/search.ts` with test fixtures that do not appear in the live catalogue. The `b` fixture returns both Breadboard and Bluetooth Module; the ৳0–৳200 quick range is optional, not a default filter.
 - No payment integration is connected. bKash/Nagad are disabled and their numbers are null.
 - The initial home, shop empty state, cart empty state, about, support, contact, shipping/returns and product-not-found routes exist.
 

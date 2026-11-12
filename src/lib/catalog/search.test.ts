@@ -15,6 +15,11 @@ const fixture: Product[] = [
     published: true, updatedAt: "2026-11-13",
   },
   {
+    id: "fixture-4", sku: "WIFI-001", slug: "bluetooth-module", name: "Bluetooth Module HC-05",
+    priceBdt: 380, categorySlug: "wireless", availability: "in_stock", images: [],
+    published: true, updatedAt: "2026-11-13",
+  },
+  {
     id: "fixture-3", sku: "HIDDEN-1", slug: "draft-board", name: "Draft Breadboard",
     priceBdt: 99, categorySlug: "prototyping", availability: "in_stock", images: [],
     published: false, updatedAt: "2026-11-13",
@@ -22,7 +27,7 @@ const fixture: Product[] = [
 ];
 
 test("single-character partial search surfaces Breadboard when present", () => {
-  assert.deepEqual(searchProducts(fixture, "b").map((item) => item.slug), ["breadboard"]);
+  assert.deepEqual(new Set(searchProducts(fixture, "b").map((item) => item.slug)), new Set(["breadboard", "bluetooth-module"]));
 });
 
 test("search is case insensitive and trims whitespace", () => {
@@ -42,7 +47,7 @@ test("price and category filters combine inclusively", () => {
 
 test("sorts prices ascending when requested", () => {
   const result = filterProducts(fixture, { sort: "price-asc" });
-  assert.deepEqual(result.map((item) => item.slug), ["red-led", "breadboard"]);
+  assert.deepEqual(result.map((item) => item.slug), ["red-led", "breadboard", "bluetooth-module"]);
 });
 
 test("empty search returns no autocomplete suggestions", () => {

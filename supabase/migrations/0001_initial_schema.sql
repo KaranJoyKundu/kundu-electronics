@@ -154,10 +154,10 @@ create policy "staff can read orders"
   on public.orders for select to authenticated
   using (exists (select 1 from public.admin_profiles ap where ap.user_id = (select auth.uid()) and ap.role in ('admin', 'staff')));
 
-create policy "staff can update orders"
+create policy "admins can update orders and verify manual payments"
   on public.orders for update to authenticated
-  using (exists (select 1 from public.admin_profiles ap where ap.user_id = (select auth.uid()) and ap.role in ('admin', 'staff')))
-  with check (exists (select 1 from public.admin_profiles ap where ap.user_id = (select auth.uid()) and ap.role in ('admin', 'staff')));
+  using (exists (select 1 from public.admin_profiles ap where ap.user_id = (select auth.uid()) and ap.role = 'admin'))
+  with check (exists (select 1 from public.admin_profiles ap where ap.user_id = (select auth.uid()) and ap.role = 'admin'));
 
 create policy "staff can read order items"
   on public.order_items for select to authenticated

@@ -14,7 +14,7 @@
 - **Date:** 2026-11-13
 - **Context:** The store needs SEO-friendly product/category pages, server-side order validation, responsive interactive UI and maintainable routing.
 - **Decision:** Next.js 16.4.6 with React 19.3.0, strict TypeScript and Tailwind CSS 4.3.3.
-- **Reason:** Next.js App Router supports server/client components and route handlers; React 19.3 is stable; Tailwind 4 integrates through its PostCSS plugin. Version choice avoids canary builds and uses the 16.4.6 stable/LTS release rather than pre-release 16.5 canary.
+- **Reason:** Next.js App Router supports server/client components and route handlers; React 19.3 is stable; Tailwind 4 integrates through its PostCSS plugin. Version choice avoids canary builds and uses the latest listed stable 16.4.6 patch rather than pre-release 16.5 canary.
 - **Alternatives:** Vite SPA (less suitable for server-side order handling/SEO routing); custom backend from scratch (more maintenance); pure static site (not enough for orders/admin).
 - **Consequences:** Node 20.9+ required; Node 22 LTS recommended. npm dependencies must be installed in a network-enabled environment. Sources: https://nextjs.org/docs/app/getting-started/installation, https://react.dev/versions, https://github.com/vercel/next.js/releases.
 

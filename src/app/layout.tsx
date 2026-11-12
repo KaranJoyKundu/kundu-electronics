@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { getPublishedProducts } from "@/data/catalogue";
@@ -11,9 +12,10 @@ export const metadata: Metadata = {
   },
   description: "Explore electronics components and tools from Kundu Electronics in Khulna, Bangladesh.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  icons: { icon: "/favicon.svg" },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const products = getPublishedProducts();
   return (
     <html lang="en-BD">

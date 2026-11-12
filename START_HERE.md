@@ -31,7 +31,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Node.js 20.9+ is required; Node 22 LTS is recommended. Do not expect the app to connect to a database until a Supabase project is created and environment variables are supplied.
+Node.js 22.6+ is required by the built-in TypeScript test command; Node 22 LTS is recommended. Do not expect the app to connect to a database until a Supabase project is created and environment variables are supplied.
 
 ## GitHub setup required
 

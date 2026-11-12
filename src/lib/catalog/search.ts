@@ -40,8 +40,7 @@ export function filterProducts(products: readonly Product[], filters: CatalogueF
   let result = products.filter((product) => product.published);
 
   if (filters.query?.trim()) {
-    const ids = new Set(searchProducts(result, filters.query).map((product) => product.id));
-    result = result.filter((product) => ids.has(product.id));
+    result = searchProducts(result, filters.query);
   }
   if (filters.categorySlug) {
     result = result.filter((product) => product.categorySlug === filters.categorySlug);
