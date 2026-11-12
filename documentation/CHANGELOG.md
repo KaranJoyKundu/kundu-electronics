@@ -33,6 +33,7 @@
 
 - `d883393` — initial documentation/architecture baseline on `main`.
 - `5e59330` — responsive storefront foundation on `feat/storefront-foundation`.
+- `12e94d6` — catalogue filter refinements and project handoff updates on `feat/storefront-foundation`.
 
 ### Important outcomes
 

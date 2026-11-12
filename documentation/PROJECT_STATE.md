@@ -1,9 +1,9 @@
 # PROJECT_STATE — Kundu Electronics
 
-**Last updated:** 13 November 2026 (Asia/Dhaka)  
-**Project phase:** Foundation created; Phase 1 data intake is in progress.  
-**Active Git branch:** `feat/storefront-foundation`  
-**Local Git status at handoff:** clean after committed foundation (see commit history).  
+**Last updated:** 13 November 2026 (Asia/Dhaka)
+**Project phase:** Foundation created; Phase 1 data intake is in progress.
+**Active Git branch:** `feat/storefront-foundation` (local history includes the initial baseline and storefront foundation commits; run `git log --oneline --decorate -5` for current HEAD)
+**Local Git status at handoff:** clean after committed foundation (see commit history).
 **GitHub remote:** not created; connector lacks repository-create action.
 
 ## Identity and objective
