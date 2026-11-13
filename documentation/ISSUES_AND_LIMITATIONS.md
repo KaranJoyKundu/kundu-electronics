@@ -64,3 +64,12 @@ Never commit raw internal business documents or cost/supplier records. Never exp
 2. Fresh `npm-audit.json` generated from that lockfile.
 3. Output from all five commands on Node 24.14.0/npm 11.21.1: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, `npm audit`.
 4. If route validator still fails: `.next/dev/types/validator.ts`, `.next/dev/types/routes.d.ts`, `.next/types/routes.d.ts`, and the exact post-typegen `tsconfig.json`.
+
+
+## 2026-11-13 dependency-security follow-up
+
+- The committed Windows lockfile is now present on the remote feature branch. Lockfile v3 resolves `@typescript-eslint/typescript-estree@8.72.2` with nested `minimatch@10.2.6` (declared `^10.2.2`); a separate root `minimatch@3.1.5` serves ESLint plugins and is outside this advisory's affected range.
+- GHSA-g3hv-75wg-m249 is fixed upstream in minimatch `11.0.1`, but 11.x does not satisfy the TypeScript-ESTree `^10.2.2` dependency range. Do not force an override or hand-edit lockfile metadata. No dependency versions were changed. Track the advisory until a stable TypeScript-ESLint release declares a compatible minimatch 11 range.
+- Current stable `@typescript-eslint/typescript-estree` observed on npm is `8.72.2`; `8.72.3-alpha.8` is a prerelease and is not suitable as a production dependency update without explicit prerelease evaluation.
+- Next.js `v16.4.6` source was inspected: `useTypeScriptCli` is an accepted boolean in `config-schema.ts`; `false` selects the TypeScript API worker in `packages/next/src/build/type-check.ts`. `runTypeCheck.ts` explicitly filters `.next/dev/types` during build typechecking. Keep the setting pending owner verification; the warning marker is consistent with the disabled experimental CLI checker, not an unknown config property.
+- GitHub integration can inspect repository files but cannot run npm commands in the owner's Windows environment or produce a full Git bundle from the connected remote. `npm explain`, `npm ls`, `npm audit fix --dry-run`, `npm ci`, typecheck, lint, tests and build were not executed in this session. Preserve the owner's prior Windows PASS report; it is not a rerun for this security follow-up.
