@@ -8,6 +8,11 @@ import type { PublicCheckoutConfig } from "@/data/storefront";
 import { useCart } from "@/components/cart/cart-provider";
 import { formatPriceBdt } from "@/lib/format";
 import { resolveCartLinePrice } from "@/lib/catalog/cart-pricing";
+import { parseCartProducts } from "@/lib/catalog/response";
+
+interface ProductRequest {
+  ids: string;
+}
 
 interface CheckoutFormState {
   name: string; phone: string; email: string; addressLine1: string; addressLine2: string;
@@ -30,39 +35,43 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
   const [zoneId, setZoneId] = useState(checkout.deliveryZones[0]?.id ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productsLoading, setProductsLoading] = useState(true);
-  const [productsFailed, setProductsFailed] = useState(false);
+  const [productLoad, setProductLoad] = useState<{
+    request: ProductRequest;
+    status: "success" | "error";
+    products: Product[];
+  } | null>(null);
   const idempotency = useRef<{ signature: string; key: string } | null>(null);
   const productIds = useMemo(() => [...new Set(lines.map((line) => line.productId))].sort(), [lines]);
   const productIdsKey = productIds.join(",");
+  const productRequest = useMemo(() => ({ ids: productIdsKey }), [productIdsKey]);
 
   useEffect(() => {
-    if (!hydrated) return;
-    if (!productIdsKey) {
-      setProducts([]);
-      setProductsLoading(false);
-      setProductsFailed(false);
-      return;
-    }
+    if (!hydrated || !productRequest.ids) return;
+
     const controller = new AbortController();
-    setProductsLoading(true);
-    setProductsFailed(false);
-    fetch(`/api/catalog/cart?ids=${encodeURIComponent(productIdsKey)}`, { cache: "no-store", signal: controller.signal })
+    const requestedKey = productRequest.ids;
+    void fetch(`/api/catalog/cart?ids=${encodeURIComponent(requestedKey)}`, {
+      cache: "no-store",
+      signal: controller.signal,
+    })
       .then(async (response) => {
-        const payload = await response.json() as { products?: Product[] };
         if (!response.ok) throw new Error("Cart products could not be loaded");
-        setProducts(Array.isArray(payload.products) ? payload.products : []);
+        const payload: unknown = await response.json();
+        const products = parseCartProducts(payload);
+        if (!controller.signal.aborted) setProductLoad({ request: productRequest, status: "success", products });
       })
       .catch((cause: unknown) => {
-        if (cause instanceof Error && cause.name === "AbortError") return;
-        setProducts([]);
-        setProductsFailed(true);
-      })
-      .finally(() => { if (!controller.signal.aborted) setProductsLoading(false); });
-    return () => controller.abort();
-  }, [hydrated, productIdsKey]);
+        if (controller.signal.aborted || (cause instanceof Error && cause.name === "AbortError")) return;
+        setProductLoad({ request: productRequest, status: "error", products: [] });
+      });
 
+    return () => controller.abort();
+  }, [hydrated, productRequest]);
+
+  const currentProductLoad = productLoad?.request === productRequest ? productLoad : null;
+  const products = productIdsKey && currentProductLoad?.status === "success" ? currentProductLoad.products : [];
+  const productsLoading = productIdsKey.length > 0 && currentProductLoad === null;
+  const productsFailed = productIdsKey.length > 0 && currentProductLoad?.status === "error";
   const productById = useMemo(() => new Map(products.map((product) => [product.id, product])), [products]);
   const cartRows = lines.map((line) => {
     const product = productById.get(line.productId) ?? null;

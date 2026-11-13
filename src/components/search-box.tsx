@@ -3,40 +3,41 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { SearchIcon, ArrowRightIcon } from "@/components/icons";
+import { parseSearchSuggestions, type SearchSuggestion } from "@/lib/catalog/response";
 
-type Suggestion = { id: string; slug: string; name: string; sku: string | null; category: string };
+type Suggestion = SearchSuggestion;
+type SearchResult = { query: string; suggestions: Suggestion[] };
 
 export function SearchBox() {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const hasQuery = query.trim().length > 0;
+  const normalizedQuery = query.trim();
+  const hasQuery = normalizedQuery.length > 0;
+  const currentResult = searchResult?.query === normalizedQuery ? searchResult : null;
+  const suggestions = currentResult?.suggestions ?? [];
+  const loading = hasQuery && currentResult === null;
 
   useEffect(() => {
     const normalized = query.trim();
-    if (!normalized) {
-      setSuggestions([]);
-      setLoading(false);
-      return;
-    }
+    if (!normalized) return;
 
     const controller = new AbortController();
-    const timeout = window.setTimeout(async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/catalog/search?query=${encodeURIComponent(normalized)}`, {
-          signal: controller.signal,
-          headers: { Accept: "application/json" },
+    const timeout = window.setTimeout(() => {
+      void fetch(`/api/catalog/search?query=${encodeURIComponent(normalized)}`, {
+        signal: controller.signal,
+        headers: { Accept: "application/json" },
+      })
+        .then(async (response) => {
+          if (!response.ok) throw new Error("Search request failed");
+          const result: unknown = await response.json();
+          const products = parseSearchSuggestions(result);
+          if (!controller.signal.aborted) setSearchResult({ query: normalized, suggestions: products });
+        })
+        .catch((error: unknown) => {
+          if (controller.signal.aborted || (error instanceof DOMException && error.name === "AbortError")) return;
+          setSearchResult({ query: normalized, suggestions: [] });
         });
-        if (!response.ok) throw new Error("Search request failed");
-        const result = await response.json() as { products?: Suggestion[] };
-        setSuggestions(Array.isArray(result.products) ? result.products : []);
-      } catch (error) {
-        if (!(error instanceof DOMException && error.name === "AbortError")) setSuggestions([]);
-      } finally {
-        if (!controller.signal.aborted) setLoading(false);
-      }
     }, 180);
 
     return () => {
@@ -51,6 +52,9 @@ export function SearchBox() {
         <SearchIcon className="search-icon" />
         <input
           aria-label="Search products"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-haspopup="listbox"
           aria-controls="product-search-suggestions"
           aria-expanded={open && hasQuery}
           name="query"
@@ -69,13 +73,13 @@ export function SearchBox() {
         <div id="product-search-suggestions" className="search-popover" role="listbox" aria-label="Product search suggestions">
           {loading ? <div className="search-empty"><span>Searching the catalogue…</span></div> : suggestions.length > 0 ? (
             <>
-              <p className="popover-label">Suggested products</p>
+              <div className="popover-label" role="presentation">Suggested products</div>
               {suggestions.map((product) => (
                 <Link key={product.id} href={`/products/${product.slug}`} className="suggestion" role="option" onMouseDown={() => setOpen(false)}>
                   <span>{product.name}</span><span>{product.sku || product.category}</span>
                 </Link>
               ))}
-              <Link className="view-results" href={`/shop?query=${encodeURIComponent(query)}`} onMouseDown={() => setOpen(false)}>View all results <ArrowRightIcon /></Link>
+              <Link className="view-results" role="option" aria-selected={false} href={`/shop?query=${encodeURIComponent(query)}`} onMouseDown={() => setOpen(false)}>View all results <ArrowRightIcon /></Link>
             </>
           ) : (
             <div className="search-empty"><strong>No matching products yet</strong><span>The catalogue may not contain a published match for this search.</span></div>

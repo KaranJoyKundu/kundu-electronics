@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { formatPriceBdt } from "@/lib/format";
 import type { PublicCheckoutConfig } from "@/data/storefront";
 
@@ -41,21 +41,27 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
   const [error, setError] = useState("");
   const idempotency = useRef<{ signature: string; key: string } | null>(null);
 
-  async function refreshOrder() {
-    setLoadError("");
+  const refreshOrder = useCallback(async (signal?: AbortSignal) => {
     try {
-      const response = await fetch(`/api/orders/${orderId}`, { cache: "no-store" });
+      const response = await fetch(`/api/orders/${orderId}`, { cache: "no-store", signal });
       const data = await response.json() as { order?: OrderSummary; error?: string };
       if (!response.ok || !data.order) throw new Error(data.error ?? "Order could not be found.");
+      if (signal?.aborted) return;
       setOrder(data.order);
-    } catch {
+      setLoadError("");
+    } catch (cause: unknown) {
+      if (signal?.aborted || (cause instanceof DOMException && cause.name === "AbortError")) return;
       setLoadError("This order could not be loaded. Open the order from the same browser where checkout was completed, or contact the shop with your order number.");
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) setLoading(false);
     }
-  }
+  }, [orderId]);
 
-  useEffect(() => { void refreshOrder(); }, [orderId]);
+  useEffect(() => {
+    const controller = new AbortController();
+    void refreshOrder(controller.signal);
+    return () => controller.abort();
+  }, [refreshOrder]);
 
   async function submitPayment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

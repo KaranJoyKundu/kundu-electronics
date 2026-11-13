@@ -1,4 +1,4 @@
-import type { ProductVariant } from "@/lib/catalog/types";
+import type { ProductVariant } from "./types.ts";
 
 export interface CartPriceResolution {
   valid: boolean;

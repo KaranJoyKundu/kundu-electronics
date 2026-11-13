@@ -1,32 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { jsonError } from "@/lib/security/request";
+import { parseCatalogSearchRows } from "@/lib/supabase/catalog-search";
+import { parseCatalogProductsQuery } from "@/lib/catalog/query";
 
 export const dynamic = "force-dynamic";
 const PAGE_SIZE = 24;
-const SORTS = new Set(["relevance", "name-asc", "price-asc", "price-desc", "newest"]);
-
-function optionalPrice(value: string | null): number | null | undefined {
-  if (value === null || value === "") return null;
-  if (!/^\d{1,10}$/.test(value)) return undefined;
-  const parsed = Number(value);
-  return Number.isSafeInteger(parsed) && parsed >= 0 && parsed <= 1_000_000_000 ? parsed : undefined;
-}
 
 export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
-  const query = (params.get("query") ?? "").trim();
-  const category = (params.get("category") ?? "").trim();
-  const minPrice = optionalPrice(params.get("min"));
-  const maxPrice = optionalPrice(params.get("max"));
-  const sort = params.get("sort") ?? "relevance";
-  const pageRaw = params.get("page") ?? "1";
-  const page = /^\d{1,4}$/.test(pageRaw) ? Number(pageRaw) : 0;
-
-  if (query.length > 120 || /[\u0000-\u001f]/.test(query)) return jsonError(400, "Search query is invalid.");
-  if (category && (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(category) || category.length > 120)) return jsonError(400, "Category filter is invalid.");
-  if (minPrice === undefined || maxPrice === undefined || (minPrice !== null && maxPrice !== null && minPrice > maxPrice)) return jsonError(400, "Price range is invalid.");
-  if (!SORTS.has(sort) || page < 1 || page > 400) return jsonError(400, "Catalogue paging or sorting is invalid.");
+  const parsedQuery = parseCatalogProductsQuery(request.nextUrl.searchParams);
+  if (!parsedQuery.ok) return jsonError(400, parsedQuery.error);
+  const { query, category, minPrice, maxPrice, sort, page } = parsedQuery.value;
 
   const supabase = createPublicSupabaseClient();
   if (!supabase) return NextResponse.json({ products: [], hasMore: false, configured: false }, { headers: { "Cache-Control": "no-store" } });
@@ -42,7 +26,7 @@ export async function GET(request: NextRequest) {
   });
   if (error) return jsonError(503, "The catalogue is temporarily unavailable.");
 
-  const rows = data ?? [];
+  const rows = parseCatalogSearchRows(data);
   const hasMore = rows.length > PAGE_SIZE;
   const visibleRows = rows.slice(0, PAGE_SIZE);
   const paths = visibleRows.flatMap((row) => typeof row.primary_image_path === "string" ? [row.primary_image_path] : []);

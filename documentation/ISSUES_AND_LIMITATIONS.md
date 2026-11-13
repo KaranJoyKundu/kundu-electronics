@@ -3,12 +3,12 @@
 ## Blocking integration work
 
 1. No Supabase project or local Postgres/Supabase runtime is connected. The migration, RLS, Storage policies and RPCs are draft code until applied and tested.
-2. No `package-lock.json` exists in the assistant worktree. The owner's Windows `npm install` created 358 packages, but the generated lockfile has not been supplied. Without it, `npm ci` and accurate dependency auditing are not possible.
-3. Owner reports seven moderate npm advisories, but the exact `npm audit --json` report is unavailable. Do not guess affected packages or force-upgrade.
-4. Full Next typecheck, ESLint and production build could not be run in the assistant runtime because `node_modules` is absent. The new ESLint flat config is not yet executed after migration.
+2. No `package-lock.json` exists in the assistant worktree. The owner reports `npm install` completed with 374 packages; its generated lockfile has not been supplied. Without it, `npm ci` and exact dependency-version auditing are not possible.
+3. The supplied audit JSON reports seven moderate indirect alerts: `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser`, `@typescript-eslint/type-utils`, `@typescript-eslint/typescript-estree`, `@typescript-eslint/utils`, `minimatch`, and `typescript-eslint`. The root advisory shown is `minimatch` GHSA-g3hv-75wg-m249 / CVE-2026-118764 (CWE-405), at `node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch`; affected versions are `>=7.0.0 <11.0.1`, patched release 11.0.1. Exact installed versions and compatible remediation require the lockfile. Do not force-upgrade or add a major override blindly.
+4. Source-level fixes for the reported implicit-any, payment-method, generated-route-type and React effect/accessibility errors have been applied. Full Next typecheck, ESLint and production build could not be run in the assistant runtime because `node_modules` is absent; user must verify on Windows with the lockfile.
 5. SQL/pgTAP tests and concurrency tests have not run. The security-contract file has 23 assertions but needs actual database execution and row/role fixtures.
 6. No browser/Playwright screenshots or visual QA have been run after the expanded changes.
-7. Local changes are committed as `c38f358`; GitHub push is pending because this runtime could not resolve `github.com`. Local `origin` is a Git bundle path, not the GitHub remote. Import the supplied bundle, fetch the actual GitHub remote and push without force after reviewing divergence.
+7. The assistant-side local `origin` is a bundle path, not the GitHub remote. GitHub refs were verified through the connected integration: `main=d883393` and `feat/storefront-foundation=de253ee`. The verification-fix commit is available in the local feature-branch Git bundle. Import it into the Windows clone, fetch GitHub, verify fast-forward ancestry and push normally. Never force-push.
 
 ## Business data gaps
 
@@ -37,3 +37,13 @@
 ## Safety
 
 Never commit raw internal business documents or cost/supplier records. Never expose a service-role key, full payment references or customer address in logs/browser. Do not state a pending transaction is paid. Do not enable checkout until payment and delivery configuration are complete and end-to-end tests pass.
+
+
+## Verification-fix details
+
+- Cart provider uses `useSyncExternalStore`; cart-page/search loading state is derived from request-keyed async results; order refresh is a memoized callback with effect dependency and abort cleanup.
+- Search input uses `role="combobox"` and listbox popup semantics so `aria-expanded` is defined for its role. No lint rule suppression is used.
+- The TypeScript `row` errors are fixed by narrowing untrusted Supabase RPC payloads through `parseCatalogSearchRows`.
+- The generated `.next/dev/types/validator.ts` file is not edited. `tsconfig` excludes `.next/dev` and the project typecheck script generates production route types before `tsc`.
+- Unit tests now cover cart persisted snapshot restoration and updates, in addition to query/response validation.
+- Assistant-runtime `npm run typecheck`, `npm run lint`, and `npm run build` each exit because Next/ESLint dependencies are absent; `npm audit --json` exits `ENOLOCK` because there is no package lockfile. The supplied audit report is analysed in `TEST_REPORT.md`.

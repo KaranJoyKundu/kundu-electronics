@@ -191,8 +191,9 @@ export async function getPublicCheckoutConfig(): Promise<PublicCheckoutConfig> {
   const paymentMethods = Array.isArray(config.paymentMethods) ? config.paymentMethods.flatMap((method) => {
     if (!method || typeof method !== "object") return [];
     const row = method as Record<string, unknown>;
-    if ((row.method !== "bkash" && row.method !== "nagad") || typeof row.receivingNumber !== "string" || typeof row.instructions !== "string") return [];
-    return [{ method: row.method, receivingNumber: row.receivingNumber, instructions: row.instructions }];
+    const paymentMethod = row.method;
+    if ((paymentMethod !== "bkash" && paymentMethod !== "nagad") || typeof row.receivingNumber !== "string" || typeof row.instructions !== "string") return [];
+    return [{ method: paymentMethod, receivingNumber: row.receivingNumber, instructions: row.instructions }];
   }) : [];
   return { checkoutEnabled: config.checkoutEnabled === true, deliveryZones, paymentMethods };
 }

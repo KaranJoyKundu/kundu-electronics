@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import { jsonError } from "@/lib/security/request";
+import { parseCatalogSearchRows } from "@/lib/supabase/catalog-search";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
   });
   if (error) return jsonError(503, "Search is temporarily unavailable.");
 
-  const products = (data ?? []).map((row) => ({
+  const products = parseCatalogSearchRows(data).map((row) => ({
     id: row.id,
     slug: row.slug,
     name: row.name,

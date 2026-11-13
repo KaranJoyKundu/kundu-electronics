@@ -86,3 +86,30 @@
 - **Decision:** Use original Kundu design tokens and SparkFun page structures; do not claim exact reference CSS metrics.
 - **Reason:** Browser screenshot/viewport/CSS inspection did not occur in research environment.
 - **Consequences:** Visual tuning and responsive QA remain explicit tasks.
+
+
+## D-013 — Exclude isolated Next.js development route validators from strict application typecheck
+
+- **Date:** 2026-11-13
+- **Decision:** Keep `.next/types/**/*.ts` in TypeScript includes, explicitly exclude `.next/dev`, and run `next typegen` before `tsc --noEmit`.
+- **Context:** Next.js 16 with isolated development builds can create a separate `.next/dev/types` route validator. A stale dev validator may be checked alongside the production route types and report an incompatible generated `Route` constraint.
+- **Reason:** Use generated production types for the explicit typecheck and avoid hand-editing `.next` output. The upstream issue documents the stale development-type inclusion failure mode: https://github.com/vercel/next.js/issues/96620.
+- **Alternatives considered:** Delete generated files manually (rejected; ephemeral and non-reproducible); disable TypeScript strictness (rejected); turn off isolated dev builds (not necessary unless the exclusion fails).
+- **Consequences:** The change must be verified on Windows with an existing `.next/dev` directory and on a clean checkout using `next typegen`.
+
+## D-014 — Use an external store for cart hydration and persistence
+
+- **Date:** 2026-11-13
+- **Decision:** Cart state is held in a small external store consumed through `useSyncExternalStore`; component effects no longer copy localStorage into React state and write it back.
+- **Reason:** This avoids synchronous state updates in effects, preserves SSR/hydration semantics and supports a current-tab memory fallback if browser storage is blocked.
+- **Alternatives considered:** Keep duplicated effect-managed `useState` state and add lint suppression (rejected); use a render-time state reset (rejected).
+- **Consequences:** Test snapshot restore, canonical persistence, invalid storage, unavailable storage and browser multi-tab storage events.
+
+## D-015 — Do not force the npm audit fix without the exact lockfile plan
+
+- **Date:** 2026-11-13
+- **Decision:** Do not add a `minimatch` override or run `npm audit fix --force` based only on the supplied summary report.
+- **Context:** Seven moderate indirect package flags all resolve through the TypeScript-ESLint dependency tree; the report marks a fix available but does not include exact installed versions or the dependency resolution section.
+- **Reason:** The advisory's patched minimatch release is 11.0.1, but compatibility must be checked against the actual parent package ranges and lockfile.
+- **Alternatives considered:** Force `minimatch@11` using npm overrides (rejected until compatibility is verified); upgrade unrelated top-level dependencies (rejected).
+- **Consequences:** Obtain the Windows `package-lock.json`, inspect `npm audit fix --dry-run --json`, then use a non-force semver-compatible update and rerun the full suite.
