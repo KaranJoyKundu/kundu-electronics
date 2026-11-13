@@ -15,3 +15,13 @@ Thumbs.db
 *.tsbuildinfo
 playwright-report/
 test-results/
+
+# Owner-only source files and generated product import material
+/private-data/
+/business-private/
+*.private.md
+*.private.csv
+*.private.json
+
+# Supabase local state and generated artifacts
+supabase/.temp/

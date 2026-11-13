@@ -11,10 +11,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test src/lib/catalog/*.test.ts"
+    "typecheck": "next typegen && tsc --project tsconfig.typecheck.json --noEmit --incremental false",
+    "test": "node --experimental-strip-types --test src/lib/catalog/*.test.ts src/lib/checkout/*.test.ts src/lib/orders/*.test.ts src/lib/security/*.test.ts src/lib/cart/*.test.ts src/lib/supabase/*.test.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.119.0",
     "next": "16.4.6",
     "react": "19.3.0",
     "react-dom": "19.3.0"
@@ -28,8 +30,7 @@
     "eslint-config-next": "16.4.6",
     "postcss": "^8.5.0",
     "tailwindcss": "4.3.3",
-    "typescript": "^5.8.0",
-    "@eslint/eslintrc": "^3.3.0"
+    "typescript": "^5.8.0"
   },
   "type": "module"
 }

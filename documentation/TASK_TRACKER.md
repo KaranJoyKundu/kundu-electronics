@@ -1,30 +1,45 @@
 # TASK_TRACKER
 
-Status key: Not started · In progress · Blocked · Completed · Needs verification
+Statuses: Not started · In progress · Blocked · Completed · Needs verification
 
-| Task ID | Priority | Task | Status | Dependencies | Acceptance criteria |
-|---|---|---|---|---|---|
-| KE-001 | P0 | Final connected-repository recovery and replacement authorization | Completed | Owner approval | Search performed; no accessible existing project found; replacement authorized |
-| KE-002 | P0 | Create local project skeleton and preserve research package | Completed | KE-001 | All research docs copied and readable; app/docs structure exists |
-| KE-003 | P0 | Create Git main baseline and feature branch | Completed | KE-002 | Initial commit on main; working branch created; no remote falsely claimed |
-| KE-004 | P0 | Establish Next/React/TS/Tailwind architecture | Completed | KE-002 | package/config/app-router foundation written and architecture decision documented |
-| KE-005 | P0 | Create central business config and safe catalogue model | Completed | KE-004 | No fake values; empty published catalogue; public Product excludes buying cost |
-| KE-006 | P0 | Implement responsive global shell and initial homepage | In progress | KE-004 | Header/footer/home routes authored; requires browser QA after install |
-| KE-007 | P0 | Implement search and filter core utilities | Completed | KE-005 | Six Node tests pass for partial `b` matching, case-insensitive matching, draft exclusion, combined inclusive filters, sort and empty query; catalogue integration remains pending real inventory |
-| KE-008 | P0 | Install dependencies and run initial checks | Blocked | Network/npm registry | npm install, typecheck, lint, test, build all executed and failures fixed |
-| KE-009 | P0 | Obtain verified selling-price/inventory document | Blocked | Owner supplies file | Import mapping separates selling price from purchase cost; no private cost exposed |
-| KE-010 | P1 | Validate category taxonomy and import catalogue | Not started | KE-009 | Only owner-confirmed categories/products are published |
-| KE-011 | P1 | Implement product detail variants and image gallery | Not started | KE-010 | SKU, price, availability and real specs match source data |
-| KE-012 | P1 | Implement persistent cart | Not started | KE-010 | Add/remove/change qty/persist/recalculate totals pass tests |
-| KE-013 | P1 | Create Supabase project and apply reviewed schema | Blocked | Owner creates Supabase project | RLS reviewed; secret keys remain server-only |
-| KE-014 | P1 | Implement secure server-side order creation | Not started | KE-013 | Server recalculates amounts; no client-trusted price or stock |
-| KE-015 | P1 | Configure manual bKash/Nagad and pending verification | Blocked | Owner provides receiving numbers and instructions | Orders remain pending until manual admin verification |
-| KE-016 | P1 | Add protected order/admin management | Not started | KE-013, KE-014 | Only authorized admin can view/update private orders |
-| KE-017 | P2 | Complete shipping/returns/FAQ pages with confirmed policies | Blocked | Owner policy details | No unsupported delivery/warranty promises |
-| KE-018 | P1 | Visual and responsive QA at required viewport sizes | Blocked | Dependencies installed + browser available | Screenshots and issues recorded at 1440, 1366, 768, 390 widths |
-| KE-019 | P2 | Create private GitHub remote and push branches | Blocked | Repo-create permission or owner creates remote | `origin` points to private `kundu-electronics`; both branches pushed |
-| KE-020 | P2 | Deploy preview and production release | Not started | Backend/config/data QA | Checkout tested in dry-run; no placeholders on production |
+| ID | Priority | Task | Status | Evidence / acceptance criteria |
+|---|---|---|---|---|
+| KE-001 | P0 | Recover correct GitHub repository and preserve feature branch | Completed | Connected identity `KaranJoyKundu`; private `KaranJoyKundu/kundu-electronics`; remote refs verified. |
+| KE-002 | P0 | Preserve SparkFun research package | Completed | All 11 research Markdown files remain under `documentation/research/`. |
+| KE-003 | P0 | Continue from pushed backend foundation without discarding history | Completed | Local worktree starts at remote feature commit `de253ee`; `main` remains at `d883393`; no reset or force push. |
+| KE-004 | P0 | Repair ESLint flat config and React hook/accessibility failures | Needs verification | Flat config was already migrated; cart provider/page, order confirmation and SearchBox refactored. Run ESLint with the owner's lockfile/dependencies to verify zero errors/warnings. |
+| KE-005 | P0 | Fix generated Next.js dev route type collision | Needs verification | `tsconfig` excludes `.next/dev`, includes production `.next/types`; script runs `next typegen`. Verify on Windows with existing `.next/dev` directory present. |
+| KE-006 | P0 | Resolve seven moderate npm audit alerts safely | Blocked | Supplied audit JSON analysed. Need actual `package-lock.json` and `npm audit fix --dry-run --json`; no forced upgrade or override applied. |
+| KE-007 | P0 | Restore/commit dependency lockfile | Blocked | Owner's Windows `package-lock.json` is not included in this worktree. Required for reproducible installs and exact audit. |
+| KE-008 | P1 | Convert owner business brief into safe import proposal | Completed | Candidate product records are outside Git; all remain draft/unapproved. |
+| KE-009 | P1 | Obtain original inventory and pricing source files | Blocked | Need source inventory, component pricing analysis and robot pricing documents; never ingest private purchase costs into public model. |
+| KE-010 | P1 | Review/approve product catalogue entries | Blocked | Owner must approve selling price, SKU, actual stock status, specs and images before publish. |
+| KE-011 | P1 | Build normalized product/category/variant schema | In progress | Migration authored; execute and test on disposable Supabase before production. |
+| KE-012 | P1 | Build Supabase Auth and admin authorization | In progress | Server/browser/public/admin clients and protected routes exist; live project integration and RLS tests pending. |
+| KE-013 | P1 | Build admin product/category/variant/image maintenance | In progress | Admin routes/actions exist; validate on real Supabase and browser. |
+| KE-014 | P1 | Build stock tracking and audited adjustments | In progress | Unknown/tracked/untracked quantities and movement history modeled; concurrency tests pending. |
+| KE-015 | P1 | Build atomic, server-authoritative checkout | In progress | SQL derives price/charges, locks stock rows and creates snapshots; DB integration tests pending. |
+| KE-016 | P1 | Build manual payment submission and staff verification | In progress | bKash/Nagad disabled pending configuration; submissions remain pending until human verification; integration tests pending. |
+| KE-017 | P1 | Complete search/listing/cart API boundaries | Needs verification | Typed RPC parser, query parser, runtime response parsers, pagination and single-character search implemented; unit tests pass; full Next typecheck pending. |
+| KE-018 | P1 | Verify cart hydration and persistence | Needs verification | `useSyncExternalStore` implementation and storage tests added; browser hydration/multi-tab tests still needed. |
+| KE-019 | P1 | Run Supabase pgTAP security contract | Blocked | Requires Supabase CLI/Postgres; do not mark complete until the migration is applied to a disposable DB and all assertions pass. |
+| KE-020 | P1 | Add RLS/roles/concurrency integration tests | Not started | Verify anon/customer/staff/admin separation, price-tampering resistance, idempotency and oversell prevention. |
+| KE-021 | P1 | Run responsive Playwright and checkout browser tests | Blocked | Requires installed dependencies, browser and configured staging backend; test 1440×900, 1366×768, 768×1024 and 390×844. |
+| KE-022 | P2 | Add CI and Dependabot | Blocked | Add after lockfile is committed; CI should use `npm ci` and run typecheck/lint/test/build. |
+| KE-023 | P2 | Prepare preview deployment | Not started | Requires database, owner configuration, approved products and security/browser sign-off. |
+| KE-024 | P0 | Commit first verification remediation on feature branch | Completed | Previous commit `5949f4c` is pushed to `feat/storefront-foundation`; no merge to `main`. |
+| KE-025 | P0 | Fix remaining payment-method, order-effect, cart memo and test fixture issues | Needs verification | Source fixes and new parser tests are present; full Windows typecheck/lint still require owner dependency installation. |
+| KE-026 | P0 | Separate Next 16 typegen and strict typecheck inputs | Needs verification | Base config includes both generated paths; `tsconfig.typecheck.json` excludes `.next/dev`; build uses TypeScript API checker. Verify on Windows with existing dev output. |
+| KE-027 | P0 | Inspect actual Windows lockfile and refresh npm audit | Blocked | No package-lock is available in the uploaded artifacts, current GitHub tree or assistant worktree. Do not change dependencies until supplied. |
+| KE-028 | P0 | Commit remaining Windows verification source fixes | Completed locally; push pending | Commit is created on `feat/storefront-foundation` after the 42-test suite, strict parser check, syntax scan and diff check; full Next/ESLint/audit commands remain blocked in this runtime. |
 
-## Session handoff update
+## Latest verification remediation task details
 
-13 November 2026: local foundation and research preservation completed. Package install/build/test results remain unverified because npm registry access timed out. No business data or credentials were fabricated.
+- Payment config parser accepts only supported `bkash`/`nagad` values and drops malformed entries; two tests added.
+- Order confirmation loading is request-keyed and derived from state. Async completion handlers update state only after the network request; AbortController plus sequence guards prevent stale results. Order response parser tests added.
+- Cart page no longer memoizes a Map against a newly-created conditional products array; storage fixture is immutable `const`.
+- Base Next 16 config includes both generated route directories; standalone typecheck config excludes `.next/dev`. Build uses the TypeScript API checker to filter stale dev validators. Full Windows verification remains pending.
+
+## Current session handoff
+
+13 November 2026 follow-up after remote base `5949f4c`: payment method narrowing, order confirmation request-state refactor, cart product-map memo warning, and the const test fixture are fixed in source. Added payment configuration/order summary parser tests; `npm test` reports 42 passed. The strict parser TypeScript check passes and 78 TS/TSX files have zero syntax diagnostics. `git diff --check` passes. Full typecheck/lint/build are blocked here because Next/ESLint dependencies are not installed; `npm audit` is blocked by the absent Windows lockfile. The current audit document in Library is dated 12 November and is not a fresh report for this branch state. Import the follow-up bundle and run all five commands on the Windows clone. See `documentation/TEST_REPORT.md`.

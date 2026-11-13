@@ -1,58 +1,41 @@
 # Kundu Electronics
 
-A responsive electronics-components storefront for Kundu Electronics, Khulna, Bangladesh.
+Responsive e-commerce storefront and modular-monolith backend foundation for Kundu Electronics, Khulna, Bangladesh.
 
-## Technology
+## Current implementation
 
-- Next.js 16 App Router
-- React 19.3
-- TypeScript (strict)
-- Tailwind CSS 4 plus a small, explicit design-token layer in `src/app/globals.css`
-- Supabase Postgres/Auth is the planned production backend; no Supabase project or credentials are connected yet
+- Next.js 16 App Router, React 19.3, TypeScript and Tailwind CSS 4.
+- Shared storefront shell, homepage, shop page, product details route, cart and information routes.
+- Database-backed catalogue search, bounded listing pagination, category/price/sort filters and one-character search support.
+- Product options with server-loaded variant price overrides and shared product-level inventory semantics.
+- Supabase SSR/browser/server-only client separation, Next.js 16 `proxy.ts`, admin login and role checks.
+- Admin routes/actions for products, categories, variants, images, inventory, orders, manual payment verification and settings.
+- PostgreSQL migration covering catalogue, inventory, customers, orders, payment submissions/events, audit records, rate limiting, RLS and private storage buckets.
+- Unit tests for catalogue, variant pricing, checkout validation/idempotency and image signatures.
 
-## Current state
+## Not production-connected yet
 
-The repository is initialized locally. The initial foundation includes the application shell, responsive home/shop pages, public-safe business configuration, an empty verified catalogue, product-search/filter utilities and a first Supabase schema migration. The catalogue intentionally contains zero published products until owner-provided inventory and selling prices are reviewed.
+No Supabase project is configured, no migration has been applied, no product data is published, and checkout/payment methods are disabled by default. Database functions and RLS policies are implementation drafts until executed and tested against a real local/remote PostgreSQL environment. Do not claim live orders, admin authentication, stock, or payments until those integrations pass verification.
 
-## Requirements
+## Local setup
 
-- Node.js 20.9+ (Node 22 LTS recommended)
-- npm
-
-## Run locally
-
-```bash
+```powershell
 npm install
-cp .env.example .env.local
+Copy-Item .env.example .env.local
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Set local Supabase variables only in `.env.local`. Keep `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` server-only. Never commit `.env.local`.
 
-The current environment could not reach the npm registry, so dependencies have not yet been installed and a production build has not been claimed as passing. Install them on a network-enabled machine before running the checks below.
+Run checks:
 
-## Checks
-
-```bash
+```powershell
 npm run typecheck
 npm run lint
 npm test
 npm run build
 ```
 
-## Data rules
+## Project continuity
 
-- `src/config/business.ts` is the public-safe business configuration. Do not place secrets or private inventory data there.
-- `src/data/catalogue.ts` is the current public catalogue source and intentionally exports empty arrays.
-- `src/lib/catalog/types.ts` defines the public product shape. It has no supplier cost / buying price field.
-- `supabase/migrations/0001_initial_schema.sql` is a proposed schema migration and has not been applied to a Supabase project.
-- Payment receiving numbers are unset. bKash/Nagad must stay disabled until the owner supplies confirmed receiving numbers.
-- Orders must be created and validated server-side; submitted transaction references are not payment verification.
-
-## Repository connection
-
-The local Git repository has `main` as the initial documentation baseline and `feat/storefront-foundation` as the active implementation branch. A remote GitHub repository has not been created because the connected GitHub tools do not expose a repository-creation operation. Create a private repository named `kundu-electronics`, then add it as `origin` and push both branches. See `START_HERE.md`.
-
-## Documentation
-
-Start with [`START_HERE.md`](START_HERE.md), then `documentation/PROJECT_STATE.md`. SparkFun reference research is preserved unchanged in `documentation/research/`.
+Read `START_HERE.md` and `documentation/PROJECT_STATE.md`. Full SparkFun research is preserved in `documentation/research/`. Product candidates are kept separately for owner review and are not published by default.

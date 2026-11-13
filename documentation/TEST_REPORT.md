@@ -1,41 +1,139 @@
-# TEST_REPORT
+# TEST_REPORT — Kundu Electronics
 
-## 2026-11-13 — Initial environment and artifact checks
+**Last updated:** 13 November 2026 (Asia/Dhaka)
+**Branch:** `feat/storefront-foundation`
+**Base commit for this follow-up:** `5949f4cd3152aa595dd6433aaac27a7b85f3a87a`
 
-| Check | Command / method | Result | Notes |
+## Latest follow-up verification in the assistant runtime
+
+Runtime: Node.js `v22.16.0`, npm `10.9.2`, global TypeScript `5.8.3`. This differs from the owner's Windows environment (Node `24.14.0`, npm `11.21.1`) and does not have project dependencies installed.
+
+| Command/check | Result | Details |
+|---|---|---|
+| `npm test` | **PASS — 42 passed, 0 failed** | All project Node test files, including new payment-method and order-summary parser tests. |
+| Targeted strict TypeScript | **PASS** | `payment-methods.ts` and `order-summary.ts` compile with `tsc --noEmit --strict`; does not typecheck the full Next app. |
+| `git diff --check` | **PASS** | Executed after the final documentation edits; clean. |
+| TypeScript/TSX syntax scan | **PASS — 78 files, 0 diagnostics** | TypeScript 5.8.3 `transpileModule`; syntax-only. |
+| `npm run typecheck` | **BLOCKED — exit 127** | `next: not found`; project `node_modules` is absent. |
+| `npm run lint` | **BLOCKED — exit 127** | `eslint: not found`; project `node_modules` is absent. |
+| `npm run build` | **BLOCKED — exit 127** | `next: not found`; no Next production build could run. |
+| `npm audit` | **BLOCKED — `ENOLOCK`** | No `package-lock.json` or shrinkwrap file in the assistant worktree, supplied project archive or GitHub branch. |
+| Dependency install | **BLOCKED** | npm registry lookup failed with `EAI_AGAIN registry.npmjs.org`; package versions were not changed. |
+
+The unit-test command was run as:
+
+```text
+npm test
+# tests 42
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+```
+
+The full five-command Windows verification has **not** been demonstrated for this follow-up. The prior owner report (before these latest changes) was 1 type error, 2 lint errors, 1 warning, 38 tests passed and build compilation followed by TS failure. Do not treat that earlier build as passing this new source.
+
+## Owner-supplied Windows history
+
+Environment supplied by the owner: Windows PowerShell 5.1, Node.js 24.14.0, npm 11.21.1, Next.js 16.4.6, React 19.3.0, ESLint 9.39.5.
+
+| Check | Owner result before this follow-up |
+|---|---|
+| `npm install` | PASS — 374 packages audited |
+| `npm run typecheck` | FAIL — one TypeScript error at `src/data/storefront.ts:198` |
+| `npm run lint` | FAIL — two errors and one warning |
+| `npm test` | PASS — 38 passed |
+| `npm run build` | Compiled, then failed during TypeScript checking |
+| `npm audit` | Previous supplied report: 7 moderate indirect findings |
+
+## Source-level fixes in this follow-up
+
+### Payment method parsing (`src/data/storefront.ts`)
+
+- Moved runtime parsing into `src/lib/checkout/payment-methods.ts`.
+- The parser accepts only `"bkash"` or `"nagad"`, with non-empty receiving number and instructions.
+- Unsupported methods and malformed entries are discarded; no assertion is used to coerce arbitrary strings to the union.
+- `PublicCheckoutConfig.paymentMethods` now uses the shared typed interface.
+- Two regression tests cover valid, unsupported, malformed and incomplete records.
+
+### Order confirmation effect (`src/components/orders/order-confirmation-client.tsx`)
+
+- Removed the previous effect-to-stateful-callback call path.
+- The effect starts a pure async request and sets keyed result state only in the asynchronous promise completion callbacks.
+- Loading/error/success are derived from whether the stored result belongs to the current `orderId`; no synchronous `setLoading(true)` is needed in the effect.
+- `AbortController` and monotonically increasing request sequence prevent stale results after navigation, refresh or unmount.
+- Manual post-payment refresh uses the same abort/stale-request guard.
+- Added `parseOrderSummary` in `src/lib/orders/order-summary.ts` so the API payload is validated from `unknown`, including money, item quantities and bKash/Nagad method; two tests cover valid/rejected and malformed summaries.
+
+### Cart lint fixes
+
+- `src/lib/cart/cart-store.test.ts`: the unchanging storage fixture is `const`.
+- `src/components/cart/cart-page-client.tsx`: removed a `useMemo` whose dependency was a conditional array recreated during render. The bounded cart product map is inexpensive and is now built directly; no effect or cart behaviour was removed.
+
+## Next.js 16 route-type mismatch and TypeScript configuration
+
+Next.js 16 with isolated dev builds keeps separate generated route-type output under `.next/dev/types` and `.next/types`. Next 16's current TypeScript template includes both paths to avoid configuration churn. However, a project TypeScript CLI pass that checks two independently generated route maps together can report generated `Route`/`LayoutRoutes` constraint incompatibilities. Upstream Next.js issue #93700 documents the development route-map mismatch signature; issue #96620 documents stale `.next/dev/types` being picked up by the CLI checker. See:
+
+- https://github.com/vercel/next.js/issues/93700
+- https://github.com/vercel/next.js/issues/96620
+- https://nextjs.org/docs/app/api-reference/cli/next
+
+Configuration changes:
+
+- `tsconfig.json` includes both `.next/types/**/*.ts` and `.next/dev/types/**/*.ts`, consistent with Next 16's current generated template. Next may maintain these include entries automatically; do not hand-edit generated `.next` files.
+- New `tsconfig.typecheck.json` extends the base config, includes `.next/types` plus source and `next.config.ts`, and excludes `.next/dev`.
+- `npm run typecheck` now runs `next typegen && tsc --project tsconfig.typecheck.json --noEmit --incremental false`.
+- `next.config.ts` sets `experimental.useTypeScriptCli: false` for the Next 16.4.x build path. Next's TypeScript API checker filters dev type files during production checks; this avoids the CLI path described in issue #96620 checking stale/incompatible dev validators. This setting is version-specific and must be verified with the owner's installed Next 16.4.6 build. It does not weaken `strict` or ignore build errors.
+
+The actual Windows `.next/dev/types/validator.ts` and both generated route maps were not uploaded. This diagnosis is based on the reported path/error signature plus the upstream Next issue; it is not a direct inspection of the owner's generated file. If the error persists, collect those three generated files and the exact `tsconfig.json` after Next modifies it.
+
+## npm audit assessment from the supplied JSON
+
+The available supplied `/mnt/data/npm-audit.json` is UTF-16LE. It reports 7 moderate, 0 low, 0 high and 0 critical findings across 447 dependencies. All seven are marked indirect (`isDirect: false`) and `fixAvailable: true`.
+
+| Flagged package | Severity | Reported affected range / installed path | Relationship |
 |---|---|---|---|
-| Research ZIP integrity | `unzip -t /mnt/data/sparkfun_reference_research.zip` | PASS | No archive errors; 11 Markdown documents |
-| Node runtime | `node --version` | PASS | v22.16.0 |
-| npm runtime | `npm --version` | PASS | 10.9.2 |
-| Git runtime | `git --version` | PASS | 2.47.3 |
-| npm registry reachability | `npm view next version` | BLOCKED / TIMEOUT | Network request timed out; dependencies not installed |
-| TypeScript check | `tsc --noEmit --pretty false` | BLOCKED | Global TypeScript 5.8.3 ran but Next/React/Node type packages are absent because `npm install` could not complete; output is dominated by missing module/type declarations. Not a passing typecheck. |
-| ESLint | `npm run lint` | NOT RUN | Requires dependency installation |
-| Catalogue unit tests | `npm test` | PASS | Six Node built-in tests pass using in-test fixtures. Node emitted the expected experimental TypeScript stripping warning. |
-| Production build | `npm run build` | NOT RUN | Requires dependency installation |
-| Browser screenshots | 1440×900 / 1366×768 / 768×1024 / 390×844 | NOT RUN | No live browser/viewport tool in this environment |
+| `@typescript-eslint/eslint-plugin` | Moderate | `6.16.0 - 8.72.2`; `node_modules/@typescript-eslint/eslint-plugin` | Roll-up through `type-utils` and `utils` |
+| `@typescript-eslint/parser` | Moderate | `6.16.0 - 8.72.2`; `node_modules/@typescript-eslint/parser` | Roll-up through `typescript-estree` |
+| `@typescript-eslint/type-utils` | Moderate | `6.16.0 - 8.72.2`; `node_modules/@typescript-eslint/type-utils` | Roll-up through `typescript-estree` and `utils` |
+| `@typescript-eslint/typescript-estree` | Moderate | `6.16.0 - 8.72.2`; `node_modules/@typescript-eslint/typescript-estree` | Depends on vulnerable `minimatch` |
+| `@typescript-eslint/utils` | Moderate | `6.16.0 - 8.72.2`; `node_modules/@typescript-eslint/utils` | Roll-up through `typescript-estree` |
+| `minimatch` | Moderate | `node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch`; advisory-affected range `>=7.0.0 <11.0.1` | Root advisory GHSA-g3hv-75wg-m249 / CVE-2026-118764 |
+| `typescript-eslint` | Moderate | `<=8.72.2`; `node_modules/typescript-eslint` | Aggregate of TypeScript-ESLint packages above |
 
-## Required next verification
+The reported root advisory describes denial of service via glob-part amplification (CWE-405), with `11.0.1` listed as patched: https://github.com/advisories/GHSA-g3hv-75wg-m249. The JSON does not provide exact installed versions or a complete dependency resolution map. The actual Windows `package-lock.json` was neither uploaded nor committed to the repository (the branch tree contains `tsconfig.json` but no lockfile). Therefore no package upgrade, override or `npm audit fix` has been attempted.
 
-1. Run `npm install` on a network-enabled machine.
-2. Run `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`.
-3. Fix each failure and append the command/output summary here.
-4. Run Playwright or Chrome screenshots at the four required viewports; record artifact paths and findings.
-5. Test nav keyboard/mobile behavior, search with real published fixtures, combined filters, cart persistence, order creation and manual payment verification once those phases exist.
+Safe next steps on Windows, after providing the actual lockfile and fresh audit output:
 
-Do not call a test passed until its command has actually executed successfully.
+```powershell
+npm audit fix --dry-run --json
+npm ls @typescript-eslint/eslint-plugin @typescript-eslint/parser @typescript-eslint/typescript-estree minimatch typescript-eslint
+```
 
-## 2026-11-13 — Catalogue utility tests
+Only apply ordinary `npm audit fix` after checking that all proposed updates stay within compatible semver ranges and rerun the full checks. Do not use `npm audit fix --force` or a blanket `minimatch@11` override without validating parent dependency ranges.
 
-| Check | Command | Result | Notes |
-|---|---|---|---|
-| Catalogue search/filter unit tests | `npm test` | PASS | 6 tests passed: partial single-character Breadboard match, case/whitespace normalization, draft exclusion, combined inclusive category/price filter, ascending price sort and empty autocomplete query. Tests use private in-test fixtures; no fixture product is displayed in the public catalogue. |
+## Security review
 
-The Node test runner uses Node's built-in TypeScript type stripping (`--experimental-strip-types`); this requires Node 22.6+. The project engine declaration and `.nvmrc` reflect Node 22 LTS.
+- No `any`, `@ts-ignore`, lint suppression or weakened `strict` flag was introduced in this follow-up.
+- Payment configuration and order-status API data are runtime-validated before entering typed UI state.
+- No public buying-price, margin, supplier or raw business data was added.
+- No environment secrets, `.env.local` or service-role key was committed.
+- Cart quantities/prices remain non-authoritative; checkout continues to recalculate against the database.
+- Supabase RLS/SQL integration, customer data isolation and payment verification still require staging tests.
+
+## Remaining blockers
+
+1. Obtain and inspect the owner's actual Windows `package-lock.json` and fresh `npm-audit.json` before dependency decisions.
+2. Import these source changes on Windows and run the full typecheck, lint, tests, production build and audit with Node 24/npm 11.
+3. Verify that the owner-reported React hooks errors and warning are gone; no lint run could execute here because ESLint is not installed.
+4. If Next route types still fail, inspect `.next/dev/types/validator.ts`, `.next/dev/types/routes.d.ts`, `.next/types/routes.d.ts`, and the exact post-typegen tsconfig.
+5. Run SQL/pgTAP/RLS/concurrency tests on disposable Supabase and browser/Playwright tests.
 
 
-## 2026-11-13 — Source syntax pass
+## 2026-11-13 dependency-security follow-up
 
-| Check | Method | Result | Notes |
-|---|---|---|---|
-| TypeScript/TSX syntax | TypeScript 5.8.3 `transpileModule` over all files under `src/` | PASS | 22 source files transpiled; 0 syntax diagnostics. This is a syntax check only, not a substitute for a complete project typecheck/build. |
+- The committed Windows lockfile is now present on the remote feature branch. Lockfile v3 resolves `@typescript-eslint/typescript-estree@8.72.2` with nested `minimatch@10.2.6` (declared `^10.2.2`); a separate root `minimatch@3.1.5` serves ESLint plugins and is outside this advisory's affected range.
+- GHSA-g3hv-75wg-m249 is fixed upstream in minimatch `11.0.1`, but 11.x does not satisfy the TypeScript-ESTree `^10.2.2` dependency range. Do not force an override or hand-edit lockfile metadata. No dependency versions were changed. Track the advisory until a stable TypeScript-ESLint release declares a compatible minimatch 11 range.
+- Current stable `@typescript-eslint/typescript-estree` observed on npm is `8.72.2`; `8.72.3-alpha.8` is a prerelease and is not suitable as a production dependency update without explicit prerelease evaluation.
+- Next.js `v16.4.6` source was inspected: `useTypeScriptCli` is an accepted boolean in `config-schema.ts`; `false` selects the TypeScript API worker in `packages/next/src/build/type-check.ts`. `runTypeCheck.ts` explicitly filters `.next/dev/types` during build typechecking. Keep the setting pending owner verification; the warning marker is consistent with the disabled experimental CLI checker, not an unknown config property.
+- GitHub integration can inspect repository files but cannot run npm commands in the owner's Windows environment or produce a full Git bundle from the connected remote. `npm explain`, `npm ls`, `npm audit fix --dry-run`, `npm ci`, typecheck, lint, tests and build were not executed in this session. Preserve the owner's prior Windows PASS report; it is not a rerun for this security follow-up.
