@@ -139,7 +139,7 @@ jobs:
             foreach ($tag in @("latest", "canary")) {
               $output = "npm-typescript-eslint-metadata/$safeName-$tag.json"
               $errorFile = "npm-typescript-eslint-metadata/$safeName-$tag-stderr.txt"
-              npm view "$($package)@$tag" version dependencies peerDependencies engines --json 1> $output 2> $errorFile
+              npm view "$($package)@$tag" version dependencies peerDependencies peerDependenciesMeta engines --json 1> $output 2> $errorFile
               $metadataExitCode = $LASTEXITCODE
               "$package@$tag exit code: $metadataExitCode" | Add-Content -Path npm-typescript-eslint-metadata/index.txt
             }
