@@ -1,0 +1,86 @@
+name: Windows CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - feat/storefront-foundation
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  application-verification:
+    name: Windows application verification
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+
+  dependency-audit:
+    name: Windows dependency audit (reported separately)
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run npm audit and preserve its exact exit code
+        shell: pwsh
+        run: |
+          npm audit --json > npm-audit.json
+          $auditExitCode = $LASTEXITCODE
+          Set-Content -Path npm-audit-exit-code.txt -Value $auditExitCode -NoNewline
+          "npm audit exit code: $auditExitCode" | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          if ($auditExitCode -ne 0) {
+            Write-Host "npm audit reported findings or an audit execution error. The complete JSON report is uploaded separately."
+            exit $auditExitCode
+          }
+
+      - name: Upload complete audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-report
+          path: |
+            npm-audit.json
+            npm-audit-exit-code.txt
+          if-no-files-found: warn
+          retention-days: 30
