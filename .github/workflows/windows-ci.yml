@@ -84,3 +84,46 @@ jobs:
             npm-audit-exit-code.txt
           if-no-files-found: warn
           retention-days: 30
+
+  dependency-fix-dry-run:
+    name: Windows npm audit fix dry-run investigation
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install exact committed lockfile
+        run: npm ci
+
+      - name: Capture complete npm audit fix dry-run output
+        shell: pwsh
+        run: |
+          npm audit fix --dry-run --json 1> npm-audit-fix-dry-run.json 2> npm-audit-fix-dry-run-stderr.txt
+          $dryRunExitCode = $LASTEXITCODE
+          Set-Content -Path npm-audit-fix-dry-run-exit-code.txt -Value $dryRunExitCode -NoNewline
+          "npm audit fix --dry-run --json exit code: $dryRunExitCode" | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          if (Test-Path npm-audit-fix-dry-run.json) {
+            "Dry-run stdout bytes: $((Get-Item npm-audit-fix-dry-run.json).Length)" | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          }
+          if (Test-Path npm-audit-fix-dry-run-stderr.txt) {
+            "Dry-run stderr bytes: $((Get-Item npm-audit-fix-dry-run-stderr.txt).Length)" | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          }
+
+      - name: Upload full dry-run evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-fix-dry-run
+          path: |
+            npm-audit-fix-dry-run.json
+            npm-audit-fix-dry-run-stderr.txt
+            npm-audit-fix-dry-run-exit-code.txt
+          if-no-files-found: warn
+          retention-days: 30
