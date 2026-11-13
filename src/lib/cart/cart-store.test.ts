@@ -31,7 +31,7 @@ test("cart storage handles malformed or missing content", () => {
 });
 
 test("in-memory cart remains usable when localStorage writes are blocked", () => {
-  let stored: string | null = null;
+  const stored: string | null = null;
   const store = createCartStore(() => ({
     getItem: () => stored,
     setItem: () => { throw new Error("storage quota exceeded"); },

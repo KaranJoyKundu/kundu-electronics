@@ -20,7 +20,14 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: { remotePatterns: supabaseImagePattern },
-  experimental: { serverActions: { bodySizeLimit: "9mb" } },
+  experimental: {
+    serverActions: { bodySizeLimit: "9mb" },
+    // Next 16.4.x's CLI checker can load incompatible stale .next/dev route
+    // validators during production builds. Its TypeScript API checker filters
+    // the development type directory; the standalone typecheck uses a dedicated
+    // tsconfig that excludes it explicitly.
+    useTypeScriptCli: false,
+  },
   turbopack: {
     root: projectRoot,
   },

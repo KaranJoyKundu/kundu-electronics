@@ -2,13 +2,12 @@
 
 ## Project identity
 
-- Project: Kundu Electronics
-- Purpose: electronics-components e-commerce store
-- Business location: Khulna, Bangladesh
-- Currency: BDT (৳)
+- Project: Kundu Electronics — electronics-components e-commerce store
+- Location/currency: Khulna, Bangladesh · BDT (৳)
 - Reference: https://www.sparkfun.com/
 - GitHub: https://github.com/KaranJoyKundu/kundu-electronics (private)
 - Active branch: `feat/storefront-foundation`
+- Main must remain unchanged; do not merge without explicit owner approval.
 
 ## Read first
 
@@ -22,20 +21,19 @@
 8. `documentation/PRODUCT_DATA_IMPORT.md`
 9. `documentation/research/README.md`
 
-## Current Git state
+## Current remote state before this verification follow-up
 
-The connected GitHub identity is `KaranJoyKundu`. The repository is private. The remote branch heads last verified through GitHub were:
-
-- `main`: `d88339395e6a1e34f9da904650efd1421480cf00`
-- `feat/storefront-foundation`: `de253ee264ff6af743bb4ca18ae88964b680aa63`
-
-Continue only on `feat/storefront-foundation`. Never merge this work to `main` without explicit approval. Do not force-push. The assistant-side local Git remote is a bundle path; a normal remote push must be done from the owner's Windows clone after importing the new update bundle and fetching GitHub.
+- Connected GitHub identity: `KaranJoyKundu`.
+- Repository visibility: private.
+- Remote `feat/storefront-foundation`: `5949f4cd3152aa595dd6433aaac27a7b85f3a87a`.
+- Remote `main`: `d88339395e6a1e34f9da904650efd1421480cf00`.
+- Continue only on `feat/storefront-foundation`. Never force-push or update `main`.
 
 ## Stack and commands
 
 - Next.js 16.4.6 App Router, React 19.3.0, strict TypeScript, Tailwind CSS 4.3.3.
-- Supabase PostgreSQL/Auth/Storage code exists, but no real/staging Supabase project is connected or verified.
-- Node.js 22.6+ is required by the current test script; owner environment: Node 24.14.0 and npm 11.21.1.
+- Supabase PostgreSQL/Auth/Storage integration is implemented but no real/staging project has been connected or verified.
+- Owner Windows environment: Node 24.14.0, npm 11.21.1, PowerShell 5.1.
 
 ```powershell
 npm ci
@@ -43,32 +41,34 @@ npm run typecheck
 npm run lint
 npm test
 npm run build
+npm audit
 ```
 
-The owner's generated `package-lock.json` is required for `npm ci` and an exact npm audit. It is not present in the current assistant worktree. Attach it or commit it after confirming it contains no secrets. The supplied audit report shows seven moderate indirect alerts, rooted in the nested `minimatch` path; see `documentation/TEST_REPORT.md` before choosing a remediation. Do not run `npm audit fix --force`.
+## Latest verification follow-up
 
-## Current remediation status
+- Payment method parsing now validates and narrows untrusted runtime values to exactly `"bkash" | "nagad"`; malformed/unsupported configuration is discarded.
+- Order status loading uses a pure async request plus an order-id-keyed result state. The effect does not synchronously set state; async completions are guarded by `AbortController` and a monotonically increasing request sequence. Refresh after payment uses the same stale-response guard.
+- Cart product lookup no longer memoizes against a freshly-created empty array; the bounded cart product map is built directly.
+- The immutability test fixture uses `const` for its unchanging stored value.
+- Base `tsconfig.json` includes both Next 16 generated type directories. `tsconfig.typecheck.json` deliberately checks `.next/types` and source while excluding `.next/dev/types`. Production build uses Next's TypeScript API checker (`experimental.useTypeScriptCli: false`) so stale isolated-dev route validators are filtered on the build path.
+- `npm test`: **42 passed, 0 failed** in this assistant runtime (Node 22.16.0 / npm 10.9.2).
+- Targeted strict TypeScript check of the new dependency-free parser modules passed (global TypeScript 5.8.3).
+- Full `npm run typecheck`, `npm run lint`, and `npm run build` could not run here: `next` and `eslint` are not installed, and npm registry DNS returned `EAI_AGAIN`.
+- `npm audit` could not run here (`ENOLOCK`). No `package-lock.json` exists in the downloaded branch, GitHub tree, or uploaded files. The only Library `npm-audit.json` is dated 12 November 2026 and reports seven moderate indirect findings; it is not a fresh audit for the current dependency graph. No dependency changes were made.
 
-- Catalogue/cart/order/search TypeScript and React effect issues have source-level fixes and added tests.
-- `npm test`: 38 passed in the assistant runtime.
-- Targeted strict TS check: passed.
-- Full typecheck, lint and build: **not executed here**, because the runtime has no installed Next/ESLint packages. Run all on Windows after importing the commit.
-- No generated `.next` files were committed or edited.
-- No master workbook, raw business brief, supplier record, buying price, private financial data or `.env.local` is in the project.
+## Privacy and publication rules
 
-## Business data safety
+- Public business settings are centralized in `src/config/business.ts`.
+- Public Product types expose selling prices only. Never add purchase prices, supplier identity or margins to public records.
+- Never commit the raw business brief, master workbook, supplier documents, credentials or `.env.local`.
+- Candidate products remain unapproved; do not invent stock, specifications, photographs, reviews, hours, warranty, delivery charges or payment numbers.
+- bKash/Nagad and delivery configuration stay disabled until owner-approved values are configured.
+- A submitted transaction reference is not payment verification.
+- Never expose Supabase secret/service-role keys in `NEXT_PUBLIC_*`, browser code, Git or chat.
 
-- Public business details live in `src/config/business.ts`.
-- Public Product types expose selling prices only.
-- Product candidate import proposal is outside Git; do not publish until owner approves prices, SKU, stock status, specifications and images.
-- No product is published. Do not fabricate stock, specs, images, ratings, opening hours, warranty, delivery charges or payment numbers.
-- bKash/Nagad and delivery config remain disabled until owner provides approved values.
-- Transaction reference submission is not payment verification.
-- Never place Supabase secret/service-role keys in `NEXT_PUBLIC_*`, source, browser bundles, Git or chat.
+## Exact next action
 
-## Next action
-
-1. Review/import the verification-fix Git bundle into the Windows clone, check `git status`, fetch GitHub, confirm the feature branch can fast-forward, then push normally.
-2. Provide the current Windows `package-lock.json` and audit dry-run output to finish dependency remediation safely.
-3. Run the four checks on Windows and paste any remaining output.
-4. Only then move to disposable Supabase migration/RLS tests and browser checkout testing.
+1. On the owner's Windows clone, import the latest feature-branch Git bundle or pull the committed update, then verify the branch and working tree.
+2. Provide the actual Windows-generated `package-lock.json` and the fresh `npm audit --json` output. They are not available in this worktree and must be inspected before any dependency remediation.
+3. Run the full five-command verification set above on Node 24/npm 11, then share the output if any command fails.
+4. Only after app verification, proceed with local/staging Supabase migrations, RLS/pgTAP and browser checkout testing.

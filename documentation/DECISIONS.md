@@ -113,3 +113,12 @@
 - **Reason:** The advisory's patched minimatch release is 11.0.1, but compatibility must be checked against the actual parent package ranges and lockfile.
 - **Alternatives considered:** Force `minimatch@11` using npm overrides (rejected until compatibility is verified); upgrade unrelated top-level dependencies (rejected).
 - **Consequences:** Obtain the Windows `package-lock.json`, inspect `npm audit fix --dry-run --json`, then use a non-force semver-compatible update and rerun the full suite.
+
+## D-016 — Separate Next 16 development route types from the standalone production typecheck
+
+- **Date:** 2026-11-13
+- **Context:** Next 16 isolated builds emit separate `.next/dev/types` and `.next/types` route maps. When both generated validators are compiled together, the reported `Route` constraint errors can occur if the maps represent different route snapshots.
+- **Decision:** Keep both generated paths in the main Next-managed `tsconfig.json` so Next 16 can maintain its dev/build include convention. Run the explicit typecheck using `tsconfig.typecheck.json`, which includes `.next/types` and application source while excluding `.next/dev`. Set `experimental.useTypeScriptCli: false` for Next 16.4.x production build checking so its TypeScript API path filters development-generated type files.
+- **Reason:** This separates editor/dev typegen conventions from the standalone/production check without editing generated output, disabling strict TypeScript or ignoring errors. The upstream Next issue documents the CLI-path stale-dev-types problem: https://github.com/vercel/next.js/issues/96620.
+- **Alternatives considered:** Permanently removing `.next/dev/types` from the main tsconfig (Next may re-add it); editing generated validator files (non-reproducible); disabling strict checking (rejected).
+- **Consequences:** Verify the typecheck and build using the owner's Next 16.4.6 install and actual `.next/dev` output. If the mismatch persists, inspect both generated route maps and update this decision with direct evidence.

@@ -3,24 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { formatPriceBdt } from "@/lib/format";
 import type { PublicCheckoutConfig } from "@/data/storefront";
-
-type OrderSummary = {
-  orderId: string;
-  orderNumber: string;
-  customerName: string;
-  deliveryZone: string;
-  deliveryCity: string;
-  orderStatus: string;
-  stockStatus: string;
-  paymentStatus: string;
-  fulfilmentStatus: string;
-  subtotalBdt: number;
-  deliveryChargeBdt: number;
-  totalBdt: number;
-  createdAt: string;
-  items: Array<{ sku: string | null; name: string; variant: string | null; unitPriceBdt: number; quantity: number; lineTotalBdt: number }>;
-  payment: { method: "bkash" | "nagad"; status: string; submittedAt: string; rejectionReason?: string | null } | null;
-};
+import { parseOrderSummary, type OrderSummary } from "@/lib/orders/order-summary";
 
 const orderStatusLabel: Record<string, string> = {
   pending_stock_confirmation: "Waiting for stock confirmation",
@@ -29,10 +12,28 @@ const orderStatusLabel: Record<string, string> = {
   cancelled: "Cancelled",
 };
 
+const orderLoadFailure = "This order could not be loaded. Open the order from the same browser where checkout was completed, or contact the shop with your order number.";
+
+type OrderLoadState =
+  | { orderId: string; status: "success"; order: OrderSummary }
+  | { orderId: string; status: "error"; message: string };
+
+async function requestOrderSummary(orderId: string, signal?: AbortSignal): Promise<OrderSummary> {
+  const response = await fetch(`/api/orders/${orderId}`, { cache: "no-store", signal });
+  const payload: unknown = await response.json();
+  const order = parseOrderSummary(payload);
+  if (!response.ok || !order) throw new Error("Order could not be found.");
+  return order;
+}
+
 export function OrderConfirmationClient({ orderId, checkout }: { orderId: string; checkout: PublicCheckoutConfig }) {
-  const [order, setOrder] = useState<OrderSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState("");
+  const [orderLoad, setOrderLoad] = useState<OrderLoadState | null>(null);
+  const requestSequence = useRef(0);
+  const activeRequest = useRef<AbortController | null>(null);
+  const currentOrderLoad = orderLoad?.orderId === orderId ? orderLoad : null;
+  const order = currentOrderLoad?.status === "success" ? currentOrderLoad.order : null;
+  const loadError = currentOrderLoad?.status === "error" ? currentOrderLoad.message : "";
+  const loading = currentOrderLoad === null;
   const [method, setMethod] = useState<"bkash" | "nagad">(checkout.paymentMethods[0]?.method ?? "bkash");
   const [senderPhone, setSenderPhone] = useState("");
   const [transactionReference, setTransactionReference] = useState("");
@@ -41,27 +42,48 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
   const [error, setError] = useState("");
   const idempotency = useRef<{ signature: string; key: string } | null>(null);
 
-  const refreshOrder = useCallback(async (signal?: AbortSignal) => {
+  const refreshOrder = useCallback(async () => {
+    activeRequest.current?.abort();
+    const controller = new AbortController();
+    activeRequest.current = controller;
+    const sequence = ++requestSequence.current;
     try {
-      const response = await fetch(`/api/orders/${orderId}`, { cache: "no-store", signal });
-      const data = await response.json() as { order?: OrderSummary; error?: string };
-      if (!response.ok || !data.order) throw new Error(data.error ?? "Order could not be found.");
-      if (signal?.aborted) return;
-      setOrder(data.order);
-      setLoadError("");
-    } catch (cause: unknown) {
-      if (signal?.aborted || (cause instanceof DOMException && cause.name === "AbortError")) return;
-      setLoadError("This order could not be loaded. Open the order from the same browser where checkout was completed, or contact the shop with your order number.");
-    } finally {
-      if (!signal?.aborted) setLoading(false);
+      const refreshedOrder = await requestOrderSummary(orderId, controller.signal);
+      if (!controller.signal.aborted && sequence === requestSequence.current) {
+        setOrderLoad({ orderId, status: "success", order: refreshedOrder });
+      }
+    } catch {
+      if (!controller.signal.aborted && sequence === requestSequence.current) {
+        setOrderLoad({ orderId, status: "error", message: orderLoadFailure });
+      }
     }
   }, [orderId]);
 
   useEffect(() => {
+    activeRequest.current?.abort();
     const controller = new AbortController();
-    void refreshOrder(controller.signal);
-    return () => controller.abort();
-  }, [refreshOrder]);
+    activeRequest.current = controller;
+    const sequence = ++requestSequence.current;
+
+    void requestOrderSummary(orderId, controller.signal).then(
+      (loadedOrder) => {
+        if (!controller.signal.aborted && sequence === requestSequence.current) {
+          setOrderLoad({ orderId, status: "success", order: loadedOrder });
+        }
+      },
+      () => {
+        if (!controller.signal.aborted && sequence === requestSequence.current) {
+          setOrderLoad({ orderId, status: "error", message: orderLoadFailure });
+        }
+      },
+    );
+
+    return () => {
+      activeRequest.current?.abort();
+      activeRequest.current = null;
+      if (sequence === requestSequence.current) requestSequence.current += 1;
+    };
+  }, [orderId]);
 
   async function submitPayment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

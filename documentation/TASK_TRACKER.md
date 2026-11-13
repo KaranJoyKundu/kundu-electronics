@@ -27,16 +27,19 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 | KE-021 | P1 | Run responsive Playwright and checkout browser tests | Blocked | Requires installed dependencies, browser and configured staging backend; test 1440×900, 1366×768, 768×1024 and 390×844. |
 | KE-022 | P2 | Add CI and Dependabot | Blocked | Add after lockfile is committed; CI should use `npm ci` and run typecheck/lint/test/build. |
 | KE-023 | P2 | Prepare preview deployment | Not started | Requires database, owner configuration, approved products and security/browser sign-off. |
-| KE-024 | P0 | Commit verification remediation on feature branch | Completed | Source and documentation fixes are committed on `feat/storefront-foundation`; use `git log -1` for the current remediation commit. No merge to `main`. |
+| KE-024 | P0 | Commit first verification remediation on feature branch | Completed | Previous commit `5949f4c` is pushed to `feat/storefront-foundation`; no merge to `main`. |
+| KE-025 | P0 | Fix remaining payment-method, order-effect, cart memo and test fixture issues | Needs verification | Source fixes and new parser tests are present; full Windows typecheck/lint still require owner dependency installation. |
+| KE-026 | P0 | Separate Next 16 typegen and strict typecheck inputs | Needs verification | Base config includes both generated paths; `tsconfig.typecheck.json` excludes `.next/dev`; build uses TypeScript API checker. Verify on Windows with existing dev output. |
+| KE-027 | P0 | Inspect actual Windows lockfile and refresh npm audit | Blocked | No package-lock is available in the uploaded artifacts, current GitHub tree or assistant worktree. Do not change dependencies until supplied. |
+| KE-028 | P0 | Commit remaining Windows verification source fixes | Completed locally; push pending | Commit is created on `feat/storefront-foundation` after the 42-test suite, strict parser check, syntax scan and diff check; full Next/ESLint/audit commands remain blocked in this runtime. |
 
-## Verification remediation task details
+## Latest verification remediation task details
 
-- TypeScript API errors: source-level fix uses explicit runtime parsing from `unknown`; full project typecheck remains unverified here.
-- Generated Next route type errors: likely stale `.next/dev/types` inclusion under isolated dev build; generated files were not edited. `next typegen` plus exclude has been configured; verify on Windows.
-- React effects: state now derives from keyed async results or external cart store; no lint suppression added.
-- Accessibility: input role explicitly set to combobox with listbox popup semantics.
-- npm audit: root advisory is `minimatch` GHSA-g3hv-75wg-m249 / CVE-2026-118764; all seven flags are indirect roll-ups. Exact resolved versions and compatible fix require the lockfile.
+- Payment config parser accepts only supported `bkash`/`nagad` values and drops malformed entries; two tests added.
+- Order confirmation loading is request-keyed and derived from state. Async completion handlers update state only after the network request; AbortController plus sequence guards prevent stale results. Order response parser tests added.
+- Cart page no longer memoizes a Map against a newly-created conditional products array; storage fixture is immutable `const`.
+- Base Next 16 config includes both generated route directories; standalone typecheck config excludes `.next/dev`. Build uses the TypeScript API checker to filter stale dev validators. Full Windows verification remains pending.
 
 ## Current session handoff
 
-13 November 2026: source-level TypeScript and React hook/accessibility fixes, typed API boundary parsers, cart store hydration/persistence, and regression tests are committed on `feat/storefront-foundation`. `npm test`: 38 passed, 0 failed. Targeted strict TypeScript and the 74-file transpile-only syntax scan passed. Full Next typecheck/lint/build are blocked in this runtime because dependencies are absent; `npm audit` is blocked by the missing lockfile. Import the update bundle and run the four full checks on the Windows clone. See `documentation/TYPECHECK_LINT_AUDIT_REMEDIATION.md` and `documentation/TEST_REPORT.md`.
+13 November 2026 follow-up after remote base `5949f4c`: payment method narrowing, order confirmation request-state refactor, cart product-map memo warning, and the const test fixture are fixed in source. Added payment configuration/order summary parser tests; `npm test` reports 42 passed. The strict parser TypeScript check passes and 78 TS/TSX files have zero syntax diagnostics. `git diff --check` passes. Full typecheck/lint/build are blocked here because Next/ESLint dependencies are not installed; `npm audit` is blocked by the absent Windows lockfile. The current audit document in Library is dated 12 November and is not a fresh report for this branch state. Import the follow-up bundle and run all five commands on the Windows clone. See `documentation/TEST_REPORT.md`.

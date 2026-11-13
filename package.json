@@ -11,8 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "next typegen && tsc --noEmit --incremental false",
-    "test": "node --experimental-strip-types --test src/lib/catalog/*.test.ts src/lib/checkout/*.test.ts src/lib/security/*.test.ts src/lib/cart/*.test.ts src/lib/supabase/*.test.ts"
+    "typecheck": "next typegen && tsc --project tsconfig.typecheck.json --noEmit --incremental false",
+    "test": "node --experimental-strip-types --test src/lib/catalog/*.test.ts src/lib/checkout/*.test.ts src/lib/orders/*.test.ts src/lib/security/*.test.ts src/lib/cart/*.test.ts src/lib/supabase/*.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",

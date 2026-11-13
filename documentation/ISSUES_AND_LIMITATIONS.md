@@ -47,3 +47,20 @@ Never commit raw internal business documents or cost/supplier records. Never exp
 - The generated `.next/dev/types/validator.ts` file is not edited. `tsconfig` excludes `.next/dev` and the project typecheck script generates production route types before `tsc`.
 - Unit tests now cover cart persisted snapshot restoration and updates, in addition to query/response validation.
 - Assistant-runtime `npm run typecheck`, `npm run lint`, and `npm run build` each exit because Next/ESLint dependencies are absent; `npm audit --json` exits `ENOLOCK` because there is no package lockfile. The supplied audit report is analysed in `TEST_REPORT.md`.
+
+## 2026-11-13 follow-up status after the reported 1 TS / 2 lint / 1 warning failures
+
+- The payment-method string is now parsed by a typed runtime validator that only accepts the literal union `"bkash" | "nagad"`; malformed values cannot pass through as an arbitrary string.
+- Order confirmation was refactored so its effect starts an asynchronous request and updates result state only in promise completion handlers. Request cancellation and stale-response checks are retained; no synchronous loading setter runs inside the effect.
+- The cart `useMemo` warning is addressed by removing memoization for the inexpensive product-by-ID map; the product list identity no longer invalidates a memo hook every render.
+- The unchanging cart test storage fixture is `const`.
+- `tsconfig.json` now matches Next 16's dual generated-type include convention; `tsconfig.typecheck.json` excludes `.next/dev`, and `next.config.ts` uses the TypeScript API build checker. This config needs validation on the owner's Windows machine with the generated `.next/dev/types/validator.ts` present.
+- The assistant runtime ran 42 unit tests successfully and a strict tsc check of the new payment/order parsers. Full Next typecheck, lint and build were attempted but blocked by missing `node_modules`; npm registry DNS was unavailable. These are not passes.
+- `npm audit` was attempted and returned `ENOLOCK`. There is no actual owner `package-lock.json` in the assistant worktree, supplied files or GitHub branch. The previously supplied audit report remains seven moderate indirect TypeScript-ESLint/minimatch findings. No dependency remediation has been attempted.
+
+### Required next evidence
+
+1. Owner's actual Windows `package-lock.json` from the install that produced 374 audited packages.
+2. Fresh `npm-audit.json` generated from that lockfile.
+3. Output from all five commands on Node 24.14.0/npm 11.21.1: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, `npm audit`.
+4. If route validator still fails: `.next/dev/types/validator.ts`, `.next/dev/types/routes.d.ts`, `.next/types/routes.d.ts`, and the exact post-typegen `tsconfig.json`.

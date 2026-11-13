@@ -6,6 +6,8 @@
 
 ## Scope and evidence boundary
 
+**Historical note:** The initial sections below describe the remediation at the `de253ee`/`5949f4c` stages. The later addendum, added for the Windows rerun after `5949f4c`, supersedes any earlier TypeScript configuration summary. The current base `tsconfig.json` includes both Next 16 generated route-type folders; the dedicated strict typecheck project excludes `.next/dev`.
+
 The owner supplied the failing Windows checks and an `npm-audit.json` report. The repository snapshot available in this execution contains `package.json` but no `package-lock.json` or `node_modules`. The npm registry is not resolvable from this runtime (`EAI_AGAIN registry.npmjs.org`). Consequently, source-level changes and dependency-free checks are performed here, but the complete Next/ESLint command suite cannot be truthfully marked as passing.
 
 ## TypeScript findings and changes
@@ -90,3 +92,19 @@ The owner-reported Windows results (23 tests passing before these fixes) are not
 - `src/lib/catalog/cart-pricing.ts` — use relative type-only import for standalone strict verification.
 - `src/data/storefront.ts` — narrow payment method literals correctly.
 - Project continuity documents — status and blockers updated after this remediation.
+
+## Addendum — Follow-up after the Windows rerun (13 November 2026)
+
+The owner reported one remaining payment-method type error, one order-confirmation `react-hooks/set-state-in-effect` error, a cart test `prefer-const` error, and an exhaustive-deps warning in the cart page.
+
+This follow-up changes:
+
+- `src/data/storefront.ts` now delegates to `parsePublicPaymentMethods`, which returns only typed `bkash`/`nagad` configuration after checking non-empty receiving number and instructions.
+- `src/components/orders/order-confirmation-client.tsx` now uses a pure async request helper. The effect does not call a stateful callback synchronously; its promise handlers set an order-id-keyed result after the network completion. AbortController and sequence references prevent stale results. Payment-triggered refresh reuses the same sequence protection.
+- `src/lib/orders/order-summary.ts` validates the public order response from `unknown`; tests cover valid snapshots, rejection reasons, unsupported methods, unsafe amounts and invalid quantities.
+- `src/components/cart/cart-page-client.tsx` builds its small product map directly instead of useMemo against an unstable conditional products array.
+- `src/lib/cart/cart-store.test.ts` uses `const` for the immutable test storage string.
+
+Next 16 route handling was also refined. The main `tsconfig.json` keeps both `.next/types/**/*.ts` and `.next/dev/types/**/*.ts` because Next 16 automatically maintains both for isolated dev builds. The new `tsconfig.typecheck.json` excludes `.next/dev` from the explicit typecheck and `npm run typecheck` invokes `next typegen` before TypeScript. `next.config.ts` sets `experimental.useTypeScriptCli: false` for Next 16.4.x so the production build uses the TypeScript API checker that filters dev-generated route files. This is based on upstream issue #96620 and requires Windows verification on the exact installed Next version.
+
+Latest assistant-runtime test: 42 passed, 0 failed. The focused strict TypeScript check for the new parsers passed. Full `npm run typecheck`, `npm run lint`, `npm run build` and `npm audit` were executed but blocked because this worktree has no `node_modules` or `package-lock.json`; npm registry resolution also returned `EAI_AGAIN`. No package versions were changed. The supplied prior audit JSON still reports seven moderate indirect findings; dependency remediation remains blocked pending the owner's actual Windows lockfile and current audit JSON.

@@ -1,6 +1,7 @@
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import type { Category, Product, ProductAvailability, ProductVariant } from "@/lib/catalog/types";
 import { getPublishedCategories, getPublishedProducts } from "@/data/catalogue";
+import { parsePublicPaymentMethods, type ConfiguredPaymentMethod } from "@/lib/checkout/payment-methods";
 
 const availabilityValues = new Set<ProductAvailability>([
   "unknown", "in_stock", "low_stock", "out_of_stock", "availability_on_request",
@@ -170,7 +171,7 @@ export async function getStorefrontProductDetails(productId: string) {
 export interface PublicCheckoutConfig {
   checkoutEnabled: boolean;
   deliveryZones: Array<{ id: string; code: string; name: string; description: string | null; deliveryChargeBdt: number }>;
-  paymentMethods: Array<{ method: "bkash" | "nagad"; receivingNumber: string; instructions: string }>;
+  paymentMethods: ConfiguredPaymentMethod[];
 }
 
 export async function getPublicCheckoutConfig(): Promise<PublicCheckoutConfig> {
@@ -188,12 +189,6 @@ export async function getPublicCheckoutConfig(): Promise<PublicCheckoutConfig> {
     if (typeof row.id !== "string" || typeof row.code !== "string" || typeof row.name !== "string" || !Number.isSafeInteger(charge) || charge < 0) return [];
     return [{ id: row.id, code: row.code, name: row.name, description: typeof row.description === "string" ? row.description : null, deliveryChargeBdt: charge }];
   }) : [];
-  const paymentMethods = Array.isArray(config.paymentMethods) ? config.paymentMethods.flatMap((method) => {
-    if (!method || typeof method !== "object") return [];
-    const row = method as Record<string, unknown>;
-    const paymentMethod = row.method;
-    if ((paymentMethod !== "bkash" && paymentMethod !== "nagad") || typeof row.receivingNumber !== "string" || typeof row.instructions !== "string") return [];
-    return [{ method: paymentMethod, receivingNumber: row.receivingNumber, instructions: row.instructions }];
-  }) : [];
+  const paymentMethods = parsePublicPaymentMethods(config.paymentMethods);
   return { checkoutEnabled: config.checkoutEnabled === true, deliveryZones, paymentMethods };
 }

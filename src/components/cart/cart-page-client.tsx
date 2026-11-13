@@ -72,7 +72,8 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
   const products = productIdsKey && currentProductLoad?.status === "success" ? currentProductLoad.products : [];
   const productsLoading = productIdsKey.length > 0 && currentProductLoad === null;
   const productsFailed = productIdsKey.length > 0 && currentProductLoad?.status === "error";
-  const productById = useMemo(() => new Map(products.map((product) => [product.id, product])), [products]);
+  // Cart lines are few; avoid memoizing against a freshly-created empty products array.
+  const productById = new Map(products.map((product) => [product.id, product]));
   const cartRows = lines.map((line) => {
     const product = productById.get(line.productId) ?? null;
     const price = product ? resolveCartLinePrice(product.priceBdt, product.variants, line.variantId) : null;
