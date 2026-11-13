@@ -116,6 +116,34 @@ jobs:
             "Dry-run stderr bytes: $((Get-Item npm-audit-fix-dry-run-stderr.txt).Length)" | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
 
+      - name: Capture stable and canary TypeScript-ESLint registry metadata
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path npm-typescript-eslint-metadata | Out-Null
+          $packages = @(
+            "typescript-eslint",
+            "@typescript-eslint/eslint-plugin",
+            "@typescript-eslint/parser",
+            "@typescript-eslint/project-service",
+            "@typescript-eslint/scope-manager",
+            "@typescript-eslint/tsconfig-utils",
+            "@typescript-eslint/type-utils",
+            "@typescript-eslint/types",
+            "@typescript-eslint/typescript-estree",
+            "@typescript-eslint/utils",
+            "@typescript-eslint/visitor-keys"
+          )
+          foreach ($package in $packages) {
+            $safeName = $package.Replace("@", "").Replace("/", "-")
+            foreach ($tag in @("latest", "canary")) {
+              $output = "npm-typescript-eslint-metadata/$safeName-$tag.json"
+              $errorFile = "npm-typescript-eslint-metadata/$safeName-$tag-stderr.txt"
+              npm view "$($package)@$tag" version dependencies peerDependencies engines --json 1> $output 2> $errorFile
+              $metadataExitCode = $LASTEXITCODE
+              "$package@$tag exit code: $metadataExitCode" | Add-Content -Path npm-typescript-eslint-metadata/index.txt
+            }
+          }
+
       - name: Upload full dry-run evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -125,5 +153,6 @@ jobs:
             npm-audit-fix-dry-run.json
             npm-audit-fix-dry-run-stderr.txt
             npm-audit-fix-dry-run-exit-code.txt
+            npm-typescript-eslint-metadata/
           if-no-files-found: warn
           retention-days: 30
