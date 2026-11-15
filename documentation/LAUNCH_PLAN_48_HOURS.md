@@ -57,8 +57,9 @@ Acceptance:
 Do not test the first migration directly against production.
 
 - Create a Supabase project for staging and record its project URL and publishable key.
-- Review supabase/migrations/0001_initial_schema.sql, then apply it to the disposable/staging database.
-- Run supabase/tests/security_contract.test.sql with the Supabase CLI/pgTAP workflow. It contains 23 assertions.
+- This repository currently does not include supabase/config.toml. To use the local Supabase CLI workflow, install the Supabase CLI, run supabase init from the repository root, review the generated config.toml and commit it. The init command creates local project configuration; it does not itself connect to or modify a hosted project.
+- Start the local Supabase stack with Docker available, review supabase/migrations/0001_initial_schema.sql, and apply the migration to a disposable local/staging database. Never point local test/reset commands at production.
+- Run supabase/tests/security_contract.test.sql with the Supabase CLI/pgTAP workflow (for example, supabase test db after the local database is running). It contains 23 assertions.
 - Also verify real anonymous, customer, staff and admin sessions. Confirm that customers cannot read other customers’ orders, inventory history, payment submissions or audit data.
 - Upload a draft product image and a published product image. Verify that public access works only for published product paths and staff can preview drafts.
 - Fix any SQL, RLS, Storage or Auth failure before proceeding.
