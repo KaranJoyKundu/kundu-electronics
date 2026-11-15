@@ -1,102 +1,83 @@
 # PROJECT_STATE — Kundu Electronics
 
-**Last updated:** 13 November 2026 (Asia/Dhaka)
-**Active branch:** `feat/storefront-foundation`
-**Remote feature base at start of this follow-up:** `5949f4cd3152aa595dd6433aaac27a7b85f3a87a`
-**Remote main:** `d88339395e6a1e34f9da904650efd1421480cf00`
-**Repository:** `KaranJoyKundu/kundu-electronics` (private)
+**Last reviewed:** 15 November 2026 (Asia/Dhaka)  
+**Repository:** KaranJoyKundu/kundu-electronics (private)  
+**Application branch:** feat/storefront-foundation  
+**Documentation branch:** docs/launch-readiness-48h
 
 ## Objective
 
-Deliver a production-capable Kundu Electronics electronics-components store in Khulna, Bangladesh. Prices are BDT (৳). SparkFun informs information architecture and shopping patterns; the shop's own brand and verified business information take precedence.
+Deliver a reliable electronics-components storefront for Kundu Electronics in Khulna, Bangladesh, using customer-facing selling prices in BDT. The first release should prioritize a correct catalogue, product search, cart, clear contact routes and safe manual ordering. Advanced commerce is not considered live until its database, payment and delivery paths pass real-environment tests.
 
 ## Architecture
 
-- Next.js 16.4.6 App Router, React 19.3.0, strict TypeScript, Tailwind CSS 4.3.3.
-- Modular monolith with Supabase PostgreSQL/Auth/Storage integration.
-- Separate browser, public-server and privileged server Supabase clients; privileged operations remain server-only.
-- Next.js 16 `src/proxy.ts` handles authentication cookie refresh.
-- Public business configuration is centralized in `src/config/business.ts`.
-- Public product records contain selling prices only; purchase costs, supplier data and margins remain private and are not modeled in the public type.
-- Catalogue queries use server-side pagination and database search; products remain unpublished until approved.
-- Authoritative money calculations use integer BDT in PostgreSQL `BIGINT`, not floating point.
+- Next.js 16 App Router and route handlers, React 19, strict TypeScript and Tailwind CSS 4.
+- Modular monolith: Next.js application plus Supabase PostgreSQL, Auth and Storage.
+- Separate browser, public-server, cookie-backed server and privileged server Supabase clients.
+- Next.js 16 src/proxy.ts refreshes Supabase Auth cookies.
+- Public product records expose selling price only; private purchase costs, supplier details and margins are excluded.
+- Catalogue search and listing use database RPCs, server-side pagination and validated query/response boundaries.
+- Checkout recomputes price, delivery and stock server-side; client cart totals are display-only.
+- Product images are stored in a private Supabase Storage bucket and served through signed URLs.
 
-## Repository and branch guardrails
+## Implemented application surface
 
-The actual repository is `KaranJoyKundu/kundu-electronics`, private, with the connected GitHub account having admin/push access. Work only on `feat/storefront-foundation`. Keep `main` at `d883393...`; no merge or force-push is authorized. At the start of this follow-up the remote feature head was `5949f4c...` and matched the available Git bundle. The current follow-up is being prepared on top of that commit; use `git log -1` for its final SHA. The assistant container has no Windows working tree and no remote shell network access.
+- Responsive home, shop, product details, cart, about, contact, support and shipping/returns routes.
+- Search, category and price filters, sorting, one-character search and bounded listing pagination.
+- Product variants/options and price overrides. Inventory is intentionally tracked at parent-product level.
+- Browser cart persistence and cart-product refresh from the server.
+- Admin route foundations for catalogue, category, variant, image, inventory, order, payment-verification and settings management.
+- Checkout API, guest order access, manual payment submission and order-status UI.
+- Database migration and a 23-assertion pgTAP security-contract file.
 
-## Implemented foundation
+Implementation does not equal production verification. No production integration should be claimed until tested against the intended Supabase project.
 
-- Responsive storefront and routes for home, shop, products, cart, about, contact, support and shipping/returns.
-- Centralized public business settings with verified contact details; missing facts remain unset.
-- Supabase browser/server/public/admin client boundaries, auth proxy, admin/staff authorization and protected admin foundations.
-- Product/category/variant and image management; product images use a private Storage bucket.
-- Database-backed catalogue search, one-character autocomplete, server-side pagination and filters.
-- Cart external store using `useSyncExternalStore`, persisted browser cart restore/write and blocked-storage fallback.
-- Server checkout/order/payment APIs with authoritative DB price and delivery calculation, idempotency and guest-order access.
-- Inventory states distinguish unknown, tracked and untracked stock; stock movements are auditable.
-- Manual bKash/Nagad submission and authorized verification states exist but payments and delivery remain unconfigured.
-- All SparkFun research documents are preserved under `documentation/research/`.
+## Current release status
 
-## Latest Windows-verification follow-up changes
+| Workstream | Status | Evidence / remaining proof |
+|---|---|---|
+| Storefront UI and routes | Implemented; browser QA pending | Source exists; test at desktop/tablet/mobile sizes |
+| Search, filters and cart | Implemented; browser QA pending | Unit tests exist; test real Supabase catalogue and browser persistence |
+| Unit tests | 42 passed in the last documented assistant-runtime run | Rerun on the current Windows clone |
+| Typecheck, lint and build | Needs current verification | Run on Node 24 after npm ci |
+| Dependency audit | Needs fresh verification | package-lock.json is committed on the feature branch; run npm audit on it |
+| Supabase project | Not connected/verified | Create staging and production projects or a deliberate equivalent |
+| Database migration | Written, not applied to a verified project | Apply to disposable/staging project and inspect errors |
+| RLS, Storage and pgTAP | Not verified against a live database | Run pgTAP and role-based checks |
+| Admin authentication/roles | Code exists; integration pending | Provision one owner admin; test anonymous/customer/staff/admin access |
+| Product catalogue | Empty public catalogue | Approve and publish a first small batch of products |
+| Delivery and payment | Unconfigured; payment methods disabled | Owner must supply exact delivery zones/charges and payment details/instructions |
+| Checkout/order flow | Implemented behind configuration gates | Test order creation, idempotency, status, manual payment submission and staff verification |
+| Hosting/domain | Not verified in this repository review | Create Preview deployment, confirm production branch, domain and HTTPS |
 
-### Source changes
+## Git state and release safety
 
-- Added `src/lib/checkout/payment-methods.ts`: parses public RPC configuration from `unknown` and only returns `bkash`/`nagad` entries with non-empty receiving details/instructions. `PublicCheckoutConfig` now uses this typed structure.
-- Added tests for supported/unsupported/malformed payment configuration.
-- Added `src/lib/orders/order-summary.ts`: validates the order-status API payload before it enters the client state, including safe integer BDT values, order lines and payment status/rejection information.
-- Refactored `OrderConfirmationClient`: order loads are keyed by `orderId`; no loading setter is called synchronously from the effect. Fetch completions are guarded by `AbortController` and request sequence. Manual refresh after payment uses the same guard.
-- Removed the unstable `products` dependency from the cart page's `useMemo` by building the small product-id map directly.
-- Changed the non-reassigned cart test `stored` fixture from `let` to `const`.
+As of the 15 November 2026 repository review, feat/storefront-foundation was 18 commits ahead of main and 1 commit behind it. The branches have diverged. Keep main unchanged while verifying the feature branch; reconcile the main-only commit and use a reviewed PR before merging. The current documentation update is isolated in docs/launch-readiness-48h and is intended to merge into feat/storefront-foundation, not main.
 
-### Next.js route types
+## Business data state
 
-- `tsconfig.json` now includes both `.next/types/**/*.ts` and `.next/dev/types/**/*.ts`, matching the Next 16 isolated-build template and avoiding Next rewriting the base config back and forth.
-- `tsconfig.typecheck.json` narrows standalone typechecking to `.next/types` and source files while excluding `.next/dev`, preventing the two independently generated route maps from being typechecked together.
-- `npm run typecheck` runs `next typegen` then `tsc --project tsconfig.typecheck.json --noEmit --incremental false`.
-- `next.config.ts` sets `experimental.useTypeScriptCli: false` for Next 16.4.x so the built-in TypeScript API build checker can filter stale `.next/dev/types` validators. This is a version-specific workaround informed by the upstream Next.js issue; it must be verified on the owner's exact Windows install before considering it final. See https://github.com/vercel/next.js/issues/96620 and https://github.com/vercel/next.js/blob/canary/packages/next/src/lib/typescript/runTypeCheck.ts.
-- No generated `.next` file was edited.
+- src/config/business.ts contains the current public contact configuration. The owner must confirm that the displayed details and social destination are correct before launch.
+- Opening hours are null.
+- Candidate catalogue material is not a published catalogue. The import notes identify 74 component/kit candidates, including 8 price cases needing clarification; no candidate should be assumed approved.
+- No stock quantity, technical specification, image licence, delivery fee, warranty or return policy should be invented.
+- Public product models must never contain purchase price, supplier or margin data.
 
-## Verification results in this assistant runtime
+## Security and operational rules
 
-- `npm test`: **42 passed, 0 failed**. Includes the previous 38 tests plus payment configuration and order-summary parser tests.
-- Strict targeted TypeScript check for `payment-methods.ts` and `order-summary.ts`: **passed** with global TypeScript 5.8.3.
-- `git diff --check`: to be rerun after documentation update and before commit.
-- Full `npm run typecheck`: blocked (`next: not found`; no `node_modules`).
-- Full `npm run lint`: blocked (`eslint: not found`; no `node_modules`).
-- `npm run build`: blocked (`next: not found`; no `node_modules`).
-- `npm audit`: blocked with `ENOLOCK`; no `package-lock.json` exists in the uploaded project, GitHub branch tree or current worktree.
-- npm registry test: `EAI_AGAIN registry.npmjs.org`; dependencies could not be installed here.
-- Supabase SQL/pgTAP, real RLS and browser/Playwright checks remain unexecuted.
+- Keep SUPABASE_SECRET_KEY and APP_HMAC_SECRET server-only.
+- Do not enable public registration or let users self-assign admin/staff roles.
+- Verify RLS for anonymous, customer, staff and admin roles.
+- Do not accept orders until the migration, stock rules, delivery settings and manual payment configuration are validated.
+- Customer-entered bKash/Nagad transaction references remain pending until authorized staff verify the actual transfer.
+- Do not log customer addresses or full payment references.
 
-The owner's last Windows test report (before this follow-up) identified 1 TypeScript error, 2 lint errors and 1 warning, 38 tests passing, and a production build that stopped during TS checking. Those are not current test results for the new source. The owner must rerun all five commands on Windows.
+## Immediate next steps
 
-## Dependency audit state
+1. On Windows, update the working clone safely to feat/storefront-foundation and run npm ci.
+2. Run typecheck, lint, unit tests, production build and a fresh npm audit; fix failures without weakening type safety or forcing incompatible package upgrades.
+3. Create a disposable/staging Supabase environment, apply the migration and run pgTAP plus role/Storage checks.
+4. Provision one owner admin, add a first owner-approved product batch and test image uploads.
+5. Configure exact delivery/payment settings, test the order and manual payment lifecycle, and only then enable checkout.
+6. Deploy a Preview, complete responsive/browser QA, reconcile branch divergence and release through an approved production branch.
 
-The available supplied `npm-audit.json` is UTF-16LE and reports 7 moderate, 0 low, 0 high, 0 critical findings across 447 dependencies. The findings are indirect and cascade through TypeScript-ESLint packages to a nested `minimatch` under `@typescript-eslint/typescript-estree`. The report marks `fixAvailable: true` but contains no exact package resolution map. Since the actual Windows `package-lock.json` was not supplied and is not in GitHub, **no dependency upgrade, override or audit fix was applied**. Obtain the actual lockfile and a new audit report before choosing a fix. Do not use `npm audit fix --force`.
-
-## Business data status
-
-The consolidated business brief is not committed. A private candidate import proposal exists outside Git; all candidate products remain unapproved. Missing stock, specifications and photos are not fabricated. Original inventory/pricing and robot-price source documents are still required. Do not expose buying prices, supplier identity or private financial data.
-
-## Blockers and next steps
-
-1. Import/pull this feature-branch follow-up on Windows; verify no uncommitted owner edits are overwritten.
-2. Supply the actual Windows `package-lock.json` and fresh `npm audit --json`; run non-force dry-run remediation only after inspecting the complete lock graph.
-3. Run `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, and `npm audit` on the owner's Node 24.14/npm 11.21 environment.
-4. If the generated route type error persists, inspect the actual `.next/dev/types/validator.ts`, `.next/dev/types/routes.d.ts` and `.next/types/routes.d.ts`; do not edit generated files.
-5. Once verification is green, run SQL/pgTAP and RLS/concurrency tests on disposable Supabase, then browser checkout and responsive tests.
-6. Configure approved delivery and bKash/Nagad values before enabling checkout.
-
-## Guardrails
-
-Never publish supplier identity, purchase prices, profit margin, master workbook data, private stock notes, credentials or customer records. Never invent stock, specifications, images, reviews, delivery charges, opening hours, warranty promises or payment numbers. A payment reference is not proof of payment. Keep the checkout disabled until backend and owner configuration are verified.
-
-
-## 2026-11-13 dependency-security follow-up
-
-- The committed Windows lockfile is now present on the remote feature branch. Lockfile v3 resolves `@typescript-eslint/typescript-estree@8.72.2` with nested `minimatch@10.2.6` (declared `^10.2.2`); a separate root `minimatch@3.1.5` serves ESLint plugins and is outside this advisory's affected range.
-- GHSA-g3hv-75wg-m249 is fixed upstream in minimatch `11.0.1`, but 11.x does not satisfy the TypeScript-ESTree `^10.2.2` dependency range. Do not force an override or hand-edit lockfile metadata. No dependency versions were changed. Track the advisory until a stable TypeScript-ESLint release declares a compatible minimatch 11 range.
-- Current stable `@typescript-eslint/typescript-estree` observed on npm is `8.72.2`; `8.72.3-alpha.8` is a prerelease and is not suitable as a production dependency update without explicit prerelease evaluation.
-- Next.js `v16.4.6` source was inspected: `useTypeScriptCli` is an accepted boolean in `config-schema.ts`; `false` selects the TypeScript API worker in `packages/next/src/build/type-check.ts`. `runTypeCheck.ts` explicitly filters `.next/dev/types` during build typechecking. Keep the setting pending owner verification; the warning marker is consistent with the disabled experimental CLI checker, not an unknown config property.
-- GitHub integration can inspect repository files but cannot run npm commands in the owner's Windows environment or produce a full Git bundle from the connected remote. `npm explain`, `npm ls`, `npm audit fix --dry-run`, `npm ci`, typecheck, lint, tests and build were not executed in this session. Preserve the owner's prior Windows PASS report; it is not a rerun for this security follow-up.
+See documentation/LAUNCH_PLAN_48_HOURS.md for the time-boxed release checklist.

@@ -1,75 +1,53 @@
 # ISSUES AND LIMITATIONS
 
-## Blocking integration work
+**Last reviewed:** 15 November 2026
 
-1. No Supabase project or local Postgres/Supabase runtime is connected. The migration, RLS, Storage policies and RPCs are draft code until applied and tested.
-2. No `package-lock.json` exists in the assistant worktree. The owner reports `npm install` completed with 374 packages; its generated lockfile has not been supplied. Without it, `npm ci` and exact dependency-version auditing are not possible.
-3. The supplied audit JSON reports seven moderate indirect alerts: `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser`, `@typescript-eslint/type-utils`, `@typescript-eslint/typescript-estree`, `@typescript-eslint/utils`, `minimatch`, and `typescript-eslint`. The root advisory shown is `minimatch` GHSA-g3hv-75wg-m249 / CVE-2026-118764 (CWE-405), at `node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch`; affected versions are `>=7.0.0 <11.0.1`, patched release 11.0.1. Exact installed versions and compatible remediation require the lockfile. Do not force-upgrade or add a major override blindly.
-4. Source-level fixes for the reported implicit-any, payment-method, generated-route-type and React effect/accessibility errors have been applied. Full Next typecheck, ESLint and production build could not be run in the assistant runtime because `node_modules` is absent; user must verify on Windows with the lockfile.
-5. SQL/pgTAP tests and concurrency tests have not run. The security-contract file has 23 assertions but needs actual database execution and row/role fixtures.
-6. No browser/Playwright screenshots or visual QA have been run after the expanded changes.
-7. The assistant-side local `origin` is a bundle path, not the GitHub remote. GitHub refs were verified through the connected integration: `main=d883393` and `feat/storefront-foundation=de253ee`. The verification-fix commit is available in the local feature-branch Git bundle. Import it into the Windows clone, fetch GitHub, verify fast-forward ancestry and push normally. Never force-push.
+This file describes the current feature-branch state. Code existing in the repository is not proof that a live integration has been configured or tested.
 
-## Business data gaps
+## Production blockers
 
-- Original inventory, component price analysis and robot pricing source files referenced by the brief are missing.
-- Candidate product records have no confirmed stock quantities or verified image/specification coverage.
-- Eight candidate price rows require owner clarification due to alternatives, estimate or range.
-- No product has been approved or published.
-- Owner has not provided approved product photos and image rights/permissions.
+1. **Supabase is not verified.** No connected staging or production project is documented. The application has no confirmed live URL, publishable key or server secret.
+2. **The migration is unapplied.** supabase/migrations/0001_initial_schema.sql is present but has not been applied to a verified database. Review and test it before production use.
+3. **RLS and Storage need real tests.** supabase/tests/security_contract.test.sql contains 23 pgTAP assertions. The test file has not been run against the current migration in a disposable database. Role-specific and signed-image access tests remain necessary.
+4. **The public catalogue is empty.** src/data/catalogue.ts intentionally exports empty product/category arrays. The database-backed catalogue also needs approved rows. Candidate product information is not publication approval.
+5. **Product records need owner approval.** The import notes describe 74 preliminary component/kit candidates; 8 price cases require clarification. Verify current prices, stock, descriptions, product identifiers and image provenance before publishing.
+6. **Delivery is not configured.** No enabled delivery zones, exact charges or approved delivery policy are present.
+7. **Manual payment is disabled.** bKash/Nagad receiving numbers and customer instructions are null/disabled. There is no automatic gateway verification. Submitted references stay pending until human verification.
+8. **Admin integration is unverified.** Login and protected admin pages are implemented, but a real Auth user, admin role and role boundaries have not been verified against Supabase.
+9. **End-to-end testing is outstanding.** Checkout concurrency, stock reservation, idempotency, order access tokens, payment submission, staff verification and customer/role isolation need staging checks.
+10. **Production hosting is not confirmed.** No validated deployment, environment setup, domain or HTTPS smoke test was established during this review.
 
-## Store-operation configuration gaps
+## Build and dependency verification
 
-- Supabase URL, publishable key, server secret and APP_HMAC_SECRET are not configured.
-- bKash and Nagad are disabled; receiving numbers and customer instructions are null.
-- Delivery zones/charges are not configured; checkout defaults disabled.
-- Reservation TTL is null. No automatic reservation expiry is assumed; staff/manual expiry behavior must be reviewed and owner policy agreed.
-- Opening hours, delivery SLA, returns/exchange/warranty policies remain unavailable and should not be invented.
+- package-lock.json exists on feat/storefront-foundation. Use npm ci for a reproducible install.
+- A prior assistant-runtime unit-test run reported 42 passed, 0 failed. Rerun on the current Windows clone.
+- Full current typecheck, lint and production build have not been verified on the owner’s Node 24 environment after the latest changes.
+- The previous supplied dependency report listed seven moderate indirect TypeScript-ESLint/minimatch findings. That report is historical, not a fresh audit of the current lockfile. Run npm audit and inspect npm audit fix --dry-run before deciding whether to update packages.
+- Never use npm audit fix --force or force a major transitive dependency override without confirming compatibility.
 
-## Architecture considerations needing verification
+## UX and business-content gaps
 
-- Product variants intentionally share product-level stock quantities. If the business needs per-variant stock, the schema and inventory keys must be revised before importing those products.
-- Payment submission references are manually checked; no bKash/Nagad gateway/API integration is claimed.
-- Private product image bucket is used with RLS; verify signed URL creation/read behavior for anon and staff roles against Supabase Storage.
-- The SQL migration is large and should be split into ordered migrations after initial local validation; do not edit already-applied migrations in a connected environment—create forward migrations instead.
-- Rate limiting depends on server HMAC and service-role RPC. Production must configure trusted deployment IP forwarding or it fails closed where client IP is unavailable.
+- The shipping/returns page explicitly says delivery charges, timelines and return conditions are not configured. Replace this with owner-approved policy text before accepting orders.
+- Opening hours are not configured. The contact page tells visitors to contact the shop before visiting.
+- Product photos must be matched to the correct product and approved for use. A product image does not prove availability, specifications or price.
+- The site must not advertise delivery areas, fees, time promises, warranty or returns until the owner confirms them.
 
-## Safety
+## Architecture constraints
 
-Never commit raw internal business documents or cost/supplier records. Never expose a service-role key, full payment references or customer address in logs/browser. Do not state a pending transaction is paid. Do not enable checkout until payment and delivery configuration are complete and end-to-end tests pass.
+- Product variants share product-level inventory. Distinct per-variant stock is not implemented.
+- Payment is manual only. No bKash/Nagad gateway or automatic transaction-verification API is implemented.
+- Product images use a private Storage bucket and signed URLs; verify published-user reads and staff draft previews in the target Supabase project.
+- The rate limiter relies on APP_HMAC_SECRET and service-side database functions. Production must be tested behind the actual hosting provider’s request/IP forwarding behaviour.
+- The single initial migration is large. Validate it in staging first; once it has been applied to a real environment, use new forward migrations rather than editing its historical contents.
 
+## Security rules
 
-## Verification-fix details
+- SUPABASE_SECRET_KEY and APP_HMAC_SECRET must remain server-only.
+- Never put private values in NEXT_PUBLIC_ variables, client components or committed files.
+- Do not enable checkout without an approved payment method and at least one enabled delivery zone with a known charge.
+- Never label a customer-submitted payment reference as paid. Only an authorized administrator may verify a transfer.
+- Do not log or expose customer addresses, credentials or full transaction references.
 
-- Cart provider uses `useSyncExternalStore`; cart-page/search loading state is derived from request-keyed async results; order refresh is a memoized callback with effect dependency and abort cleanup.
-- Search input uses `role="combobox"` and listbox popup semantics so `aria-expanded` is defined for its role. No lint rule suppression is used.
-- The TypeScript `row` errors are fixed by narrowing untrusted Supabase RPC payloads through `parseCatalogSearchRows`.
-- The generated `.next/dev/types/validator.ts` file is not edited. `tsconfig` excludes `.next/dev` and the project typecheck script generates production route types before `tsc`.
-- Unit tests now cover cart persisted snapshot restoration and updates, in addition to query/response validation.
-- Assistant-runtime `npm run typecheck`, `npm run lint`, and `npm run build` each exit because Next/ESLint dependencies are absent; `npm audit --json` exits `ENOLOCK` because there is no package lockfile. The supplied audit report is analysed in `TEST_REPORT.md`.
+## Launch fallback
 
-## 2026-11-13 follow-up status after the reported 1 TS / 2 lint / 1 warning failures
-
-- The payment-method string is now parsed by a typed runtime validator that only accepts the literal union `"bkash" | "nagad"`; malformed values cannot pass through as an arbitrary string.
-- Order confirmation was refactored so its effect starts an asynchronous request and updates result state only in promise completion handlers. Request cancellation and stale-response checks are retained; no synchronous loading setter runs inside the effect.
-- The cart `useMemo` warning is addressed by removing memoization for the inexpensive product-by-ID map; the product list identity no longer invalidates a memo hook every render.
-- The unchanging cart test storage fixture is `const`.
-- `tsconfig.json` now matches Next 16's dual generated-type include convention; `tsconfig.typecheck.json` excludes `.next/dev`, and `next.config.ts` uses the TypeScript API build checker. This config needs validation on the owner's Windows machine with the generated `.next/dev/types/validator.ts` present.
-- The assistant runtime ran 42 unit tests successfully and a strict tsc check of the new payment/order parsers. Full Next typecheck, lint and build were attempted but blocked by missing `node_modules`; npm registry DNS was unavailable. These are not passes.
-- `npm audit` was attempted and returned `ENOLOCK`. There is no actual owner `package-lock.json` in the assistant worktree, supplied files or GitHub branch. The previously supplied audit report remains seven moderate indirect TypeScript-ESLint/minimatch findings. No dependency remediation has been attempted.
-
-### Required next evidence
-
-1. Owner's actual Windows `package-lock.json` from the install that produced 374 audited packages.
-2. Fresh `npm-audit.json` generated from that lockfile.
-3. Output from all five commands on Node 24.14.0/npm 11.21.1: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, `npm audit`.
-4. If route validator still fails: `.next/dev/types/validator.ts`, `.next/dev/types/routes.d.ts`, `.next/types/routes.d.ts`, and the exact post-typegen `tsconfig.json`.
-
-
-## 2026-11-13 dependency-security follow-up
-
-- The committed Windows lockfile is now present on the remote feature branch. Lockfile v3 resolves `@typescript-eslint/typescript-estree@8.72.2` with nested `minimatch@10.2.6` (declared `^10.2.2`); a separate root `minimatch@3.1.5` serves ESLint plugins and is outside this advisory's affected range.
-- GHSA-g3hv-75wg-m249 is fixed upstream in minimatch `11.0.1`, but 11.x does not satisfy the TypeScript-ESTree `^10.2.2` dependency range. Do not force an override or hand-edit lockfile metadata. No dependency versions were changed. Track the advisory until a stable TypeScript-ESLint release declares a compatible minimatch 11 range.
-- Current stable `@typescript-eslint/typescript-estree` observed on npm is `8.72.2`; `8.72.3-alpha.8` is a prerelease and is not suitable as a production dependency update without explicit prerelease evaluation.
-- Next.js `v16.4.6` source was inspected: `useTypeScriptCli` is an accepted boolean in `config-schema.ts`; `false` selects the TypeScript API worker in `packages/next/src/build/type-check.ts`. `runTypeCheck.ts` explicitly filters `.next/dev/types` during build typechecking. Keep the setting pending owner verification; the warning marker is consistent with the disabled experimental CLI checker, not an unknown config property.
-- GitHub integration can inspect repository files but cannot run npm commands in the owner's Windows environment or produce a full Git bundle from the connected remote. `npm explain`, `npm ls`, `npm audit fix --dry-run`, `npm ci`, typecheck, lint, tests and build were not executed in this session. Preserve the owner's prior Windows PASS report; it is not a rerun for this security follow-up.
+A catalogue/contact launch is acceptable while checkout remains disabled, provided all displayed products and business details are verified. A transactional launch is not acceptable until the migration, RLS, storage, admin, delivery, payment and order lifecycle gates pass.

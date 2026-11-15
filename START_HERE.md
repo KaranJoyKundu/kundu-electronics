@@ -1,74 +1,70 @@
 # START HERE — Kundu Electronics
 
-## Project identity
+**Documentation reviewed:** 15 November 2026  
+**Repository:** KaranJoyKundu/kundu-electronics (private)  
+**Application branch:** feat/storefront-foundation  
+**Documentation work:** docs/launch-readiness-48h
 
-- Project: Kundu Electronics — electronics-components e-commerce store
-- Location/currency: Khulna, Bangladesh · BDT (৳)
-- Reference: https://www.sparkfun.com/
-- GitHub: https://github.com/KaranJoyKundu/kundu-electronics (private)
-- Active branch: `feat/storefront-foundation`
-- Main must remain unchanged; do not merge without explicit owner approval.
+## Project goal
 
-## Read first
+Launch a trustworthy electronics-components storefront for Kundu Electronics in Khulna, Bangladesh. Prices are customer-facing selling prices in BDT (৳). SparkFun is an information-architecture reference, not a source of business facts.
 
-1. `documentation/PROJECT_STATE.md`
-2. `documentation/TASK_TRACKER.md`
-3. `documentation/TEST_REPORT.md`
-4. `documentation/TYPECHECK_LINT_AUDIT_REMEDIATION.md`
-5. `documentation/DECISIONS.md`
-6. `documentation/IMPLEMENTATION_PLAN.md`
-7. `documentation/ISSUES_AND_LIMITATIONS.md`
-8. `documentation/PRODUCT_DATA_IMPORT.md`
-9. `documentation/research/README.md`
+## Read in this order
 
-## Current remote state before this verification follow-up
+1. README.md — project overview and local setup.
+2. documentation/PROJECT_STATE.md — what exists and what is still unverified.
+3. documentation/LAUNCH_PLAN_48_HOURS.md — the short launch sequence and release gates.
+4. documentation/TASK_TRACKER.md — actionable work and status.
+5. documentation/ISSUES_AND_LIMITATIONS.md — blockers and risks.
+6. documentation/TEST_REPORT.md — what has and has not actually passed.
+7. documentation/PRODUCT_DATA_IMPORT.md — rules for preparing public product records.
+8. documentation/DECISIONS.md and documentation/research/README.md — decisions and design research.
 
-- Connected GitHub identity: `KaranJoyKundu`.
-- Repository visibility: private.
-- Remote `feat/storefront-foundation`: `5949f4cd3152aa595dd6433aaac27a7b85f3a87a`.
-- Remote `main`: `d88339395e6a1e34f9da904650efd1421480cf00`.
-- Continue only on `feat/storefront-foundation`. Never force-push or update `main`.
+## Git guardrails
 
-## Stack and commands
+- The repository is private and the correct GitHub owner is KaranJoyKundu.
+- Continue application work on feat/storefront-foundation.
+- Keep main stable. As of this review, feat/storefront-foundation is 18 commits ahead of main and 1 commit behind it. Reconcile the main-only commit and review the resulting PR before merging.
+- Never force-push, reset away owner work or deploy an unreviewed branch.
+- The documentation refresh is isolated in docs/launch-readiness-48h and should be reviewed through a pull request targeting feat/storefront-foundation.
 
-- Next.js 16.4.6 App Router, React 19.3.0, strict TypeScript, Tailwind CSS 4.3.3.
-- Supabase PostgreSQL/Auth/Storage integration is implemented but no real/staging project has been connected or verified.
-- Owner Windows environment: Node 24.14.0, npm 11.21.1, PowerShell 5.1.
+## Stack and local commands
 
-```powershell
+- Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4 and Supabase.
+- Use Node 24 to match GitHub Actions and the owner’s documented Windows environment. package.json accepts Node >=22.6; .nvmrc currently says 22, so standardize this later rather than changing Node versions mid-release.
+- The feature branch contains package-lock.json. Use npm ci, not npm install, for the release verification.
+
+~~~powershell
 npm ci
+Copy-Item .env.example .env.local
+npm run dev
+
 npm run typecheck
 npm run lint
 npm test
 npm run build
 npm audit
-```
+~~~
 
-## Latest verification follow-up
+Fill .env.local only with the correct project values. Do not commit it.
 
-- Payment method parsing now validates and narrows untrusted runtime values to exactly `"bkash" | "nagad"`; malformed/unsupported configuration is discarded.
-- Order status loading uses a pure async request plus an order-id-keyed result state. The effect does not synchronously set state; async completions are guarded by `AbortController` and a monotonically increasing request sequence. Refresh after payment uses the same stale-response guard.
-- Cart product lookup no longer memoizes against a freshly-created empty array; the bounded cart product map is built directly.
-- The immutability test fixture uses `const` for its unchanging stored value.
-- Base `tsconfig.json` includes both Next 16 generated type directories. `tsconfig.typecheck.json` deliberately checks `.next/types` and source while excluding `.next/dev/types`. Production build uses Next's TypeScript API checker (`experimental.useTypeScriptCli: false`) so stale isolated-dev route validators are filtered on the build path.
-- `npm test`: **42 passed, 0 failed** in this assistant runtime (Node 22.16.0 / npm 10.9.2).
-- Targeted strict TypeScript check of the new dependency-free parser modules passed (global TypeScript 5.8.3).
-- Full `npm run typecheck`, `npm run lint`, and `npm run build` could not run here: `next` and `eslint` are not installed, and npm registry DNS returned `EAI_AGAIN`.
-- `npm audit` could not run here (`ENOLOCK`). No `package-lock.json` exists in the downloaded branch, GitHub tree, or uploaded files. The only Library `npm-audit.json` is dated 12 November 2026 and reports seven moderate indirect findings; it is not a fresh audit for the current dependency graph. No dependency changes were made.
+## Configuration that must be ready for a transactional launch
 
-## Privacy and publication rules
+- Supabase project URL and publishable key.
+- Server-only Supabase secret key and a newly generated APP_HMAC_SECRET.
+- Database migration applied and tested.
+- Admin user created in Supabase Auth and assigned the store admin role through an owner-controlled procedure.
+- Approved products/categories, customer-facing selling prices, actual availability and product images.
+- At least one owner-approved delivery zone and exact delivery charge.
+- At least one owner-approved manual payment method, receiving number and customer instructions.
+- Checkout enabled only after staging and production smoke tests pass.
 
-- Public business settings are centralized in `src/config/business.ts`.
-- Public Product types expose selling prices only. Never add purchase prices, supplier identity or margins to public records.
-- Never commit the raw business brief, master workbook, supplier documents, credentials or `.env.local`.
-- Candidate products remain unapproved; do not invent stock, specifications, photographs, reviews, hours, warranty, delivery charges or payment numbers.
-- bKash/Nagad and delivery configuration stay disabled until owner-approved values are configured.
-- A submitted transaction reference is not payment verification.
-- Never expose Supabase secret/service-role keys in `NEXT_PUBLIC_*`, browser code, Git or chat.
+## Business-data rules
+
+Public business settings are centralized in src/config/business.ts. Verify the phone, address, email and Facebook destination before production. Opening hours, delivery charges, delivery timeline, warranty and return rules are not confirmed in the current source; do not make them up.
+
+Candidate products are not automatically publishable. Public product data may contain the selling price only. Never commit raw inventory/pricing workbooks, purchasing costs, supplier details, margins, credentials or customer records.
 
 ## Exact next action
 
-1. On the owner's Windows clone, import the latest feature-branch Git bundle or pull the committed update, then verify the branch and working tree.
-2. Provide the actual Windows-generated `package-lock.json` and the fresh `npm audit --json` output. They are not available in this worktree and must be inspected before any dependency remediation.
-3. Run the full five-command verification set above on Node 24/npm 11, then share the output if any command fails.
-4. Only after app verification, proceed with local/staging Supabase migrations, RLS/pgTAP and browser checkout testing.
+Follow documentation/LAUNCH_PLAN_48_HOURS.md from the top. First, update the Windows clone to the intended feature-branch commit without overwriting local changes; then run npm ci and the five verification commands. Do not start production checkout configuration until the staging database migration and role/security checks pass.
