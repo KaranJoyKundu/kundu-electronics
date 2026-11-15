@@ -1,45 +1,47 @@
-# TASK_TRACKER
+# TASK_TRACKER — first public launch
 
-Statuses: Not started · In progress · Blocked · Completed · Needs verification
+**Last reviewed:** 15 November 2026  
+Statuses: Not started · In progress · Blocked · Needs verification · Completed
 
-| ID | Priority | Task | Status | Evidence / acceptance criteria |
+## Release blockers
+
+| ID | Priority | Task | Status | Acceptance criteria |
 |---|---|---|---|---|
-| KE-001 | P0 | Recover correct GitHub repository and preserve feature branch | Completed | Connected identity `KaranJoyKundu`; private `KaranJoyKundu/kundu-electronics`; remote refs verified. |
-| KE-002 | P0 | Preserve SparkFun research package | Completed | All 11 research Markdown files remain under `documentation/research/`. |
-| KE-003 | P0 | Continue from pushed backend foundation without discarding history | Completed | Local worktree starts at remote feature commit `de253ee`; `main` remains at `d883393`; no reset or force push. |
-| KE-004 | P0 | Repair ESLint flat config and React hook/accessibility failures | Needs verification | Flat config was already migrated; cart provider/page, order confirmation and SearchBox refactored. Run ESLint with the owner's lockfile/dependencies to verify zero errors/warnings. |
-| KE-005 | P0 | Fix generated Next.js dev route type collision | Needs verification | `tsconfig` excludes `.next/dev`, includes production `.next/types`; script runs `next typegen`. Verify on Windows with existing `.next/dev` directory present. |
-| KE-006 | P0 | Resolve seven moderate npm audit alerts safely | Blocked | Supplied audit JSON analysed. Need actual `package-lock.json` and `npm audit fix --dry-run --json`; no forced upgrade or override applied. |
-| KE-007 | P0 | Restore/commit dependency lockfile | Blocked | Owner's Windows `package-lock.json` is not included in this worktree. Required for reproducible installs and exact audit. |
-| KE-008 | P1 | Convert owner business brief into safe import proposal | Completed | Candidate product records are outside Git; all remain draft/unapproved. |
-| KE-009 | P1 | Obtain original inventory and pricing source files | Blocked | Need source inventory, component pricing analysis and robot pricing documents; never ingest private purchase costs into public model. |
-| KE-010 | P1 | Review/approve product catalogue entries | Blocked | Owner must approve selling price, SKU, actual stock status, specs and images before publish. |
-| KE-011 | P1 | Build normalized product/category/variant schema | In progress | Migration authored; execute and test on disposable Supabase before production. |
-| KE-012 | P1 | Build Supabase Auth and admin authorization | In progress | Server/browser/public/admin clients and protected routes exist; live project integration and RLS tests pending. |
-| KE-013 | P1 | Build admin product/category/variant/image maintenance | In progress | Admin routes/actions exist; validate on real Supabase and browser. |
-| KE-014 | P1 | Build stock tracking and audited adjustments | In progress | Unknown/tracked/untracked quantities and movement history modeled; concurrency tests pending. |
-| KE-015 | P1 | Build atomic, server-authoritative checkout | In progress | SQL derives price/charges, locks stock rows and creates snapshots; DB integration tests pending. |
-| KE-016 | P1 | Build manual payment submission and staff verification | In progress | bKash/Nagad disabled pending configuration; submissions remain pending until human verification; integration tests pending. |
-| KE-017 | P1 | Complete search/listing/cart API boundaries | Needs verification | Typed RPC parser, query parser, runtime response parsers, pagination and single-character search implemented; unit tests pass; full Next typecheck pending. |
-| KE-018 | P1 | Verify cart hydration and persistence | Needs verification | `useSyncExternalStore` implementation and storage tests added; browser hydration/multi-tab tests still needed. |
-| KE-019 | P1 | Run Supabase pgTAP security contract | Blocked | Requires Supabase CLI/Postgres; do not mark complete until the migration is applied to a disposable DB and all assertions pass. |
-| KE-020 | P1 | Add RLS/roles/concurrency integration tests | Not started | Verify anon/customer/staff/admin separation, price-tampering resistance, idempotency and oversell prevention. |
-| KE-021 | P1 | Run responsive Playwright and checkout browser tests | Blocked | Requires installed dependencies, browser and configured staging backend; test 1440×900, 1366×768, 768×1024 and 390×844. |
-| KE-022 | P2 | Add CI and Dependabot | Blocked | Add after lockfile is committed; CI should use `npm ci` and run typecheck/lint/test/build. |
-| KE-023 | P2 | Prepare preview deployment | Not started | Requires database, owner configuration, approved products and security/browser sign-off. |
-| KE-024 | P0 | Commit first verification remediation on feature branch | Completed | Previous commit `5949f4c` is pushed to `feat/storefront-foundation`; no merge to `main`. |
-| KE-025 | P0 | Fix remaining payment-method, order-effect, cart memo and test fixture issues | Needs verification | Source fixes and new parser tests are present; full Windows typecheck/lint still require owner dependency installation. |
-| KE-026 | P0 | Separate Next 16 typegen and strict typecheck inputs | Needs verification | Base config includes both generated paths; `tsconfig.typecheck.json` excludes `.next/dev`; build uses TypeScript API checker. Verify on Windows with existing dev output. |
-| KE-027 | P0 | Inspect actual Windows lockfile and refresh npm audit | Blocked | No package-lock is available in the uploaded artifacts, current GitHub tree or assistant worktree. Do not change dependencies until supplied. |
-| KE-028 | P0 | Commit remaining Windows verification source fixes | Completed locally; push pending | Commit is created on `feat/storefront-foundation` after the 42-test suite, strict parser check, syntax scan and diff check; full Next/ESLint/audit commands remain blocked in this runtime. |
+| KE-L01 | P0 | Sync the Windows clone to the reviewed feature branch | Needs verification | Working tree is backed up; branch and commit are confirmed; no owner changes are lost |
+| KE-L02 | P0 | Run release checks on Node 24 | Needs verification | npm ci, typecheck, lint, test and build all pass on the same commit |
+| KE-L03 | P0 | Refresh dependency audit | Needs verification | npm audit output is reviewed against the committed lockfile; no force upgrade or blind override |
+| KE-L04 | P0 | Create and configure Supabase staging | Blocked | Project URL/keys set locally; migration applies cleanly; no production data used for testing |
+| KE-L05 | P0 | Execute database security tests | Blocked | 23 pgTAP assertions pass; anonymous/customer/staff/admin and private Storage access are also checked |
+| KE-L06 | P0 | Provision owner admin access | Blocked | Admin can sign in; anonymous/customer sessions cannot access protected admin pages/actions; public signup remains disabled |
+| KE-L07 | P0 | Approve and publish first product batch | Blocked | Each product has confirmed public name, category, selling price, availability, description and approved image |
+| KE-L08 | P0 | Configure delivery zones and charges | Blocked | Exact coverage and whole-BDT charges are owner-approved and tested in checkout |
+| KE-L09 | P0 | Configure manual payment methods | Blocked | At least one payment method has an owner-approved receiving number and exact customer instructions |
+| KE-L10 | P0 | Test complete order lifecycle | Blocked | Order creation, authoritative totals, idempotent retry, payment submission, pending state and staff verification pass in staging |
+| KE-L11 | P0 | Deploy and verify Preview | Not started | Preview URL loads; auth callback, image URLs, API routes and server actions work |
+| KE-L12 | P0 | Finish mobile and desktop QA | Not started | Critical flows pass at 390×844, 768×1024 and desktop viewport; no console/network errors |
+| KE-L13 | P0 | Reconcile branch divergence and approve release | Blocked | Main-only commit is reviewed; production release PR is clean and explicitly approved |
+| KE-L14 | P0 | Configure production hosting/domain | Not started | Correct production branch, environment variables, HTTPS and canonical site URL confirmed |
+| KE-L15 | P0 | Run production smoke test | Not started | Public pages, catalogue, contact, cart and approved order/payment path behave as tested |
 
-## Latest verification remediation task details
+## Implemented foundation (do not rebuild)
 
-- Payment config parser accepts only supported `bkash`/`nagad` values and drops malformed entries; two tests added.
-- Order confirmation loading is request-keyed and derived from state. Async completion handlers update state only after the network request; AbortController plus sequence guards prevent stale results. Order response parser tests added.
-- Cart page no longer memoizes a Map against a newly-created conditional products array; storage fixture is immutable `const`.
-- Base Next 16 config includes both generated route directories; standalone typecheck config excludes `.next/dev`. Build uses the TypeScript API checker to filter stale dev validators. Full Windows verification remains pending.
+- Responsive storefront routes and shared components.
+- Search, category/price filtering, sorting and pagination.
+- Product options, cart persistence and server-side cart product refresh.
+- Supabase client boundaries, Auth Proxy and protected admin foundations.
+- Product/category/image/inventory/order/payment/settings admin screens.
+- Server-side checkout/order/payment routes with validation and idempotency.
+- Initial database schema, RLS and private product-image policies.
+- Unit tests covering core catalogue, cart, checkout and order parsing logic.
 
-## Current session handoff
+## Safe release fallback
 
-13 November 2026 follow-up after remote base `5949f4c`: payment method narrowing, order confirmation request-state refactor, cart product-map memo warning, and the const test fixture are fixed in source. Added payment configuration/order summary parser tests; `npm test` reports 42 passed. The strict parser TypeScript check passes and 78 TS/TSX files have zero syntax diagnostics. `git diff --check` passes. Full typecheck/lint/build are blocked here because Next/ESLint dependencies are not installed; `npm audit` is blocked by the absent Windows lockfile. The current audit document in Library is dated 12 November and is not a fresh report for this branch state. Import the follow-up bundle and run all five commands on the Windows clone. See `documentation/TEST_REPORT.md`.
+If the database, payment or delivery release gates do not pass in time, publish only the catalogue/contact experience and leave checkout disabled. Do not pretend an order has been placed, show unverified stock, or ask customers to transfer money to an unconfirmed number.
+
+## Post-launch improvements (not required for the first launch)
+
+- Align .nvmrc with the Node 24 version used by CI and the owner’s Windows environment.
+- Add automated browser tests and CI execution for database integration tests.
+- Add a repeatable product import tool with a dry-run report and owner approval.
+- Add monitoring, backup/restore drills and a routine dependency-update process.
+- Split the initial SQL migration into forward-only migrations after the first validated deployment; never rewrite an already-applied migration.
