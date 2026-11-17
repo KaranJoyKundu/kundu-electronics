@@ -7,13 +7,14 @@ export const metadata: Metadata = { title: "Shop electronics components" };
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default async function ShopPage({ searchParams }: { searchParams: SearchParams }) {
-  const [params, catalogue] = await Promise.all([searchParams, getStorefrontCatalogue(24)]);
+  const params = await searchParams;
   const initialQuery = typeof params.query === "string" ? params.query : "";
   const initialCategory = typeof params.category === "string" ? params.category : "";
   const requestedPage = typeof params.page === "string" ? Number(params.page) : 1;
   const initialPage = Number.isSafeInteger(requestedPage) && requestedPage >= 1 && requestedPage <= 400 ? requestedPage : 1;
   const hasInitialFilters = Boolean(initialQuery || initialCategory);
-  const canUseServerProducts = !hasInitialFilters && initialPage === 1;
+  const catalogue = await getStorefrontCatalogue(24, initialPage);
+  const canUseServerProducts = !hasInitialFilters;
   return (
     <ShopCatalogue
       categories={catalogue.categories}
