@@ -6,7 +6,7 @@
 - Current launch work is isolated on `feat/launch-prep`. Draft PR #3: https://github.com/KaranJoyKundu/kundu-electronics/pull/3. Do not merge to `main` until final checks and owner review are complete.
 - Supabase project: `bussiness website`, project ref `tcapxmiroikbsozvucmt`, region `ap-northeast-1`.
 - Migrations `initial_kundu_electronics_schema` and `add_public_catalogue_count` are applied.
-- Live database: **158 published products, 17 published categories, 0 admin profiles**.
+- Live database: **158 published products, 17 published categories and 1 admin profile**. The admin profile is linked to an Auth user with a confirmed email; successful sign-in has not yet been tested.
 - The 21 public tables all have RLS enabled; two private storage buckets exist.
 - Supabase has zero product-image rows; static approved photo assets are used for selected product SKUs.
 
@@ -27,7 +27,7 @@
 - No delivery zones are configured.
 - The cart explains that checkout is unavailable; it does not simulate an order or payment.
 - Order creation is guarded in both the database and API. Admin checkout activation also requires a configured delivery zone, payment instructions, `SUPABASE_SECRET_KEY` and a valid 64-character hex `APP_HMAC_SECRET`.
-- No admin profile exists. Public registration is disabled. The owner must create an Auth account and explicitly assign an admin role before using protected admin pages.
+- One `admin` profile is now linked to an email-confirmed Supabase Auth user. Public registration remains disabled; still test the sign-in flow and protected admin session before using the portal operationally.
 
 ## Security and CI
 
@@ -44,8 +44,8 @@
 - A separate **READY preview deployment** was created for current feature-branch commit `3aa7a646fd50933bff1ebe95b509d6f0d338d93f`:
   https://kundu-electronics-9m5a2bgty-kundu2409056-5098.vercel.app
 - The preview has its own branch alias and did not receive the production domain. The preview build ran Next.js 16.4.6 and completed successfully.
-- The Vercel project has `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `NEXT_PUBLIC_SITE_URL` set. The sensitive values for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are currently blank. They were not read or changed.
-- Checkout therefore remains disabled; no secret was inserted into Vercel or Git.
+- The Vercel project has `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `NEXT_PUBLIC_SITE_URL` set. Sensitive environment-variable entries for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are present in project metadata, but their values were not decrypted or inspected. `SUPABASE_SECRET_KEY` is scoped to Production; `APP_HMAC_SECRET` is scoped to Preview, Production and Development.
+- Current live Supabase checks show `checkout_enabled = false`, zero enabled payment methods and zero configured delivery zones. Checkout is therefore independently blocked by database configuration; no secret value was inserted into Git.
 
 The existing production-target deployment is older than the current feature preview. Do not promote the new preview or change the production alias until the audit, owner inventory review and remaining launch checks are resolved. The preview can be opened for visual inspection at the URL above.
 
@@ -75,7 +75,7 @@ Never share server-only secrets in chat, issue comments, source control or build
 1. Review all 158 public selling prices, stock labels and product descriptions against the current business inventory.
 2. Confirm approved delivery areas, charges and delivery policy.
 3. Confirm bKash and/or Nagad receiving numbers and exact customer instructions.
-4. Create the owner admin account in Supabase Auth and assign the correct role.
+4. Test the provisioned admin Auth account by signing in and verifying access to the protected admin pages.
 5. Configure hosting and server-only secrets, then verify checkout and order handling end-to-end on the production domain.
 6. Confirm the final public photo set and attribution page.
 
