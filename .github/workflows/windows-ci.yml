@@ -115,6 +115,10 @@ jobs:
           if (Test-Path npm-audit-fix-dry-run-stderr.txt) {
             "Dry-run stderr bytes: $((Get-Item npm-audit-fix-dry-run-stderr.txt).Length)" | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
+          # The dry-run exit code is recorded above; its non-zero result is expected
+          # while an advisory remains in the committed lockfile. Do not fail this
+          # evidence-collection job before its report can be uploaded.
+          exit 0
 
       - name: Capture stable and canary TypeScript-ESLint registry metadata
         if: always()
@@ -156,4 +160,50 @@ jobs:
             npm-audit-fix-dry-run-exit-code.txt
             npm-typescript-eslint-metadata/
           if-no-files-found: warn
+          retention-days: 30
+
+  dependency-remediation-preview:
+    name: Windows safe dependency remediation preview
+    runs-on: windows-latest
+    timeout-minutes: 35
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install the committed dependency tree
+        run: npm ci
+
+      - name: Resolve patched semver-compatible dependencies in a preview lockfile
+        run: npm audit fix --package-lock-only
+
+      - name: Require a clean dependency audit
+        run: npm audit
+
+      - name: Install the preview lockfile from scratch
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Upload the tested remediated package lock
+        uses: actions/upload-artifact@v4
+        with:
+          name: remediated-package-lock
+          path: package-lock.json
+          if-no-files-found: error
           retention-days: 30
