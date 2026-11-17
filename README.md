@@ -19,7 +19,7 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 - bKash and Nagad receiving details/instructions are not configured or enabled.
 - No delivery zones or delivery charges are configured.
 - The cart remains usable as a saved cart, but the customer checkout form stays unavailable. The API and database reject order creation while prerequisites are missing.
-- No admin profile exists yet. The owner must create an Auth user in Supabase, then assign the approved role using the server-only admin key.
+- One admin profile now exists with the `admin` role and is linked to an email-confirmed Supabase Auth user. A successful sign-in and protected-page session have not yet been verified.
 - Product prices and stock labels require final owner review before sales are accepted.
 
 ## Hosting and deployment
