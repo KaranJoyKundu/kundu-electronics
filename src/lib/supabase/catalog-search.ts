@@ -7,7 +7,7 @@ export interface CatalogSearchRow {
   sku: string | null;
   brand: string | null;
   short_description: string | null;
-  price_bdt: number;
+  price_bdt: number | null;
   public_availability: ProductAvailability;
   category_slug: string;
   primary_image_path: string | null;
@@ -39,11 +39,13 @@ export function parseCatalogSearchRows(value: unknown): CatalogSearchRow[] {
   return value.flatMap((candidate): CatalogSearchRow[] => {
     if (!isRecord(candidate)) return [];
 
-    const price = typeof candidate.price_bdt === "number"
-      ? candidate.price_bdt
-      : typeof candidate.price_bdt === "string" && /^\d+$/.test(candidate.price_bdt)
-        ? Number(candidate.price_bdt)
-        : Number.NaN;
+    const price = candidate.price_bdt === null
+      ? null
+      : typeof candidate.price_bdt === "number"
+        ? candidate.price_bdt
+        : typeof candidate.price_bdt === "string" && /^\d+$/.test(candidate.price_bdt)
+          ? Number(candidate.price_bdt)
+          : Number.NaN;
 
     const availability = candidate.public_availability;
     if (
@@ -53,8 +55,7 @@ export function parseCatalogSearchRows(value: unknown): CatalogSearchRow[] {
       || !nullableString(candidate.sku)
       || !nullableString(candidate.brand)
       || !nullableString(candidate.short_description)
-      || !Number.isSafeInteger(price)
-      || price <= 0
+      || (price !== null && (!Number.isSafeInteger(price) || price <= 0))
       || !isProductAvailability(availability)
       || typeof candidate.category_slug !== "string"
       || !nullableString(candidate.primary_image_path)
