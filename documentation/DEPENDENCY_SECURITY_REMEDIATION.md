@@ -1,4 +1,55 @@
-# Dependency security investigation — GHSA-g3hv-75wg-m249
+# Current security status — 17 November 2026
+
+This section supersedes the 13 November investigation below for the current `feat/launch-prep` lockfile and Windows audit.
+
+## Current Windows audit
+
+Workflow run #44135310151 inspected the current lockfile with Windows Server, Node.js 24.22.2 and npm 11.19.1:
+
+| Severity | Findings |
+|---|---:|
+| Critical | 0 |
+| High | 9 |
+| Moderate | 6 |
+| Low / info | 0 |
+| **Total** | **15** |
+
+All reported nodes are in the development/lint toolchain. `eslint-config-next@16.4.6` is a direct **devDependency**; the other affected entries are transitive packages below that tool. Runtime dependencies (`next`, `react`, `react-dom`, Supabase clients) were not listed as affected in this report.
+
+The moderate chain remains `@typescript-eslint/typescript-estree` → `minimatch` with the GHSA-g3hv-75wg-m249 advisory. The current high chain also includes `tinyglobby`, `fdir`, `fast-glob`, `micromatch` and `picomatch`. GitHub advisory GHSA-fc5q-39xc-vjpf marks `picomatch <=4.0.7` as affected by a ReDoS issue. The locked package is still in the affected range. The upstream fix PR #238 was still open (not merged) when checked; npm's published latest tag remained 4.0.7.
+
+The audit JSON is preserved in the workflow artifact:
+
+- Run: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44135310151
+- Audit artifact: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44135310151/artifacts/14352680647
+- Dry-run investigation artifact: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44135310151/artifacts/14352605760
+
+## Remediation attempt and decision
+
+The current Windows remediation-preview job ran `npm audit fix --package-lock-only`. It did not produce a clean lockfile. npm still reported six moderate and nine high findings, and its suggested `--force` path would replace the project's `eslint-config-next@16.4.6` with `14.2.35`, a major-version downgrade unrelated to the installed Next.js 16 framework. That is not an acceptable automatic remediation.
+
+The previously considered stable TypeScript-ESLint 8.73.0 update moves the minimatch declaration to `^11.0.1`, but also introduces `tinyglobby`/fdir into the same toolchain and still leaves the high picomatch advisory. It is therefore **not a clean candidate** in this environment. No lockfile changes were committed and the candidate was not pushed.
+
+The workflow is configured to commit a generated lockfile to `feat/launch-prep` only if a future remediation run passes `npm audit`, typecheck, lint, tests and production build. This run stopped before the commit step. `main` was not changed.
+
+**Do not** run `npm audit fix --force`, downgrade the Next.js ESLint config, force an incompatible minimatch major through overrides, adopt an unreviewed picomatch Git commit, suppress the audit, or use a prerelease TypeScript-ESLint family as a shortcut. Keep the audit visible until a stable upstream fix is available and all Windows checks pass.
+
+## Latest application verification
+
+In the same Windows run:
+
+- Windows application verification: **success** — `npm ci`, typecheck, lint, tests and production build passed.
+- Dependency audit: **failed** — the 15 findings above were preserved in the artifact.
+- Dependency-remediation preview: **failed safely** — no clean lockfile artifact and no lockfile commit.
+- Dry-run investigation: **success** — diagnostic output and registry metadata uploaded.
+
+The application checks passing do not make the branch security-clean. Keep PR #3 in draft until this dependency chain has a safe resolution.
+
+---
+
+## Historical investigation — 13 November 2026
+
+# Dependency security investigation — GHSA-g3hv-75wg-m249 (historical)
 
 **Date:** 2026-11-13  
 **Repository:** KaranJoyKundu/kundu-electronics  
