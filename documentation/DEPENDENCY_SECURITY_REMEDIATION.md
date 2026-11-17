@@ -1,49 +1,60 @@
-# Current security status — 17 November 2026
+# Current security status — 18 November 2026
 
-This section supersedes the 13 November investigation below for the current `feat/launch-prep` lockfile and Windows audit.
+This section records the current `feat/launch-prep` dependency tree and Windows verification. The 13 November and 17 November notes below are retained as historical context only.
 
-## Current Windows audit
+## Current committed dependency tree
 
-Workflow run #44135310151 inspected the current lockfile with Windows Server, Node.js 24.22.2 and npm 11.19.1:
+Commit `f29d1887bd336ee95a124469d8b54f43d82d963c` updates only `package.json` and `package-lock.json`:
+
+- `typescript-eslint@8.73.0`
+- `@typescript-eslint/eslint-plugin@8.73.0`
+- `@typescript-eslint/parser@8.73.0`
+- `@typescript-eslint/typescript-estree@8.73.0`
+- Nested `minimatch@11.0.9`
+- `next@16.4.6` and `eslint-config-next@16.4.6` unchanged
+
+The update was generated in a Windows Node 24 job and committed to `feat/launch-prep` only after the candidate tree passed a clean `npm ci`, audit classification, typecheck, lint, tests and production build. The failed automatic push in the first attempt was not forced; the workflow was changed to fetch and rebase the current feature branch before a normal push. The verified commit was then pushed successfully. `main` was not modified.
+
+## Latest candidate audit
+
+The Windows candidate audit reports:
 
 | Severity | Findings |
 |---|---:|
 | Critical | 0 |
-| High | 9 |
-| Moderate | 6 |
+| High | 14 |
+| Moderate | 0 |
 | Low / info | 0 |
-| **Total** | **15** |
+| **Total** | **14** |
 
-All reported nodes are in the development/lint toolchain. `eslint-config-next@16.4.6` is a direct **devDependency**; the other affected entries are transitive packages below that tool. Runtime dependencies (`next`, `react`, `react-dom`, Supabase clients) were not listed as affected in this report.
+All 14 audited package nodes were verified against the candidate lockfile as development-only dependencies. The one direct package entering the affected chain is `eslint-config-next@16.4.6` (a devDependency); the others are transitive lint-tooling packages. Runtime dependencies `next`, `react`, `react-dom` and Supabase clients were not flagged in this report.
 
-The moderate chain remains `@typescript-eslint/typescript-estree` → `minimatch` with the GHSA-g3hv-75wg-m249 advisory. The current high chain also includes `tinyglobby`, `fdir`, `fast-glob`, `micromatch` and `picomatch`. GitHub advisory GHSA-fc5q-39xc-vjpf marks `picomatch <=4.0.7` as affected by a ReDoS issue. The locked package is still in the affected range. The upstream fix PR #238 was still open (not merged) when checked; npm's published latest tag remained 4.0.7.
+The remaining high advisory is GHSA-fc5q-39xc-vjpf, which affects `picomatch <=4.0.7`. The candidate still resolves `picomatch@4.0.7` under `tinyglobby`, so this advisory remains open. A stable patched npm release was not available at the time of the check. The update does not suppress the audit or pretend the package is fixed.
 
-The audit JSON is preserved in the workflow artifact:
+The previous six moderate findings from the TypeScript-ESLint/minimatch chain are eliminated by the stable parser update to `minimatch@11.0.9`.
 
-- Run: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44135310151
-- Audit artifact: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44135310151/artifacts/14352680647
-- Dry-run investigation artifact: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44135310151/artifacts/14352605760
+## Windows verification
 
-## Remediation attempt and decision
+Workflow run #44188598920:
 
-The current Windows remediation-preview job ran `npm audit fix --package-lock-only`. It did not produce a clean lockfile. npm still reported six moderate and nine high findings, and its suggested `--force` path would replace the project's `eslint-config-next@16.4.6` with `14.2.35`, a major-version downgrade unrelated to the installed Next.js 16 framework. That is not an acceptable automatic remediation.
+- **Windows application verification: success** — clean install, typecheck, lint, tests and production build.
+- **Stable TypeScript-ESLint candidate: success** — clean install, 0 moderate/0 critical audit findings, all 14 remaining high findings classified as dev-only, typecheck, lint, tests, production build, artifact upload and guarded feature-branch commit.
+- **npm audit against the existing committed lockfile at the start of the run: failure, expected** — it reported the 15 old findings (9 high, 6 moderate) before the candidate update.
+- **npm dry-run investigation: success** — full output and package metadata artifact uploaded.
 
-The previously considered stable TypeScript-ESLint 8.73.0 update moves the minimatch declaration to `^11.0.1`, but also introduces `tinyglobby`/fdir into the same toolchain and still leaves the high picomatch advisory. It is therefore **not a clean candidate** in this environment. No lockfile changes were committed and the candidate was not pushed.
+Evidence:
 
-The workflow is configured to commit a generated lockfile to `feat/launch-prep` only if a future remediation run passes `npm audit`, typecheck, lint, tests and production build. This run stopped before the commit step. `main` was not changed.
+- Windows workflow run #44188598920: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44188598920
+- Tested candidate artifact: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44188598920/artifacts/14361087276
+- Candidate commit: https://github.com/KaranJoyKundu/kundu-electronics/commit/f29d1887bd336ee95a124469d8b54f43d82d963c
 
-**Do not** run `npm audit fix --force`, downgrade the Next.js ESLint config, force an incompatible minimatch major through overrides, adopt an unreviewed picomatch Git commit, suppress the audit, or use a prerelease TypeScript-ESLint family as a shortcut. Keep the audit visible until a stable upstream fix is available and all Windows checks pass.
+The push triggered a follow-up workflow #44189430563 from `github-actions[bot]`. GitHub marked that run `action_required`; this is a workflow approval gate, not a failed application check. If GitHub still shows it waiting, approve the workflow run from the Actions page before relying on a fresh CI status for the new commit.
 
-## Latest application verification
+## Safe decision
 
-In the same Windows run:
+The six moderate findings are fixed by the committed stable release. The 14 high findings remain visible and are still confined to development-only lint tooling. Do not run `npm audit fix --force`, downgrade `eslint-config-next` to 14.x, force an incompatible major via overrides, use an unreviewed Git commit of `picomatch`, or suppress the advisory. Keep this PR in draft until the remaining high advisory has a stable, tested resolution.
 
-- Windows application verification: **success** — `npm ci`, typecheck, lint, tests and production build passed.
-- Dependency audit: **failed** — the 15 findings above were preserved in the artifact.
-- Dependency-remediation preview: **failed safely** — no clean lockfile artifact and no lockfile commit.
-- Dry-run investigation: **success** — diagnostic output and registry metadata uploaded.
-
-The application checks passing do not make the branch security-clean. Keep PR #3 in draft until this dependency chain has a safe resolution.
+---
 
 ---
 
