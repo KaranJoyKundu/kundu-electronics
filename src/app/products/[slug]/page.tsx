@@ -4,6 +4,7 @@ import { ProductPurchaseControl } from "@/components/cart/product-purchase-contr
 import { notFound } from "next/navigation";
 import { getStorefrontProduct, getStorefrontProductDetails } from "@/data/storefront";
 import { formatPriceBdt } from "@/lib/format";
+import { ProductArtwork } from "@/components/product-artwork";
 
 const availabilityLabels: Record<string, string> = {
   unknown: "Availability not confirmed",
@@ -33,7 +34,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="product-detail-image" key={`${image.src}-${index}`}>
               <Image src={image.src} alt={image.alt} width={900} height={900} unoptimized />
             </div>
-          )) : <div className="product-image-pending">Product image pending</div>}
+          )) : <div className="product-detail-image"><ProductArtwork name={product.name} sku={product.sku} category={product.categorySlug} /></div>}
         </div>
         <div className="product-information">
           <span className="section-kicker">{product.categorySlug.replaceAll("-", " ")}</span>
