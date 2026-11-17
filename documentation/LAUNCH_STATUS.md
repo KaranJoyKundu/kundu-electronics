@@ -27,7 +27,7 @@
 - No delivery zones are configured.
 - The cart explains that checkout is unavailable; it does not simulate an order or payment.
 - Order creation is guarded in both the database and API. Admin checkout activation also requires a configured delivery zone, payment instructions, `SUPABASE_SECRET_KEY` and a valid 64-character hex `APP_HMAC_SECRET`.
-- One `admin` profile is now linked to an email-confirmed Supabase Auth user. Public registration remains disabled; still test the sign-in flow and protected admin session before using the portal operationally.
+- One `admin` profile (the UID supplied by the owner) is linked to an email-confirmed Supabase Auth user. Supabase reports no successful sign-in yet; test the sign-in flow and protected admin session before using the portal operationally.
 
 ## Security and CI
 
