@@ -14,7 +14,7 @@ function safeAvailability(value: unknown): ProductAvailability {
     : "unknown";
 }
 
-const ownerProvidedPreviewSkus = new Set(["P002","P004","P019","P023","P027","P029","P034","P035","P036","P037","P038","P050","P063","P080","P181"]);
+const ownerProvidedPreviewSkus = new Set(["P002","P004","P019","P023","P025","P027","P029","P034","P035","P036","P037","P038","P050","P063","P080","P181"]);
 function localOwnerProvidedImages(sku: string | null | undefined, name: string): Product["images"] {
   return sku && ownerProvidedPreviewSkus.has(sku) ? [{ src: `/product-previews/${sku}.webp`, alt: name }] : [];
 }
