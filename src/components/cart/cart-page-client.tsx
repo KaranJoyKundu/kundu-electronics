@@ -170,7 +170,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
                 <strong>{product?.name ?? (productsLoading ? "Checking product…" : "Product no longer available")}</strong>
                 {product?.sku ? <span>SKU: {product.sku}</span> : null}
                 {rowVariantLabel(product, line.variantId) ? <span>Option: {rowVariantLabel(product, line.variantId)}</span> : null}
-                {product && price?.valid ? <span>{formatPriceBdt(price.priceBdt)} each</span> : <span>{productsFailed ? "Product details could not be loaded. Retry the page." : "This product option is unavailable. Remove it before checkout."}</span>}
+                {product && price?.valid ? <span>{formatPriceBdt(price.priceBdt)} each</span> : product?.priceBdt === null ? <span>Price on request — confirm with the shop</span> : <span>{productsFailed ? "Product details could not be loaded. Retry the page." : "This product option is unavailable. Remove it before checkout."}</span>}
               </div>
               <div className="cart-row-actions">
                 <label>Quantity <input type="number" min="1" max="99" value={line.quantity} disabled={!product} onChange={(event) => setQuantity(line.productId, Number(event.target.value), line.variantId)} /></label>
@@ -183,11 +183,11 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
         </section>
 
         <aside className="cart-summary">
-          <h2>Order summary</h2>
-          <div><span>Estimated subtotal</span><strong>{formatPriceBdt(subtotal)}</strong></div>
-          <div><span>Delivery</span><strong>{selectedZone ? formatPriceBdt(selectedZone.deliveryChargeBdt) : "To be configured"}</strong></div>
-          <div className="cart-summary-total"><span>Estimated total</span><strong>{formatPriceBdt(estimatedTotal)}</strong></div>
-          <p>Final prices and delivery charge are recalculated by the server from the live database when you place the order.</p>
+          <h2>{checkoutReady ? "Order summary" : "Enquiry summary"}</h2>
+          <div><span>{checkoutReady ? "Estimated subtotal" : "Prices"}</span><strong>{checkoutReady ? formatPriceBdt(subtotal) : "To be confirmed"}</strong></div>
+          <div><span>Delivery</span><strong>{checkoutReady && selectedZone ? formatPriceBdt(selectedZone.deliveryChargeBdt) : "To be confirmed"}</strong></div>
+          <div className="cart-summary-total"><span>{checkoutReady ? "Estimated total" : "Final total"}</span><strong>{checkoutReady ? formatPriceBdt(estimatedTotal) : "After shop confirmation"}</strong></div>
+          <p>{checkoutReady ? "Final prices and delivery charge are recalculated by the server from the live database when you place the order." : "This is an enquiry only. The shop will confirm prices, stock and delivery before any order is accepted."}</p>
         </aside>
       </div>
 
