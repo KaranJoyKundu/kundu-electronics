@@ -24,7 +24,12 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 
 ## Hosting and deployment
 
-No production deployment has been completed. Current launch changes are on `feat/launch-prep` in draft PR #3; `main` remains unchanged.
+The Vercel project `kundu-electronics` already exists and has a verified domain alias at `https://kundu-electronics.vercel.app`. Its current production-target deployment is an older commit and was not changed here.
+
+A separate READY preview was built from `feat/launch-prep` commit `9230e23e63cb07a8a612c8500f6f2dab2377ac2d`:
+`https://kundu-electronics-31lo99v7o-kundu2409056-5098.vercel.app`
+
+The preview is not promoted to the production domain. The Vercel project has the public Supabase URL and publishable key configured. Its server-only `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` values are blank, so checkout remains disabled.
 
 Required hosting environment variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
@@ -34,6 +39,10 @@ Required hosting environment variables:
 - `NEXT_PUBLIC_SITE_URL` (the final canonical origin)
 
 Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or chat. Do not enable checkout until secrets are configured in the hosting provider and checkout is tested end-to-end on the production origin.
+
+## Current CI security status
+
+The latest Windows run passed typecheck, lint, tests and production build, but `npm audit` reports 15 development-tooling findings (9 high, 6 moderate, 0 critical). No lockfile remediation was committed. The full evidence and safe-remediation decision are in `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
 
 ## Local setup
 
