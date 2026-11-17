@@ -171,6 +171,8 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js 24
         uses: actions/setup-node@v4
@@ -251,6 +253,8 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -- package.json package-lock.json
             git commit -m "chore(deps): update stable TypeScript-ESLint"
+            git fetch origin "refs/heads/$env:GITHUB_HEAD_REF"
+            git rebase FETCH_HEAD
             git push origin "HEAD:refs/heads/$env:GITHUB_HEAD_REF"
           } else {
             "The tested stable tooling update is already committed." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
