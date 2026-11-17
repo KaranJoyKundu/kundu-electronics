@@ -35,7 +35,7 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState<Sort>("relevance");
   const [page, setPage] = useState(initialPage);
-  const hasInitialResults = initialPage === 1 && initialQuery === "" && initialCategory === "" && initialProducts.length > 0;
+  const hasInitialResults = initialQuery === "" && initialCategory === "" && initialProducts.length > 0;
   const skipInitialRequest = useRef(hasInitialResults);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [hasMore, setHasMore] = useState(initialHasMore);
