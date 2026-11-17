@@ -77,7 +77,7 @@ function parseProduct(value: unknown): Product | null {
     || !isOptionalString(value.brand)
     || !isOptionalString(value.summary)
     || !isOptionalString(value.description)
-    || !isPositiveSafeInteger(value.priceBdt)
+    || (value.priceBdt !== null && !isPositiveSafeInteger(value.priceBdt))
     || typeof value.categorySlug !== "string"
     || !isProductAvailability(value.availability)
     || !Array.isArray(value.images)
