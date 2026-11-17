@@ -7,7 +7,7 @@ const SPRITE_COLUMNS = 16;
 const SPRITE_ROWS = 14;
 
 export function ProductPhoto({ sku, name, category }: ProductPhotoProps) {
-  const match = sku?.match(/^P(\\d{3})$/);
+  const match = sku?.match(/^P(\d{3})$/);
   const productNumber = match ? Number(match[1]) : 0;
   if (productNumber >= 1 && productNumber <= CATALOGUE_PHOTO_COUNT) {
     const index = productNumber - 1;
