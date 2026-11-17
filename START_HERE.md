@@ -37,6 +37,15 @@ Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` a
 - Products without an approved photograph receive component-specific illustrations explicitly labelled as illustrations.
 - Product prices and availability labels need final owner review before sales are enabled.
 
+## Hosting and preview
+
+- Existing Vercel project: `kundu-electronics`.
+- Verified domain alias: https://kundu-electronics.vercel.app (the current production-target deployment is from an earlier commit and was not changed here).
+- Latest feature preview (READY): https://kundu-electronics-31lo99v7o-kundu2409056-5098.vercel.app
+- The feature preview is separate from the production alias and has not been promoted.
+- Vercel has public Supabase URL/key configured. `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are blank; checkout must remain disabled.
+- The current Windows CI application checks passed, but npm audit reports 9 high and 6 moderate development-tooling findings. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
+
 ## Privacy and publication rules
 
 - Public business settings are centralized in `src/config/business.ts`.
