@@ -43,15 +43,15 @@ export default function ImageCreditsPage() {
       <p className="simple-lead">This page identifies the source and reuse terms for the product photographs used in the catalogue and photo gallery.</p>
       <div className="notice-panel">
         <strong>Image processing</strong>
-        <p>Images in the combined web photo sheet were cropped, background-cleaned where practical, resized and converted to WebP for site performance. Adaptations of CC BY-SA images remain available under the same licence version stated below. The CC0 image is dedicated to the public domain.</p>
+        <p>The 16 owner-provided photos currently used on the site were resized and converted to WebP for performance. The open-licensed entries below are reviewed source candidates only and are not currently deployed.</p>
       </div>
       <h2>Photos supplied by Kundu Electronics</h2>
-      <p>These 16 images were supplied by the shop owner as owner-provided product images. Their authorship and underlying copyright have not been independently audited; please contact the shop for questions about the supplied originals.</p>
+      <p>These 16 images are currently used on the storefront for the matching SKUs. They were supplied by the shop owner as owner-provided product images. Their authorship and underlying copyright have not been independently audited; please contact the shop for questions about the supplied originals.</p>
       <ul className="image-credits-list">
         {ownerPhotos.map(([sku,name]) => <li key={sku}><strong>{sku}</strong> — {name} <span>Photo supplied by Kundu Electronics / owner-provided.</span></li>)}
       </ul>
-      <h2>Open-licensed photographs</h2>
-      <p>The following images were matched to listed products and sourced from Wikimedia Commons. The source page provides the author and licence information.</p>
+      <h2>Additional reuse-cleared sources reviewed</h2>
+      <p>These 17 Wikimedia Commons images were reviewed as possible matches for listed products. They are not currently published in the product cards or gallery; the entries below are retained as provenance notes for a future, deliberate import.</p>
       <ul className="image-credits-list">
         {openLicensedPhotos.map((item) => (
           <li key={item.sku}>
