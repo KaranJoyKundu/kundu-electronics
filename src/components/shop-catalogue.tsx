@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Category, Product } from "@/lib/catalog/types";
@@ -19,8 +19,13 @@ const availabilityLabels: Record<string, string> = {
   unknown: "Availability to confirm",
 };
 
-export function ShopCatalogue({ categories, initialQuery, initialCategory }: {
-  categories: readonly Category[]; initialQuery: string; initialCategory: string;
+export function ShopCatalogue({ categories, initialQuery, initialCategory, initialProducts, initialHasMore, initialConfigured }: {
+  categories: readonly Category[];
+  initialQuery: string;
+  initialCategory: string;
+  initialProducts: Product[];
+  initialHasMore: boolean;
+  initialConfigured: boolean;
 }) {
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState(initialCategory);
@@ -28,14 +33,20 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory }: {
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState<Sort>("relevance");
   const [page, setPage] = useState(1);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [hasMore, setHasMore] = useState(false);
-  const [configured, setConfigured] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const hasInitialResults = initialQuery === "" && initialCategory === "" && initialProducts.length > 0;
+  const skipInitialRequest = useRef(hasInitialResults);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [hasMore, setHasMore] = useState(initialHasMore);
+  const [configured, setConfigured] = useState(initialConfigured);
+  const [loading, setLoading] = useState(!hasInitialResults);
   const [failed, setFailed] = useState(false);
   const filters = useMemo(() => ({ query: query.trim(), category, minPrice, maxPrice, sort, page }), [query, category, minPrice, maxPrice, sort, page]);
 
   useEffect(() => {
+    if (skipInitialRequest.current) {
+      skipInitialRequest.current = false;
+      return;
+    }
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       setLoading(true);
