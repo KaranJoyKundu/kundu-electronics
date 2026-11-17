@@ -86,6 +86,15 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
   const everyItemOrderable = !productsLoading && !productsFailed && cartRows.length > 0
     && cartRows.every((row) => row.product?.orderable === true && row.product.published && row.price?.valid === true);
   const checkoutReady = checkout.checkoutEnabled && checkout.deliveryZones.length > 0 && checkout.paymentMethods.length > 0;
+  const cartEnquiryReady = cartRows.length > 0 && cartRows.every((row) => !!row.product && row.product.published);
+  const cartEnquiryMessage = [
+    "Hello Kundu Electronics, I would like to enquire about these cart items:",
+    ...cartRows.filter((row) => row.product).map(({ line, product }) =>
+      `- ${product!.name}${product!.sku ? ` (${product!.sku})` : ""} × ${line.quantity}${rowVariantLabel(product, line.variantId) ? ` — ${rowVariantLabel(product, line.variantId)}` : ""}`
+    ),
+    "Please confirm current availability and final prices. I understand this is an enquiry, not an order.",
+  ].join("\n");
+  const cartEnquiryUrl = "https://wa.me/8801570263442?text=" + encodeURIComponent(cartEnquiryMessage);
 
   function updateField(field: keyof CheckoutFormState, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -189,6 +198,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
           <div className="notice-panel">
             <strong>Checkout is not enabled yet</strong>
             <p>The store has not configured and enabled an approved delivery charge, delivery area and manual payment receiving instructions. Your cart is saved locally; no order or payment will be simulated.</p>
+            {cartEnquiryReady ? <Link className="button button-primary" href={cartEnquiryUrl} target="_blank" rel="noopener noreferrer">Enquire about this cart on WhatsApp ↗</Link> : <p>Load or remove unavailable cart items before sending a complete enquiry.</p>}
           </div>
         ) : (
           <form className="checkout-form" onSubmit={placeOrder}>
