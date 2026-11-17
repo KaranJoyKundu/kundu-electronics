@@ -8,6 +8,7 @@ import { useCart } from "@/components/cart/cart-provider";
 
 const primaryLinks = [
   { href: "/shop", label: "Shop" },
+  { href: "/gallery", label: "Photo gallery" },
   { href: "/support", label: "Support" },
   { href: "/about", label: "About us" },
 ];
