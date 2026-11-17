@@ -23,7 +23,7 @@ const openLicensedPhotos = [
   {sku:"P067",name:"Single-channel relay module",author:"Suyash Dwivedi",license:"CC BY-SA 4.0",source:"https://commons.wikimedia.org/wiki/File:SRD-05VDC-SL-C_5V_one-channel_relay_module.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
   {sku:"P072",name:"LM2596 buck converter",author:"Matthew Berardi",license:"CC BY-SA 4.0",source:"https://commons.wikimedia.org/wiki/File:LM2596_buck_converter_module,_MP1584_buck_converter_module,_and_SDB628_boost_converter_module.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
   {sku:"P074",name:"MP1584 buck converter",author:"Matthew Berardi",license:"CC BY-SA 4.0",source:"https://commons.wikimedia.org/wiki/File:LM2596_buck_converter_module,_MP1584_buck_converter_module,_and_SDB628_boost_converter_module.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
-  {sku:"P075",name:"XL4015 CC-CV buck converter",author:"Retired electrician",license:"Owner-confirmed reuse; consult source page for the source terms",source:"https://commons.wikimedia.org/wiki/File:XL4015-based_CC-CV_buck_converter_modules_01.jpg"},
+  {sku:"P075",name:"XL4015 CC-CV buck converter",author:"Retired electrician",license:"Permission confirmed by Kundu Electronics; see source page",source:"https://commons.wikimedia.org/wiki/File:XL4015-based_CC-CV_buck_converter_modules_01.jpg"},
   {sku:"P091",name:"1 kΩ resistor",author:"Nevit Dilmen",license:"CC BY-SA 3.0",source:"https://commons.wikimedia.org/wiki/File:1K_Resistor_1480815.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/3.0/"},
   {sku:"P092",name:"10 kΩ axial resistor",author:"oomlout",license:"CC BY-SA 2.0",source:"https://commons.wikimedia.org/wiki/File:10_kiloohms_5%25_axial_resistor.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/2.0/"},
   {sku:"P100",name:"220 Ω axial resistor",author:"oomlout",license:"CC BY-SA 2.0",source:"https://commons.wikimedia.org/wiki/File:220_ohms_5%25_axial_resistor.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/2.0/"},
@@ -48,7 +48,7 @@ export default function ImageCreditsPage() {
         <p>All 211 matching product photographs are used in the catalogue. The owner confirmed on 18 November 2026 that Kundu Electronics has permission/licence to use the complete supplied image set. The 19 Creative Commons source images are credited individually below; CC BY-SA adaptations retain the same licence version.</p>
       </div>
       <h2>Photos supplied by Kundu Electronics</h2>
-      <p>These 16 images were supplied by the shop owner as owner-provided product photographs and are used for their matching SKUs.</p>
+      <p>These 16 images were supplied directly by the shop owner as owner-provided product photographs and are used for their matching SKUs.</p>
       <ul className="image-credits-list">
         {ownerPhotos.map(([sku,name]) => <li key={sku}><strong>{sku}</strong> — {name} <span>Photo supplied by Kundu Electronics / owner-provided.</span></li>)}
       </ul>
@@ -57,7 +57,7 @@ export default function ImageCreditsPage() {
       <ul className="image-credits-list">
         {openLicensedPhotos.map((item) => (
           <li key={item.sku}>
-            <strong>{item.sku}</strong> — {item.name}. Author: {item.author}. Licence: <Link href={item.licenseUrl} target="_blank" rel="noopener noreferrer">{item.license}</Link>. <Link href={item.source} target="_blank" rel="noopener noreferrer">Original source</Link>.
+            <strong>{item.sku}</strong> — {item.name}. Author: {item.author}. Reuse: {item.licenseUrl ? <Link href={item.licenseUrl} target="_blank" rel="noopener noreferrer">{item.license}</Link> : item.license}. <Link href={item.source} target="_blank" rel="noopener noreferrer">Original source</Link>.
           </li>
         ))}
       </ul>
