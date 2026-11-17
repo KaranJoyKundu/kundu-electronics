@@ -166,6 +166,8 @@ jobs:
     name: Windows safe dependency remediation preview
     runs-on: windows-latest
     timeout-minutes: 35
+    permissions:
+      contents: write
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -207,3 +209,17 @@ jobs:
           path: package-lock.json
           if-no-files-found: error
           retention-days: 30
+
+      - name: Commit the tested lockfile to the launch branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'feat/launch-prep'
+        shell: pwsh
+        run: |
+          if (git status --porcelain -- package-lock.json) {
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -- package-lock.json
+            git commit -m "chore(deps): remediate audited development tooling"
+            git push origin "HEAD:refs/heads/$env:GITHUB_HEAD_REF"
+          } else {
+            "The committed lockfile is already up to date." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          }
