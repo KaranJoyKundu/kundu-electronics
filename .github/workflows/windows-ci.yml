@@ -195,18 +195,18 @@ jobs:
           npm audit --json 1> npm-audit-candidate.json 2> npm-audit-candidate-stderr.txt
           $auditExitCode = $LASTEXITCODE
           "npm audit exit code: $auditExitCode" | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          $report = Get-Content npm-audit-candidate.json -Raw | ConvertFrom-Json
-          $lock = Get-Content package-lock.json -Raw | ConvertFrom-Json
+          $report = Get-Content npm-audit-candidate.json -Raw | ConvertFrom-Json -AsHashtable
+          $lock = Get-Content package-lock.json -Raw | ConvertFrom-Json -AsHashtable
           $counts = $report.metadata.vulnerabilities
           "Candidate audit: $($counts.high) high, $($counts.moderate) moderate, $($counts.critical) critical." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
           if ($counts.critical -ne 0 -or $counts.moderate -ne 0) {
             Write-Error "The stable update must eliminate the minimatch moderate findings without introducing critical findings."
             exit 1
           }
-          foreach ($entry in $report.vulnerabilities.PSObject.Properties) {
+          foreach ($entry in $report.vulnerabilities.GetEnumerator()) {
             foreach ($node in $entry.Value.nodes) {
-              $package = $lock.packages.PSObject.Properties[$node]
-              if ($null -eq $package -or $package.Value.dev -ne $true) {
+              $package = $lock.packages[$node]
+              if ($null -eq $package -or $package.dev -ne $true) {
                 Write-Error "A remaining audited package is not confirmed as development-only: $node"
                 exit 1
               }
