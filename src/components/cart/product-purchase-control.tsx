@@ -6,10 +6,11 @@ import type { ProductVariant } from "@/lib/catalog/types";
 import { resolveCartLinePrice } from "@/lib/catalog/cart-pricing";
 import { formatPriceBdt } from "@/lib/format";
 
-export function ProductPurchaseControl({ productId, basePriceBdt, orderable, variants }: {
+export function ProductPurchaseControl({ productId, basePriceBdt, orderable, enquiryOnly, variants }: {
   productId: string;
-  basePriceBdt: number;
+  basePriceBdt: number | null;
   orderable: boolean;
+  enquiryOnly: boolean;
   variants: readonly ProductVariant[];
 }) {
   const { addItem } = useCart();
@@ -23,7 +24,7 @@ export function ProductPurchaseControl({ productId, basePriceBdt, orderable, var
   );
   const requiresOption = variants.length > 0;
   const validQuantity = Number.isInteger(safeQuantity) && safeQuantity >= 1 && safeQuantity <= 99;
-  const canAdd = orderable && price.valid && (!requiresOption || !!variantId) && validQuantity;
+  const canAdd = validQuantity && (!requiresOption || !!variantId) && (enquiryOnly || (orderable && price.valid));
 
   return (
     <div className="product-purchase-control">
@@ -44,16 +45,16 @@ export function ProductPurchaseControl({ productId, basePriceBdt, orderable, var
           <input className="field" type="number" min="1" max="99" step="1" inputMode="numeric" value={quantity}
             onChange={(event) => { setQuantity(event.target.value); setAdded(false); }} />
         </label>
-        <strong className="product-selected-price">{price.valid ? formatPriceBdt(price.priceBdt) : "Choose an option"}</strong>
+        <strong className="product-selected-price">{price.valid ? formatPriceBdt(price.priceBdt) : basePriceBdt === null ? formatPriceBdt(null) : "Choose an option"}</strong>
       </div>
       <button className="button button-primary" type="button" disabled={!canAdd} onClick={() => {
         if (!canAdd) return;
         addItem(productId, safeQuantity, variantId || null);
         setAdded(true);
       }}>
-        {!orderable ? "Currently unavailable" : !price.valid ? "Select an option" : !validQuantity ? "Check quantity" : added ? "Added to cart" : "Add to cart"}
+        {enquiryOnly ? (added ? "Added to enquiry cart" : "Add to enquiry cart") : !orderable ? "Currently unavailable" : !price.valid ? "Select an option" : !validQuantity ? "Check quantity" : added ? "Added to cart" : "Add to cart"}
       </button>
-      {added ? <span role="status" aria-live="polite">Added to your cart.</span> : null}
+      {added ? <span role="status" aria-live="polite">Added to your enquiry cart.</span> : null}
     </div>
   );
 }
