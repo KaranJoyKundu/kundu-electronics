@@ -14,29 +14,27 @@ function safeAvailability(value: unknown): ProductAvailability {
     : "unknown";
 }
 
-const ownerProvidedPreviewSkus = new Set(["P002","P004","P019","P023","P025","P027","P029","P034","P035","P036","P037","P038","P050","P063","P080","P181"]);
-function localOwnerProvidedImages(sku: string | null | undefined, name: string): Product["images"] {
-  return sku && ownerProvidedPreviewSkus.has(sku) ? [{ src: `/product-previews/${sku}.webp`, alt: name }] : [];
-}
 
-export async function getStorefrontCatalogue(productLimit = 8, page = 1): Promise<{ products: Product[]; categories: Category[]; connected: boolean }> {
+
+export async function getStorefrontCatalogue(productLimit = 8, page = 1): Promise<{ products: Product[]; categories: Category[]; connected: boolean; totalCount: number }> {
   const safeProductLimit = Number.isInteger(productLimit) ? Math.min(24, Math.max(1, productLimit)) : 8;
   const safePage = Number.isSafeInteger(page) ? Math.min(400, Math.max(1, page)) : 1;
   const offset = (safePage - 1) * safeProductLimit;
   const supabase = createPublicSupabaseClient();
   if (!supabase) {
     const fallback = getPublishedProducts();
-    return { products: fallback.slice(offset, offset + safeProductLimit), categories: getPublishedCategories(), connected: false };
+    return { products: fallback.slice(offset, offset + safeProductLimit), categories: getPublishedCategories(), connected: false, totalCount: fallback.length };
   }
 
-  const [categoryResult, productResult] = await Promise.all([
+  const [categoryResult, productResult, countResult] = await Promise.all([
     supabase.from("catalog_categories").select("id,parent_id,slug,name,description,sort_order").order("sort_order").order("name"),
     supabase.from("catalog_products").select("id,category_id,sku,slug,name,brand,short_description,description,price_bdt,public_availability,orderable,sort_order,published_at").order("sort_order").order("name").range(offset, offset + safeProductLimit - 1),
+    supabase.from("catalog_products").select("id", { count: "exact", head: true }),
   ]);
 
   // A failed public query does not fall back to stale or fabricated data.
-  if (categoryResult.error || productResult.error) {
-    return { products: [], categories: [], connected: true };
+  if (categoryResult.error || productResult.error || countResult.error) {
+    return { products: [], categories: [], connected: true, totalCount: 0 };
   }
 
   const categoryRows = categoryResult.data ?? [];
@@ -100,14 +98,14 @@ export async function getStorefrontCatalogue(productLimit = 8, page = 1): Promis
       priceBdt: price,
       categorySlug: category.slug,
       availability: safeAvailability(row.public_availability),
-      images: (imagesByProduct.get(row.id)?.length ? imagesByProduct.get(row.id)! : localOwnerProvidedImages(row.sku, row.name)),
+      images: imagesByProduct.get(row.id) ?? [],
       published: true,
       orderable: row.orderable === true,
       updatedAt: row.published_at ?? "",
     }];
   });
 
-  return { products, categories, connected: true };
+  return { products, categories, connected: true, totalCount: countResult.count ?? 0 };
 }
 
 export async function getStorefrontCategories(): Promise<Category[]> {
