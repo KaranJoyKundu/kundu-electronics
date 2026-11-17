@@ -607,3 +607,33 @@ button { cursor: pointer; }
   .catalogue-page-number { min-width: 33px; min-height: 36px; }
   .product-artwork-caption { font-size: 8px; }
 }
+
+
+/* Keep all seven page buttons available and tappable on small screens. */
+.catalogue-pagination {
+  width: 100%;
+  justify-content: center;
+}
+.catalogue-page-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+}
+.catalogue-page-number-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+@media (max-width: 420px) {
+  .catalogue-pagination {
+    gap: 6px;
+    padding: 8px 6px;
+  }
+  .catalogue-page-numbers { flex: 1 1 100%; order: 3; }
+  .catalogue-pagination-current { order: 2; }
+  .catalogue-pagination > .button:first-child { order: 1; }
+  .catalogue-pagination > .button:last-child { order: 4; }
+  .catalogue-page-number { min-width: 32px; min-height: 36px; }
+}
