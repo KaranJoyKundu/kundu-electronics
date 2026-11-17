@@ -4,6 +4,8 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getStorePrincipal } from "@/lib/supabase/authz";
+import { parseHmacSecret } from "@/lib/checkout/security";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { verifiedProductImageExtension } from "@/lib/security/image-signature";
 
@@ -351,6 +353,9 @@ export async function setCheckoutEnabled(form: FormData) {
   if (principal.role !== "admin") redirect("/admin?reason=admin-only");
   const enabled = form.get("enabled") === "on";
   if (enabled) {
+    if (!parseHmacSecret(process.env.APP_HMAC_SECRET) || !createAdminSupabaseClient()) {
+      finish("/admin/settings", "checkout-server-not-ready");
+    }
     const [{ data: zones }, { data: methods }] = await Promise.all([
       supabase.from("delivery_zones").select("id").eq("is_enabled", true).not("delivery_charge_bdt", "is", null).limit(1),
       supabase.from("payment_method_settings").select("method").eq("is_enabled", true).not("receiving_number", "is", null).not("customer_instructions", "is", null).limit(1),
