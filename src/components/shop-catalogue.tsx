@@ -97,7 +97,7 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
   ])).sort((a, b) => a - b);
 
   function renderPagination(position: "top" | "bottom") {
-    if (priceInvalid || loading || failed || !configured || (page === 1 && !hasMore)) return null;
+    if (priceInvalid || failed || !configured || (page === 1 && !hasMore)) return null;
     return (
       <nav className={`catalogue-pagination catalogue-pagination-${position}`} aria-label={"Catalogue pagination, page " + page}>
         <button className="button button-outline" type="button" disabled={page === 1}
