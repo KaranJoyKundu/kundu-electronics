@@ -2,17 +2,18 @@
 
 ## Project identity
 
-- Project: Kundu Electronics — electronics-components e-commerce store
+- Project: Kundu Electronics — electronics-components storefront
 - Location/currency: Khulna, Bangladesh · BDT (৳)
-- Reference: https://www.sparkfun.com/
+- Design reference: https://www.sparkfun.com/
 - GitHub: https://github.com/KaranJoyKundu/kundu-electronics (private)
 - Default branch: `main`
 - Current launch work: `feat/launch-prep`
-- Do not force-push. Do not put secrets or owner-only business data in Git.
+- Current review: draft PR #3 — https://github.com/KaranJoyKundu/kundu-electronics/pull/3
+- Do not force-push, merge launch changes into `main`, or commit secrets.
 
 ## Read first
 
-1. `documentation/LAUNCH_STATUS.md` — current verified launch and hosting state
+1. `documentation/LAUNCH_STATUS.md` — current verified hosting and launch state
 2. `documentation/PROJECT_STATE.md`
 3. `documentation/TASK_TRACKER.md`
 4. `documentation/TEST_REPORT.md`
@@ -23,25 +24,28 @@
 
 ## Stack and local commands
 
-- Next.js 16.4.6 App Router, React 19.3.0, strict TypeScript, Tailwind CSS 4.3.3.
-- Node.js 24 and npm 11 are used for Windows CI.
+- Next.js 16.4.6 App Router, React 19.3.0, strict TypeScript and Tailwind CSS 4.3.3.
+- Node.js 24 and npm 11 are used in Windows CI.
 
-```powershell
-npm ci
-npm run typecheck
-npm run lint
-npm test
-npm run build
-npm audit
-```
+Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` and `npm audit`.
+
+## Current catalogue and photos
+
+- Supabase contains 158 published product rows across 17 categories.
+- The shop supports search, category and BDT price filtering with exact-count pagination.
+- The curated photo gallery contains 33 products with actual photographs: 16 shop-supplied images and 17 open-licensed images. See `/image-credits` for attribution and licence details.
+- Products without an approved photograph receive component-specific illustrations explicitly labelled as illustrations.
+- Product prices and availability labels need final owner review before sales are enabled.
 
 ## Privacy and publication rules
 
 - Public business settings are centralized in `src/config/business.ts`.
-- Public Product types expose selling prices only. Never add purchase prices, supplier identity, internal stock notes or margins to public records.
+- Public product records expose customer-facing selling prices only. Never add purchase prices, supplier identity, margins or internal notes.
 - Never commit the raw business brief, master workbook, supplier documents, credentials or `.env.local`.
-- Product photos in the owner-provided set may be shown as enquiry previews; they are not a stock list or price list.
-- No product is purchasable until its selling price and availability are confirmed.
-- bKash/Nagad and checkout remain disabled until owner-approved receiving numbers, instructions, delivery zones/charges and server secrets are configured and verified.
+- Do not publish photos with unverified reuse rights.
+- No product is purchasable while checkout is disabled.
+- bKash/Nagad, delivery areas/charges and checkout remain disabled until owner-approved receiving details, instructions, delivery rules and server secrets are configured and verified.
+- Checkout requires `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` as server-only hosting environment variables.
 - A submitted transaction reference is not payment verification.
+- Public admin registration is disabled. Owner provisioning and role assignment must be performed through Supabase Auth and the protected database.
 - Never expose Supabase secret/service-role keys in `NEXT_PUBLIC_*`, browser code, Git or chat.
