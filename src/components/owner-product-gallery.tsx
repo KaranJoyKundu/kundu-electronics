@@ -6,6 +6,7 @@ const products = [
   { id: "P004", name: "BO Motor 6V 100RPM Geared DC Motor", category: "Robotics parts & mechanical", slug: "bo-motor-6v-100rpm-geared-dc-motor-p004", image: "/product-previews/P004.webp" },
   { id: "P019", name: "Arduino Uno SMD", category: "Microcontrollers & development boards", slug: "arduino-uno-smd-p019", image: "/product-previews/P019.webp" },
   { id: "P023", name: "ESP32 DevKit v1", category: "Microcontrollers & development boards", slug: "esp32-devkit-v1-p023", image: "/product-previews/P023.webp" },
+  { id: "P025", name: "ESP32-S3", category: "Microcontrollers & development boards", slug: "esp32-s3-p025", image: "/product-previews/P025.webp" },
   { id: "P027", name: "STM32 Black Pill", category: "Microcontrollers & development boards", slug: "stm32-black-pill-p027", image: "/product-previews/P027.webp" },
   { id: "P029", name: "0.96 Inch OLED Display I2C Module", category: "Displays", slug: "0-96-inch-oled-display-i2c-module-p029", image: "/product-previews/P029.webp" },
   { id: "P034", name: "TP4056 Type-C Lithium Battery Charging Module protected variant", category: "Sensors & modules", slug: "tp4056-type-c-lithium-battery-charging-module-protected-variant-p034", image: "/product-previews/P034.webp" },
