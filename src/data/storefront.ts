@@ -1,4 +1,6 @@
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { parseHmacSecret } from "@/lib/checkout/security";
 import type { Category, Product, ProductAvailability, ProductVariant } from "@/lib/catalog/types";
 import { getPublishedCategories, getPublishedProducts } from "@/data/catalogue";
 import { parsePublicPaymentMethods, type ConfiguredPaymentMethod } from "@/lib/checkout/payment-methods";
@@ -198,5 +200,10 @@ export async function getPublicCheckoutConfig(): Promise<PublicCheckoutConfig> {
     return [{ id: row.id, code: row.code, name: row.name, description: typeof row.description === "string" ? row.description : null, deliveryChargeBdt: charge }];
   }) : [];
   const paymentMethods = parsePublicPaymentMethods(config.paymentMethods);
-  return { checkoutEnabled: config.checkoutEnabled === true, deliveryZones, paymentMethods };
+  const serverCheckoutReady = Boolean(parseHmacSecret(process.env.APP_HMAC_SECRET) && createAdminSupabaseClient());
+  return {
+    checkoutEnabled: config.checkoutEnabled === true && serverCheckoutReady,
+    deliveryZones,
+    paymentMethods,
+  };
 }
