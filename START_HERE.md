@@ -43,8 +43,8 @@ Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` a
 - Verified domain alias: https://kundu-electronics.vercel.app (the current production-target deployment is from an earlier commit and was not changed here).
 - Latest feature preview (READY): https://kundu-electronics-9m5a2bgty-kundu2409056-5098.vercel.app
 - The feature preview is separate from the production alias and has not been promoted.
-- Vercel has public Supabase URL/key configured. `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are blank; checkout must remain disabled.
-- The current Windows CI application checks passed, but npm audit reports 9 high and 6 moderate development-tooling findings. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
+- Vercel has the public Supabase environment variables and sensitive server-only entries. Secret values are not printed in project files. Checkout remains disabled by the live Supabase settings (zero enabled payment methods and zero delivery zones).
+- Stable TypeScript-ESLint `8.73.0` is committed on the feature branch. Its Windows candidate passed audit classification (14 high development-only, 0 moderate, 0 critical), typecheck, lint, tests and production build. The unresolved `picomatch <=4.0.7` advisory remains. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
 
 ## Privacy and publication rules
 
