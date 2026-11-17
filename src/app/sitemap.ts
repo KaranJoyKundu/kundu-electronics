@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://kundu-electronics.vercel.app").replace(/\/$/, "");
-const staticPaths = ["", "/shop", "/gallery", "/about", "/contact", "/support", "/shipping-returns"] as const;
+const staticPaths = ["", "/shop", "/gallery", "/image-credits", "/about", "/contact", "/support", "/shipping-returns"] as const;
 
 export const revalidate = 3600;
 
