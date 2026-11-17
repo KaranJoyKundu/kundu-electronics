@@ -143,7 +143,7 @@ export async function getStorefrontProduct(slug: string): Promise<Product | null
     id: row.id, sku: row.sku ?? "", slug: row.slug, name: row.name, brand: row.brand ?? undefined,
     summary: row.short_description ?? undefined, description: row.description ?? undefined,
     priceBdt: Number(row.price_bdt), categorySlug: category.slug, availability: safeAvailability(row.public_availability),
-    images: imageRows.flatMap((image) => urls.has(image.storage_path) ? [{ src: urls.get(image.storage_path)!, alt: image.alt_text }] : []).length > 0 ? imageRows.flatMap((image) => urls.has(image.storage_path) ? [{ src: urls.get(image.storage_path)!, alt: image.alt_text }] : []) : localOwnerProvidedImages(row.sku, row.name),
+    images: imageRows.flatMap((image) => urls.has(image.storage_path) ? [{ src: urls.get(image.storage_path)!, alt: image.alt_text }] : []),
     published: true, orderable: row.orderable === true, updatedAt: row.published_at ?? "",
   };
 }
