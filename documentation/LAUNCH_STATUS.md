@@ -37,18 +37,17 @@
 - The updated candidate audit has **14 high, 0 moderate and 0 critical** findings. All remaining nodes were verified as development-only tooling. The unresolved high advisory is GHSA-fc5q-39xc-vjpf in `picomatch <=4.0.7`; the ordinary audit lane therefore still reports failure and must not be described as security-clean.
 - Keep PR #3 in draft. Do not downgrade the Next.js ESLint config, add incompatible overrides, use an unreviewed Git dependency or suppress the audit. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md` for the full report and artifact links.
 
-## Vercel hosting state
+## Vercel production state
 
-- Existing Vercel project: `kundu-electronics` (`prj_Rjsn0UkM5UbbFmdILo6wSHYe0JWD`) in the connected team.
-- Vercel has a verified project domain `kundu-electronics.vercel.app`. The most recent production-target deployment currently associated with that domain is an older READY deployment from commit `90f70e160350d5dc2c921c52d7b21f2d6ae569f0`. It was not replaced during this work.
-- The latest **READY preview deployment** was created for feature-branch commit `e4b92d6ca4dfe16c60c441d5aeb40724798f609d`:
-  https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app
-- Stable preview branch alias: https://kundu-electronics-git-feat-launch-prep-kundu2409056-5098.vercel.app
-- The preview has its own alias and did not receive the production domain. The Vercel build completed successfully and generated the shop, product, gallery, image-credits, cart, checkout API and protected admin routes. Direct HTTP verification from this execution environment was unavailable because DNS resolution failed; owner browser verification remains outstanding.
-- Vercel has the public Supabase URL/key and canonical URL entries. Sensitive environment-variable entries for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are present. Vercel marks their values as secret and the connector does not reveal them; `SUPABASE_SECRET_KEY` is scoped to Production and `APP_HMAC_SECRET` to Preview, Production and Development.
-- Live Supabase checks show `checkout_enabled = false`, zero enabled payment methods and zero configured delivery zones. Checkout is therefore independently blocked by database configuration.
+- Production site is live at **https://kundu-electronics.vercel.app**.
+- Production deployment: `dpl_9eR2LheoHs1uX6obvbEsCswC2ayy`, status **READY**, source `feat/launch-prep` commit `e8735cf5950a27bb1bd512397dbb16b79c5fa808`.
+- Vercel confirms the canonical alias `kundu-electronics.vercel.app` maps to that deployment. This replaces the previous production-target deployment from commit `90f70e160350d5dc2c921c52d7b21f2d6ae569f0`.
+- Separate READY preview: https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app
+- The production build generated the shop, product, gallery, image-credits, cart, checkout API and protected admin routes. Direct HTTP fetching from this execution environment was blocked by DNS resolution, so owner browser visual confirmation remains outstanding.
+- Vercel has the public Supabase URL/key and canonical URL entries. Sensitive `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` entries are present in protected form; their values are not exposed in this documentation.
+- Live Supabase checks show `checkout_enabled = false`, zero enabled payment methods and zero configured delivery zones. Customers can browse and send WhatsApp enquiries; they cannot place or pay for orders.
 
-The existing production-target deployment remains on the older feature-branch commit `90f70e160350d5dc2c921c52d7b21f2d6ae569f0`. It was not replaced. Keep the new preview separate until the owner has reviewed the storefront and the remaining security/launch decisions are complete.
+The site is now deployed in enquiry-only mode. Do not enable payments or checkout until prices/stock are owner-reviewed, delivery areas/charges and payment instructions are configured, the admin sign-in is tested, and the remaining high-severity development-tooling advisory has a stable fix.
 
 ## Remaining launch blockers
 
