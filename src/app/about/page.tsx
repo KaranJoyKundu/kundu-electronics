@@ -11,9 +11,9 @@ export default function AboutPage() {
       <p className="simple-lead">{business.tagline}</p>
       <div className="notice-panel">
         <strong>Electronics components in Khulna</strong>
-        <p>Kundu Electronics supports students, makers and electronics enthusiasts with components and practical project support.</p>
-        <p>Based near KUET at {business.contact.publicAddress}. Consultation is free.</p>
-        <p>For current product availability, contact the shop before making a visit. Product listings will only be published after their selling price and customer-facing details are reviewed.</p>
+        <p>Kundu Electronics focuses on affordable electronics components and practical, student-focused solutions.</p>
+        <p>Based near KUET at {business.contact.publicAddress}.</p>
+        <p>Product information and stock can change. Contact the shop to confirm specifications and availability before visiting or purchasing.</p>
       </div>
     </section>
   );
