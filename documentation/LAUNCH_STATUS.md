@@ -32,30 +32,29 @@
 ## Security and CI
 
 - RLS is enabled on all 21 public tables. Supabase security-advisor warnings still require review.
-- Latest Windows audit run #44135310151 reported **15 development-tooling findings: 9 high, 6 moderate, 0 critical**. The direct package in the affected chain is `eslint-config-next@16.4.6` (a devDependency); the remaining findings are transitive lint-tool dependencies.
-- The new high advisory is GHSA-fc5q-39xc-vjpf in `picomatch <=4.0.7`; upstream PR #238 was still open and npm's latest published package remained 4.0.7 at the time of review. The moderate minimatch advisory GHSA-g3hv-75wg-m249 is also still present.
-- The Windows app-verification job **passed** (typecheck, lint, tests, production build). The security audit and lockfile-remediation preview **failed**; no lockfile candidate was committed. npm's suggested force path would downgrade `eslint-config-next` from 16.4.6 to 14.2.35. It was not used.
-- Keep PR #3 in draft. Do not force a major downgrade, add an incompatible override, use an unreviewed Git dependency or suppress the audit. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md` for the full report and artifact links.
+- Stable TypeScript-ESLint `8.73.0` and nested `minimatch@11.0.9` are committed in feature-branch commit `f29d1887bd336ee95a124469d8b54f43d82d963c`. Next.js and `eslint-config-next` remain at `16.4.6`.
+- Latest Windows run #44190035964 passed the application verification lane and stable-tooling candidate lane: clean install, audit classification, typecheck, lint, tests and production build all passed.
+- The updated candidate audit has **14 high, 0 moderate and 0 critical** findings. All remaining nodes were verified as development-only tooling. The unresolved high advisory is GHSA-fc5q-39xc-vjpf in `picomatch <=4.0.7`; the ordinary audit lane therefore still reports failure and must not be described as security-clean.
+- Keep PR #3 in draft. Do not downgrade the Next.js ESLint config, add incompatible overrides, use an unreviewed Git dependency or suppress the audit. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md` for the full report and artifact links.
 
 ## Vercel hosting state
 
 - Existing Vercel project: `kundu-electronics` (`prj_Rjsn0UkM5UbbFmdILo6wSHYe0JWD`) in the connected team.
 - Vercel has a verified project domain `kundu-electronics.vercel.app`. The most recent production-target deployment currently associated with that domain is an older READY deployment from commit `90f70e160350d5dc2c921c52d7b21f2d6ae569f0`. It was not replaced during this work.
-- A separate **READY preview deployment** was created for current feature-branch commit `3aa7a646fd50933bff1ebe95b509d6f0d338d93f`:
-  https://kundu-electronics-9m5a2bgty-kundu2409056-5098.vercel.app
-- The preview has its own branch alias and did not receive the production domain. The preview build ran Next.js 16.4.6 and completed successfully.
-- The Vercel project has `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `NEXT_PUBLIC_SITE_URL` set. Sensitive environment-variable entries for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are present in project metadata, but their values were not decrypted or inspected. `SUPABASE_SECRET_KEY` is scoped to Production; `APP_HMAC_SECRET` is scoped to Preview, Production and Development.
-- Current live Supabase checks show `checkout_enabled = false`, zero enabled payment methods and zero configured delivery zones. Checkout is therefore independently blocked by database configuration; no secret value was inserted into Git.
+- The latest **READY preview deployment** was created for feature-branch commit `e4b92d6ca4dfe16c60c441d5aeb40724798f609d`:
+  https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app
+- Stable preview branch alias: https://kundu-electronics-git-feat-launch-prep-kundu2409056-5098.vercel.app
+- The preview has its own alias and did not receive the production domain. The Vercel build completed successfully and generated the shop, product, gallery, image-credits, cart, checkout API and protected admin routes. Direct HTTP verification from this execution environment was unavailable because DNS resolution failed; owner browser verification remains outstanding.
+- Vercel has the public Supabase URL/key and canonical URL entries. Sensitive environment-variable entries for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are present. Vercel marks their values as secret and the connector does not reveal them; `SUPABASE_SECRET_KEY` is scoped to Production and `APP_HMAC_SECRET` to Preview, Production and Development.
+- Live Supabase checks show `checkout_enabled = false`, zero enabled payment methods and zero configured delivery zones. Checkout is therefore independently blocked by database configuration.
 
-The existing production-target deployment is older than the current feature preview. Do not promote the new preview or change the production alias until the audit, owner inventory review and remaining launch checks are resolved. The preview can be opened for visual inspection at the URL above.
+The existing production-target deployment remains on the older feature-branch commit `90f70e160350d5dc2c921c52d7b21f2d6ae569f0`. It was not replaced. Keep the new preview separate until the owner has reviewed the storefront and the remaining security/launch decisions are complete.
 
 ## Remaining launch blockers
 
 - Windows dependency security audit is not clean (see above).
 - Product prices, availability and descriptions need final owner review against the current inventory.
 - bKash/Nagad receiving details and instructions, delivery zones and charges are not configured.
-- No owner admin profile exists.
-- Server-only Vercel secrets are blank.
 - Supabase security-advisor warnings still need review.
 
 ## Hosting environment required
