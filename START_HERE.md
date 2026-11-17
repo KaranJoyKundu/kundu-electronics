@@ -41,7 +41,7 @@ Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` a
 
 - Existing Vercel project: `kundu-electronics`.
 - Verified domain alias: https://kundu-electronics.vercel.app (the current production-target deployment is from an earlier commit and was not changed here).
-- Latest feature preview (READY): https://kundu-electronics-31lo99v7o-kundu2409056-5098.vercel.app
+- Latest feature preview (READY): https://kundu-electronics-9m5a2bgty-kundu2409056-5098.vercel.app
 - The feature preview is separate from the production alias and has not been promoted.
 - Vercel has public Supabase URL/key configured. `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are blank; checkout must remain disabled.
 - The current Windows CI application checks passed, but npm audit reports 9 high and 6 moderate development-tooling findings. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
