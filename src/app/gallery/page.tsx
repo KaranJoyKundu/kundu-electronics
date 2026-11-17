@@ -16,7 +16,7 @@ export default function GalleryPage() {
         <header className="owner-gallery-heading">
           <span className="section-kicker">KUNDU ELECTRONICS / PRODUCT PREVIEWS</span>
           <h1>Parts for your <em>next build.</em></h1>
-          <p>Browse 33 selected products. Sixteen have product photos supplied by the shop; the rest use clearly labelled component illustrations until approved photos are added.</p>
+          <p>Browse 33 selected products with real photographs: 16 supplied by the shop and 17 from open-licensed sources. Other catalogue products use clearly labelled component illustrations.</p>
           <p><Link className="underlined-link" href="/image-credits">View photo sources and credits →</Link></p>
           <div className="owner-gallery-notice"><strong>Stock can change</strong><span>Stock indicators come from the shop inventory workbook. Please message us to reconfirm availability before travelling or ordering.</span></div>
         </header>
