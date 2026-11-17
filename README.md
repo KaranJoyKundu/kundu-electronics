@@ -24,21 +24,20 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 
 ## Hosting and deployment
 
-The Vercel project `kundu-electronics` already exists and has a verified domain alias at `https://kundu-electronics.vercel.app`. Its current production-target deployment is an older commit and was not changed here.
+The production site is now live at **https://kundu-electronics.vercel.app**. Vercel reports the deployment as READY from `feat/launch-prep` commit `e8735cf5950a27bb1bd512397dbb16b79c5fa808`; the canonical domain alias points to that deployment. `main` remains unchanged.
 
-A separate READY preview was built from `feat/launch-prep` commit `3aa7a646fd50933bff1ebe95b509d6f0d338d93f`:
-`https://kundu-electronics-9m5a2bgty-kundu2409056-5098.vercel.app`
+A separate preview is available at `https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app`. The production site is enquiry-only: checkout remains disabled because no payment method or delivery zone is enabled in Supabase.
 
-The preview is not promoted to the production domain. The Vercel project lists the public Supabase variables and sensitive server-only environment entries. Values are not printed in this repository. Checkout remains disabled because the Supabase checkout switch is off, no payment method is enabled, and no delivery zone is configured.
+The Vercel project has the public Supabase URL/key and sensitive server-only entries. The values for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are not included in this repository or this documentation.
 
-Required hosting environment variables:
+Required hosting environment variables for local/other environments:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY` (server-only)
 - `APP_HMAC_SECRET` (server-only, 32 cryptographically random bytes encoded as 64 hex characters)
 - `NEXT_PUBLIC_SITE_URL` (the final canonical origin)
 
-Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or chat. Do not enable checkout until secrets are configured in the hosting provider and checkout is tested end-to-end on the production origin.
+Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or chat. Do not enable checkout until payment and delivery configuration is approved and checkout is tested end-to-end.
 
 ## Current CI security status
 
