@@ -1,33 +1,32 @@
 # Kundu Electronics
 
-Responsive e-commerce storefront and modular-monolith backend foundation for Kundu Electronics, Khulna, Bangladesh.
+Responsive storefront and e-commerce foundation for Kundu Electronics, Khulna, Bangladesh.
 
 ## Current implementation
 
 - Next.js 16 App Router, React 19.3, TypeScript and Tailwind CSS 4.
-- Shared storefront shell, homepage, shop page, product details route, cart and information routes.
-- Database-backed catalogue search, bounded listing pagination, category/price/sort filters and one-character search support.
-- Product options with server-loaded variant price overrides and shared product-level inventory semantics.
-- Supabase SSR/browser/server-only client separation, Next.js 16 `proxy.ts`, admin login and role checks.
-- Admin routes/actions for products, categories, variants, images, inventory, orders, manual payment verification and settings.
-- PostgreSQL migration covering catalogue, inventory, customers, orders, payment submissions/events, audit records, rate limiting, RLS and private storage buckets.
-- Unit tests for catalogue, variant pricing, checkout validation/idempotency and image signatures.
+- Storefront shell, homepage, shop, product detail, cart and information pages.
+- Live Supabase project provisioned in ap-northeast-1; initial schema migration applied on 17 November 2026.
+- The migration created 21 public tables, enabled RLS on all 21, and created two private storage buckets.
+- Supabase TypeScript database definitions are generated from the connected project in `src/lib/supabase/database.types.ts`.
+- Search, filtering, product options, cart, admin, order and manual-payment foundations are implemented in the codebase.
+- Owner-provided product photo previews are presented separately from the purchasable catalogue. Each gallery item directs customers to confirm current price and availability with the shop.
 
-## Not production-connected yet
+## Not live for sales yet
 
-No Supabase project is configured, no migration has been applied, no product data is published, and checkout/payment methods are disabled by default. Database functions and RLS policies are implementation drafts until executed and tested against a real local/remote PostgreSQL environment. Do not claim live orders, admin authentication, stock, or payments until those integrations pass verification.
+The connected database currently contains zero products, categories and admin profiles. Checkout is disabled, bKash and Nagad are disabled, and delivery zones are not configured. Do not claim live orders, working admin accounts, verified stock, or payments until those features are configured and tested end-to-end.
+
+The production hosting project and runtime environment variables are not yet configured. A public deployment still needs a connected hosting account and server-side secrets. Never put `SUPABASE_SECRET_KEY` or `APP_HMAC_SECRET` in client code, `NEXT_PUBLIC_*`, Git, or chat.
 
 ## Local setup
 
 ```powershell
-npm install
+npm ci
 Copy-Item .env.example .env.local
 npm run dev
 ```
 
-Set local Supabase variables only in `.env.local`. Keep `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` server-only. Never commit `.env.local`.
-
-Run checks:
+Configure Supabase values only in `.env.local`. Run checks:
 
 ```powershell
 npm run typecheck
@@ -38,4 +37,4 @@ npm run build
 
 ## Project continuity
 
-Read `START_HERE.md` and `documentation/PROJECT_STATE.md`. Full SparkFun research is preserved in `documentation/research/`. Product candidates are kept separately for owner review and are not published by default.
+Read `START_HERE.md`, `documentation/PROJECT_STATE.md`, and `documentation/LAUNCH_STATUS.md`. Full SparkFun research is preserved in `documentation/research/`. The customer-facing product catalogue remains empty until the owner confirms selling prices, stock status, descriptions and publication approval.
