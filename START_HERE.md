@@ -37,14 +37,15 @@ Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` a
 - Products without an approved photograph receive component-specific illustrations explicitly labelled as illustrations.
 - Product prices and availability labels need final owner review before sales are enabled.
 
-## Hosting and preview
+## Hosting and production
 
-- Existing Vercel project: `kundu-electronics`.
-- Verified domain alias: https://kundu-electronics.vercel.app (the current production-target deployment is from an earlier commit and was not changed here).
-- Latest feature preview (READY): https://kundu-electronics-9m5a2bgty-kundu2409056-5098.vercel.app
-- The feature preview is separate from the production alias and has not been promoted.
-- Vercel has the public Supabase environment variables and sensitive server-only entries for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET`. Their secret values are not exposed in this documentation. Checkout remains disabled by live Supabase settings (zero enabled payment methods and zero delivery zones).
-- Stable TypeScript-ESLint `8.73.0` is committed on the feature branch. Its Windows candidate passed audit classification (14 high development-only, 0 moderate, 0 critical), typecheck, lint, tests and production build. The unresolved `picomatch <=4.0.7` advisory remains. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
+- Production site is live: https://kundu-electronics.vercel.app
+- Vercel reports the production deployment READY from `feat/launch-prep` commit `e8735cf5950a27bb1bd512397dbb16b79c5fa808`.
+- Separate preview: https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app
+- `main` remains unchanged; the current production deployment was built from the launch feature branch.
+- The storefront is enquiry-only. Checkout is disabled by live Supabase settings: zero enabled payment methods and zero configured delivery zones.
+- Vercel holds sensitive `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` entries; their values are not written into this repository or documentation.
+- Stable TypeScript-ESLint `8.73.0` is committed. Windows application verification and candidate checks passed; 14 high development-tooling findings remain. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
 
 ## Privacy and publication rules
 
