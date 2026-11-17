@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Category, Product } from "@/lib/catalog/types";
 import { formatPriceBdt } from "@/lib/format";
+import { ProductArtwork } from "@/components/product-artwork";
 
 type Sort = "relevance" | "name-asc" | "price-asc" | "price-desc" | "newest";
 
@@ -19,8 +20,9 @@ const availabilityLabels: Record<string, string> = {
   unknown: "Availability to confirm",
 };
 
-export function ShopCatalogue({ categories, initialQuery, initialCategory, initialProducts, initialHasMore, initialConfigured }: {
+export function ShopCatalogue({ categories, initialQuery, initialCategory, initialPage, initialProducts, initialHasMore, initialConfigured }: {
   categories: readonly Category[];
+  initialPage: number;
   initialQuery: string;
   initialCategory: string;
   initialProducts: Product[];
@@ -32,8 +34,8 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState<Sort>("relevance");
-  const [page, setPage] = useState(1);
-  const hasInitialResults = initialQuery === "" && initialCategory === "" && initialProducts.length > 0;
+  const [page, setPage] = useState(initialPage);
+  const hasInitialResults = initialPage === 1 && initialQuery === "" && initialCategory === "" && initialProducts.length > 0;
   const skipInitialRequest = useRef(hasInitialResults);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [hasMore, setHasMore] = useState(initialHasMore);
@@ -75,6 +77,13 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
     return () => { window.clearTimeout(timer); controller.abort(); };
   }, [filters]);
 
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (page > 1) url.searchParams.set("page", String(page));
+    else url.searchParams.delete("page");
+    window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+  }, [page]);
+
   function resetPage(change: () => void) { change(); setPage(1); }
   function clearFilters() {
     setQuery(""); setCategory(""); setMinPrice(""); setMaxPrice(""); setSort("relevance"); setPage(1);
@@ -90,7 +99,7 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
   function renderPagination(position: "top" | "bottom") {
     if (priceInvalid || loading || failed || !configured || (page === 1 && !hasMore)) return null;
     return (
-      <nav className={`catalogue-pagination catalogue-pagination-${position}`} aria-label="Catalogue pagination">
+      <nav className={`catalogue-pagination catalogue-pagination-${position}`} aria-label={"Catalogue pagination, page " + page}>
         <button className="button button-outline" type="button" disabled={page === 1}
           aria-label="Previous page" onClick={() => setPage((current) => Math.max(1, current - 1))}>Previous</button>
         <div className="catalogue-page-numbers">
@@ -130,7 +139,7 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
             : !configured ? <div className="empty-catalogue"><h2>The catalogue is not connected yet.</h2><p>Connect the approved database to display published products.</p></div>
             : loading ? <div className="empty-catalogue" aria-live="polite"><h2>Loading catalogue…</h2></div>
             : products.length === 0 ? <div className="empty-catalogue"><div className="empty-catalogue-icon">＋</div><span className="state-tag">NO PUBLISHED PRODUCTS</span><h2>{page > 1 ? "No more products on this page." : "The catalogue is being prepared."}</h2><p>{page > 1 ? "Return to the previous page." : "Product listings will appear here once the inventory and customer-facing selling prices have been reviewed and added."}</p><button className="button button-dark" type="button" onClick={page > 1 ? () => setPage(page - 1) : clearFilters}>{page > 1 ? "Previous page" : "Clear filters"}</button></div>
-            : <div className="product-grid">{products.map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="product-tile"><div className="product-tile-image">{product.images[0] ? <Image src={product.images[0].src} alt={product.images[0].alt} width={480} height={360} unoptimized /> : <span>IMAGE PENDING</span>}</div><span className="product-tile-sku">{product.sku}</span><strong>{product.name}</strong><span className="product-tile-price">{formatPriceBdt(product.priceBdt)}</span><span className={`product-tile-availability product-tile-availability-${product.availability}`}>{availabilityLabels[product.availability] ?? availabilityLabels.unknown}</span></Link>)}</div>}
+            : <div className="product-grid">{products.map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="product-tile"><div className="product-tile-image">{product.images[0] ? <Image src={product.images[0].src} alt={product.images[0].alt} width={480} height={360} unoptimized /> : <ProductArtwork name={product.name} sku={product.sku} category={product.categorySlug} />}</div><span className="product-tile-sku">{product.sku}</span><strong>{product.name}</strong><span className="product-tile-price">{formatPriceBdt(product.priceBdt)}</span><span className={`product-tile-availability product-tile-availability-${product.availability}`}>{availabilityLabels[product.availability] ?? availabilityLabels.unknown}</span></Link>)}</div>}
           {renderPagination("bottom")}
         </div>
       </div>
