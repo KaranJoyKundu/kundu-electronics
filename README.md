@@ -29,7 +29,7 @@ The Vercel project `kundu-electronics` already exists and has a verified domain 
 A separate READY preview was built from `feat/launch-prep` commit `3aa7a646fd50933bff1ebe95b509d6f0d338d93f`:
 `https://kundu-electronics-9m5a2bgty-kundu2409056-5098.vercel.app`
 
-The preview is not promoted to the production domain. The Vercel project has the public Supabase URL and publishable key configured. Its server-only `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` values are blank, so checkout remains disabled.
+The preview is not promoted to the production domain. The Vercel project lists the public Supabase variables and sensitive server-only environment entries. Values are not printed in this repository. Checkout remains disabled because the Supabase checkout switch is off, no payment method is enabled, and no delivery zone is configured.
 
 Required hosting environment variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
@@ -42,7 +42,7 @@ Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or c
 
 ## Current CI security status
 
-The latest Windows run passed typecheck, lint, tests and production build, but `npm audit` reports 15 development-tooling findings (9 high, 6 moderate, 0 critical). No lockfile remediation was committed. The full evidence and safe-remediation decision are in `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
+The latest Windows candidate passed clean installation, typecheck, lint, tests and production build. Stable TypeScript-ESLint `8.73.0` and `minimatch@11.0.9` are committed on `feat/launch-prep`. The previous six moderate findings are cleared; 14 high findings remain in development-only lint tooling, including the unresolved `picomatch <=4.0.7` advisory. The normal audit lane remains red until that upstream issue is fixed. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
 
 ## Local setup
 
