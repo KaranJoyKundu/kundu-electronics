@@ -11,6 +11,45 @@ ALTER TABLE public.products ADD CONSTRAINT products_orderable_requires_valid_pri
     'in_stock'::public.public_availability_status, 'low_stock'::public.public_availability_status,
     'backorder'::public.public_availability_status, 'build_to_order'::public.public_availability_status)));
 
+CREATE OR REPLACE FUNCTION private.enforce_product_publication()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO ''
+AS $function$
+DECLARE
+  v_category_status public.catalogue_status;
+  v_parent_id uuid;
+  v_parent_status public.catalogue_status;
+BEGIN
+  IF new.status = 'published' THEN
+    IF new.category_id IS NULL THEN
+      RAISE EXCEPTION USING errcode = '23514', message = 'A published product requires a category';
+    END IF;
+    IF new.price_bdt IS NOT NULL AND new.price_bdt <= 0 THEN
+      RAISE EXCEPTION USING errcode = '23514', message = 'A published product price must be positive when provided';
+    END IF;
+    SELECT c.status, c.parent_id INTO v_category_status, v_parent_id
+      FROM public.categories c WHERE c.id = new.category_id;
+    IF NOT found OR v_category_status <> 'published' THEN
+      RAISE EXCEPTION USING errcode = '23514', message = 'A published product must belong to a published category';
+    END IF;
+    IF v_parent_id IS NOT NULL THEN
+      SELECT p.status INTO v_parent_status FROM public.categories p WHERE p.id = v_parent_id;
+      IF NOT found OR v_parent_status <> 'published' THEN
+        RAISE EXCEPTION USING errcode = '23514', message = 'A published product category must have published ancestors';
+      END IF;
+    END IF;
+    IF tg_op = 'INSERT' OR old.status <> 'published' OR new.published_at IS NULL THEN
+      new.published_at := now();
+    END IF;
+  ELSE
+    new.published_at := NULL;
+  END IF;
+  RETURN new;
+END;
+$function$;
+
 CREATE TEMP TABLE kundu_inventory_211 (
   sku text PRIMARY KEY, product_name text NOT NULL, category_name text NOT NULL,
   selling_price_bdt bigint, stock_quantity bigint, workbook_stock_status text NOT NULL, sku_order integer NOT NULL
