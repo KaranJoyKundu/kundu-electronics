@@ -26,8 +26,8 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 
 The Vercel project `kundu-electronics` already exists and has a verified domain alias at `https://kundu-electronics.vercel.app`. Its current production-target deployment is an older commit and was not changed here.
 
-A separate READY preview was built from `feat/launch-prep` commit `9230e23e63cb07a8a612c8500f6f2dab2377ac2d`:
-`https://kundu-electronics-31lo99v7o-kundu2409056-5098.vercel.app`
+A separate READY preview was built from `feat/launch-prep` commit `3aa7a646fd50933bff1ebe95b509d6f0d338d93f`:
+`https://kundu-electronics-9m5a2bgty-kundu2409056-5098.vercel.app`
 
 The preview is not promoted to the production domain. The Vercel project has the public Supabase URL and publishable key configured. Its server-only `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` values are blank, so checkout remains disabled.
 
