@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ProductPurchaseControl } from "@/components/cart/product-purchase-control";
 import { notFound } from "next/navigation";
 import { getStorefrontProduct, getStorefrontProductDetails } from "@/data/storefront";
@@ -20,6 +21,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await getStorefrontProduct(slug);
   if (!product) notFound();
   const details = await getStorefrontProductDetails(product.id);
+  const enquiryMessage = encodeURIComponent(`Hello Kundu Electronics, I am interested in ${product.name} (${product.sku || product.id}). Could you confirm current availability?`);
+  const whatsappUrl = `https://wa.me/8801570263442?text=${enquiryMessage}`;
 
   return (
     <section className="container simple-page product-page">
@@ -41,7 +44,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           {product.summary ? <p className="simple-lead">{product.summary}</p> : null}
           {product.description ? <p>{product.description}</p> : <p>Additional product description has not been supplied yet.</p>}
           <ProductPurchaseControl productId={product.id} basePriceBdt={product.priceBdt} orderable={product.orderable === true} variants={details.variants} />
-          <p className="product-order-note">Product details and availability are shown from the published catalogue. Inventory counts are not displayed publicly.</p>
+          <Link className="button button-outline" href={whatsappUrl} target="_blank" rel="noopener noreferrer">Ask about this product on WhatsApp ↗</Link>
+          <p className="product-order-note">Stock status comes from the shop inventory workbook and can change. Please reconfirm availability with the shop before travelling. Inventory counts are not displayed publicly.</p>
           {details.specifications.length > 0 ? <section className="product-detail-section"><h2>Specifications</h2><dl>{details.specifications.map((item) => <div key={item.id}><dt>{item.label}</dt><dd>{item.value}{item.unit ? ` ${item.unit}` : ""}</dd></div>)}</dl></section> : null}
         </div>
       </div>

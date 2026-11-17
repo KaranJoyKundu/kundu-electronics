@@ -8,6 +8,17 @@ import { formatPriceBdt } from "@/lib/format";
 
 type Sort = "relevance" | "name-asc" | "price-asc" | "price-desc" | "newest";
 
+const availabilityLabels: Record<string, string> = {
+  in_stock: "In stock",
+  low_stock: "Low stock",
+  out_of_stock: "Out of stock",
+  availability_on_request: "Ask about availability",
+  backorder: "Backorder",
+  build_to_order: "Build to order",
+  discontinued: "Discontinued",
+  unknown: "Availability to confirm",
+};
+
 export function ShopCatalogue({ categories, initialQuery, initialCategory }: {
   categories: readonly Category[]; initialQuery: string; initialCategory: string;
 }) {
@@ -77,7 +88,7 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory }: {
             : !configured ? <div className="empty-catalogue"><h2>The catalogue is not connected yet.</h2><p>Connect the approved database to display published products.</p></div>
             : loading ? <div className="empty-catalogue" aria-live="polite"><h2>Loading catalogue…</h2></div>
             : products.length === 0 ? <div className="empty-catalogue"><div className="empty-catalogue-icon">＋</div><span className="state-tag">NO PUBLISHED PRODUCTS</span><h2>{page > 1 ? "No more products on this page." : "The catalogue is being prepared."}</h2><p>{page > 1 ? "Return to the previous page." : "Product listings will appear here once the inventory and customer-facing selling prices have been reviewed and added."}</p><button className="button button-dark" type="button" onClick={page > 1 ? () => setPage(page - 1) : clearFilters}>{page > 1 ? "Previous page" : "Clear filters"}</button></div>
-            : <div className="product-grid">{products.map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="product-tile"><div className="product-tile-image">{product.images[0] ? <Image src={product.images[0].src} alt={product.images[0].alt} width={480} height={360} unoptimized /> : <span>IMAGE PENDING</span>}</div><span className="product-tile-sku">{product.sku}</span><strong>{product.name}</strong><span>{formatPriceBdt(product.priceBdt)}</span></Link>)}</div>}
+            : <div className="product-grid">{products.map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="product-tile"><div className="product-tile-image">{product.images[0] ? <Image src={product.images[0].src} alt={product.images[0].alt} width={480} height={360} unoptimized /> : <span>IMAGE PENDING</span>}</div><span className="product-tile-sku">{product.sku}</span><strong>{product.name}</strong><span className="product-tile-price">{formatPriceBdt(product.priceBdt)}</span><span className={`product-tile-availability product-tile-availability-${product.availability}`}>{availabilityLabels[product.availability] ?? availabilityLabels.unknown}</span></Link>)}</div>}
           {!priceInvalid && !loading && !failed && configured && (page > 1 || hasMore) ? <div className="catalogue-pagination"><button className="button button-outline" type="button" disabled={page === 1} onClick={() => setPage((current) => Math.max(1, current - 1))}>Previous</button><span>Page {page}</span><button className="button button-outline" type="button" disabled={!hasMore} onClick={() => setPage((current) => current + 1)}>Next</button></div> : null}
         </div>
       </div>

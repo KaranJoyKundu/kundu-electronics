@@ -5,7 +5,7 @@ import "./gallery.css";
 
 export const metadata: Metadata = {
   title: "Product photo gallery",
-  description: "Owner-provided product photo previews from Kundu Electronics in Khulna. Contact the shop to confirm current prices and availability.",
+  description: "Browse owner-provided component photos with links to current Kundu Electronics product listings and BDT prices.",
 };
 
 export default function GalleryPage() {
@@ -16,8 +16,8 @@ export default function GalleryPage() {
         <header className="owner-gallery-heading">
           <span className="section-kicker">KUNDU ELECTRONICS / PRODUCT PREVIEWS</span>
           <h1>Parts for your <em>next build.</em></h1>
-          <p>Browse a selection of product photos supplied for the shop. Message us to confirm the current selling price and availability before placing an order or visiting.</p>
-          <div className="owner-gallery-notice"><strong>Price & stock confirmation required</strong><span>These photo previews are not a live stock list. Prices and availability are confirmed directly by the shop.</span></div>
+          <p>Browse owner-provided product photos, then open a product to see its workbook-listed BDT selling price and stock status.</p>
+          <div className="owner-gallery-notice"><strong>Stock can change</strong><span>Stock indicators come from the shop inventory workbook. Please message us to reconfirm availability before travelling or ordering.</span></div>
         </header>
         <OwnerProductGallery />
         <div className="owner-gallery-footer">

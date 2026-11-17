@@ -6,6 +6,7 @@ import { parseCatalogProductsQuery } from "@/lib/catalog/query";
 
 export const dynamic = "force-dynamic";
 const PAGE_SIZE = 24;
+const ownerProvidedPreviewSkus = new Set(["P002","P004","P019","P023","P027","P029","P034","P035","P036","P037","P038","P050","P063","P080","P181"]);
 
 export async function GET(request: NextRequest) {
   const parsedQuery = parseCatalogProductsQuery(request.nextUrl.searchParams);
@@ -48,7 +49,9 @@ export async function GET(request: NextRequest) {
     availability: row.public_availability,
     images: typeof row.primary_image_path === "string" && imageUrls.has(row.primary_image_path)
       ? [{ src: imageUrls.get(row.primary_image_path)!, alt: row.name }]
-      : [],
+      : row.sku && ownerProvidedPreviewSkus.has(row.sku)
+        ? [{ src: `/product-previews/${row.sku}.webp`, alt: row.name }]
+        : [],
     published: true,
     updatedAt: "",
   }));

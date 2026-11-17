@@ -14,6 +14,11 @@ function safeAvailability(value: unknown): ProductAvailability {
     : "unknown";
 }
 
+const ownerProvidedPreviewSkus = new Set(["P002","P004","P019","P023","P027","P029","P034","P035","P036","P037","P038","P050","P063","P080","P181"]);
+function localOwnerProvidedImages(sku: string | null | undefined, name: string): Product["images"] {
+  return sku && ownerProvidedPreviewSkus.has(sku) ? [{ src: `/product-previews/${sku}.webp`, alt: name }] : [];
+}
+
 export async function getStorefrontCatalogue(productLimit = 8): Promise<{ products: Product[]; categories: Category[]; connected: boolean }> {
   const safeProductLimit = Number.isInteger(productLimit) ? Math.min(24, Math.max(1, productLimit)) : 8;
   const supabase = createPublicSupabaseClient();
@@ -90,7 +95,7 @@ export async function getStorefrontCatalogue(productLimit = 8): Promise<{ produc
       priceBdt: price,
       categorySlug: category.slug,
       availability: safeAvailability(row.public_availability),
-      images: imagesByProduct.get(row.id) ?? [],
+      images: (imagesByProduct.get(row.id)?.length ? imagesByProduct.get(row.id)! : localOwnerProvidedImages(row.sku, row.name)),
       published: true,
       orderable: row.orderable === true,
       updatedAt: row.published_at ?? "",
@@ -135,7 +140,7 @@ export async function getStorefrontProduct(slug: string): Promise<Product | null
     id: row.id, sku: row.sku ?? "", slug: row.slug, name: row.name, brand: row.brand ?? undefined,
     summary: row.short_description ?? undefined, description: row.description ?? undefined,
     priceBdt: Number(row.price_bdt), categorySlug: category.slug, availability: safeAvailability(row.public_availability),
-    images: imageRows.flatMap((image) => urls.has(image.storage_path) ? [{ src: urls.get(image.storage_path)!, alt: image.alt_text }] : []),
+    images: imageRows.flatMap((image) => urls.has(image.storage_path) ? [{ src: urls.get(image.storage_path)!, alt: image.alt_text }] : []).length > 0 ? imageRows.flatMap((image) => urls.has(image.storage_path) ? [{ src: urls.get(image.storage_path)!, alt: image.alt_text }] : []) : localOwnerProvidedImages(row.sku, row.name),
     published: true, orderable: row.orderable === true, updatedAt: row.published_at ?? "",
   };
 }
