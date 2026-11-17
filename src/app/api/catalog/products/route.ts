@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     name: row.name,
     brand: row.brand ?? undefined,
     summary: row.short_description ?? undefined,
-    priceBdt: Number(row.price_bdt),
+    priceBdt: row.price_bdt === null ? null : Number(row.price_bdt),
     categorySlug: row.category_slug,
     availability: row.public_availability,
     images: typeof row.primary_image_path === "string" && imageUrls.has(row.primary_image_path)
