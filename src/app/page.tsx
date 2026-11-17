@@ -31,7 +31,7 @@ export default async function HomePage() {
         <div className="section-kicker">01 — START HERE</div>
         <div className="intro-content">
           <div><h2>Good projects start with the <span>right parts.</span></h2></div>
-          <div className="intro-aside"><p>Explore the shop catalogue for customer-facing prices and stock statuses from the inventory workbook. Stock can change, so please reconfirm availability with us before visiting.</p><Link href="/shop" className="underlined-link">Visit the catalogue <ArrowRightIcon /></Link></div>
+          <div className="intro-aside"><p>Explore the shop catalogue for published selling prices and current availability. Stock can change, so please reconfirm availability with us before visiting.</p><Link href="/shop" className="underlined-link">Visit the catalogue <ArrowRightIcon /></Link></div>
         </div>
       </section>
 
@@ -40,7 +40,7 @@ export default async function HomePage() {
           <div className="section-kicker">02 — THE CATALOGUE</div>
           <div className="catalogue-state-card">
             <div className="state-visual"><div className="state-grid-mark"><span /><span /><span /><span /><span /><span /><span /><span /><span /></div><span className="state-visual-label">CATALOGUE / LIVE</span></div>
-            <div className="state-copy"><span className="state-tag">LIVE CATALOGUE</span><h2>Find the right part<br />for your next build.</h2><p>Browse components across 17 categories, compare BDT selling prices, and check the workbook-reported stock status. Ask us to reconfirm availability before you travel.</p><Link href="/shop" className="button button-dark">Browse products <ArrowRightIcon /></Link></div>
+            <div className="state-copy"><span className="state-tag">LIVE CATALOGUE</span><h2>Find the right part<br />for your next build.</h2><p>Browse components across 17 categories, compare published BDT selling prices, and check each product’s current availability status. Ask us to reconfirm availability before you travel.</p><Link href="/shop" className="button button-dark">Browse products <ArrowRightIcon /></Link></div>
           </div>
         </div>
       </section>
