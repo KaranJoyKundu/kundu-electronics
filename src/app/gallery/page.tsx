@@ -21,7 +21,7 @@ export default function GalleryPage() {
         </header>
         <OwnerProductGallery />
         <div className="owner-gallery-footer">
-          <div><span className="section-kicker">CAN'T FIND WHAT YOU NEED?</span><h2>Tell us what you're building.</h2><p>Ask the shop about a component, a compatible alternative, or help choosing parts.</p></div>
+          <div><span className="section-kicker">CAN&apos;T FIND WHAT YOU NEED?</span><h2>Tell us what you&apos;re building.</h2><p>Ask the shop about a component, a compatible alternative, or help choosing parts.</p></div>
           <Link className="button button-primary" href="https://wa.me/8801570263442?text=Hello%20Kundu%20Electronics%2C%20I%20need%20help%20finding%20electronics%20components." target="_blank" rel="noopener noreferrer">Chat on WhatsApp <span aria-hidden="true">↗</span></Link>
         </div>
       </div>
