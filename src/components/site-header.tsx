@@ -8,6 +8,7 @@ import { useCart } from "@/components/cart/cart-provider";
 
 const primaryLinks = [
   { href: "/shop", label: "Shop" },
+  { href: "/gallery", label: "Photo gallery" },
   { href: "/support", label: "Support" },
   { href: "/about", label: "About us" },
 ];
@@ -21,7 +22,7 @@ export function SiteHeader() {
       <div className="announcement-bar"><span className="announcement-dot" /> Kundu Electronics <span className="announcement-divider">/</span> Khulna, Bangladesh</div>
       <header className="site-header">
         <div className="header-main container">
-          <Link href="/" className="brand" aria-label="Kundu Electronics home" onClick={() => setMenuOpen(false)}>
+          <Link href="/" className="brand" onClick={() => setMenuOpen(false)}>
             <span className="brand-mark"><SparkIcon /></span>
             <span className="brand-copy"><strong>KUNDU</strong><small>ELECTRONICS</small></span>
           </Link>

@@ -4,6 +4,7 @@ import { HomeIllustration } from "@/components/home-illustration";
 import { ArrowRightIcon } from "@/components/icons";
 import { getStorefrontCatalogue } from "@/data/storefront";
 import { formatPriceBdt } from "@/lib/format";
+import { ProductPhoto } from "@/components/product-photo";
 
 export default async function HomePage() {
   const { products } = await getStorefrontCatalogue(8);
@@ -23,14 +24,14 @@ export default async function HomePage() {
           </div>
           <HomeIllustration />
         </div>
-        <div className="hero-bottom-rule"><div className="container"><span>COMPONENTS / PROTOTYPING / DISCOVERY</span><span>EST. DETAILS TO BE CONFIRMED</span></div></div>
+        <div className="hero-bottom-rule"><div className="container"><span>COMPONENTS / PROTOTYPING / DISCOVERY</span><span>PARTS / BOARDS / TOOLS</span></div></div>
       </section>
 
       <section className="intro-section container">
         <div className="section-kicker">01 — START HERE</div>
         <div className="intro-content">
           <div><h2>Good projects start with the <span>right parts.</span></h2></div>
-          <div className="intro-aside"><p>Find the building blocks for your next electronics project. The storefront is being connected to verified product and selling-price data before any items are listed.</p><Link href="/shop" className="underlined-link">Visit the catalogue <ArrowRightIcon /></Link></div>
+          <div className="intro-aside"><p>Explore the shop catalogue for published selling prices and current availability. Stock can change, so please reconfirm availability with us before visiting.</p><Link href="/shop" className="underlined-link">Visit the catalogue <ArrowRightIcon /></Link></div>
         </div>
       </section>
 
@@ -38,8 +39,8 @@ export default async function HomePage() {
         <div className="container catalogue-state-grid">
           <div className="section-kicker">02 — THE CATALOGUE</div>
           <div className="catalogue-state-card">
-            <div className="state-visual"><div className="state-grid-mark"><span /><span /><span /><span /><span /><span /><span /><span /><span /></div><span className="state-visual-label">DATA / PENDING</span></div>
-            <div className="state-copy"><span className="state-tag">CATALOGUE SETUP</span><h2>Real products.<br />Verified details.</h2><p>{products.length > 0 ? `${products.length} published products are available to explore.` : "Product listings will appear here once the inventory and customer-facing selling prices have been reviewed and added."}</p><Link href="/shop" className="button button-dark">Browse catalogue <ArrowRightIcon /></Link></div>
+            <div className="state-visual"><div className="state-grid-mark"><span /><span /><span /><span /><span /><span /><span /><span /><span /></div><span className="state-visual-label">CATALOGUE / LIVE</span></div>
+            <div className="state-copy"><span className="state-tag">LIVE CATALOGUE</span><h2>Find the right part<br />for your next build.</h2><p>Browse components across 17 categories, compare published BDT selling prices, and check each product’s current availability status. Ask us to reconfirm availability before you travel.</p><Link href="/shop" className="button button-dark">Browse products <ArrowRightIcon /></Link></div>
           </div>
         </div>
       </section>
@@ -55,7 +56,7 @@ export default async function HomePage() {
 
       <section className="help-strip"><div className="container help-strip-inner"><div><span className="section-kicker">04 — NEED SOMETHING?</span><h2>Not sure which part you need?</h2><p>Get product guidance or ask about availability through the shop’s verified contact channels.</p></div><Link href="/contact" className="button button-outline">Contact the shop <ArrowRightIcon /></Link></div></section>
 
-      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">JUST ADDED</span><h2>From the catalogue</h2></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid">{products.slice(0, 4).map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image">{product.images[0] ? <Image src={product.images[0].src} alt={product.images[0].alt} width={480} height={360} unoptimized /> : <span>IMAGE PENDING</span>}</div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
+      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">SHOP PICKS</span><h2>From the catalogue</h2></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid">{products.slice(0, 4).map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image">{product.images[0] ? <Image src={product.images[0].src} alt={product.images[0].alt} width={480} height={360} unoptimized /> : <ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} />}</div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
     </>
   );
 }

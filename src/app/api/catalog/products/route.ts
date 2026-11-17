@@ -7,6 +7,7 @@ import { parseCatalogProductsQuery } from "@/lib/catalog/query";
 export const dynamic = "force-dynamic";
 const PAGE_SIZE = 24;
 
+
 export async function GET(request: NextRequest) {
   const parsedQuery = parseCatalogProductsQuery(request.nextUrl.searchParams);
   if (!parsedQuery.ok) return jsonError(400, parsedQuery.error);
@@ -15,19 +16,30 @@ export async function GET(request: NextRequest) {
   const supabase = createPublicSupabaseClient();
   if (!supabase) return NextResponse.json({ products: [], hasMore: false, configured: false }, { headers: { "Cache-Control": "no-store" } });
 
-  const { data, error } = await supabase.rpc("search_catalog_products", {
-    p_query: query,
-    p_category_slug: category || null,
-    p_min_price_bdt: minPrice,
-    p_max_price_bdt: maxPrice,
-    p_sort: sort.replaceAll("-", "_"),
-    p_limit: PAGE_SIZE + 1,
-    p_offset: (page - 1) * PAGE_SIZE,
-  });
-  if (error) return jsonError(503, "The catalogue is temporarily unavailable.");
+  const [{ data, error }, { data: countData, error: countError }] = await Promise.all([
+    supabase.rpc("search_catalog_products", {
+      p_query: query,
+      p_category_slug: category || null,
+      p_min_price_bdt: minPrice,
+      p_max_price_bdt: maxPrice,
+      p_sort: sort.replaceAll("-", "_"),
+      p_limit: PAGE_SIZE + 1,
+      p_offset: (page - 1) * PAGE_SIZE,
+    }),
+    supabase.rpc("count_catalog_products", {
+      p_query: query,
+      p_category_slug: category || null,
+      p_min_price_bdt: minPrice,
+      p_max_price_bdt: maxPrice,
+    }),
+  ]);
+  if (error || countError) return jsonError(503, "The catalogue is temporarily unavailable.");
 
+  const totalCount = Number(countData);
+  if (!Number.isSafeInteger(totalCount) || totalCount < 0) return jsonError(503, "The catalogue is temporarily unavailable.");
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const rows = parseCatalogSearchRows(data);
-  const hasMore = rows.length > PAGE_SIZE;
+  const hasMore = page < totalPages;
   const visibleRows = rows.slice(0, PAGE_SIZE);
   const paths = visibleRows.flatMap((row) => typeof row.primary_image_path === "string" ? [row.primary_image_path] : []);
   const imageUrls = new Map<string, string>();
@@ -53,7 +65,7 @@ export async function GET(request: NextRequest) {
     updatedAt: "",
   }));
 
-  return NextResponse.json({ products, hasMore, page, configured: true }, {
+  return NextResponse.json({ products, hasMore, page, totalCount, totalPages, configured: true }, {
     headers: { "Cache-Control": "no-store" },
   });
 }

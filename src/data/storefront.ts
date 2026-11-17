@@ -1,4 +1,6 @@
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { parseHmacSecret } from "@/lib/checkout/security";
 import type { Category, Product, ProductAvailability, ProductVariant } from "@/lib/catalog/types";
 import { getPublishedCategories, getPublishedProducts } from "@/data/catalogue";
 import { parsePublicPaymentMethods, type ConfiguredPaymentMethod } from "@/lib/checkout/payment-methods";
@@ -14,19 +16,27 @@ function safeAvailability(value: unknown): ProductAvailability {
     : "unknown";
 }
 
-export async function getStorefrontCatalogue(productLimit = 8): Promise<{ products: Product[]; categories: Category[]; connected: boolean }> {
-  const safeProductLimit = Number.isInteger(productLimit) ? Math.min(24, Math.max(1, productLimit)) : 8;
-  const supabase = createPublicSupabaseClient();
-  if (!supabase) return { products: getPublishedProducts(), categories: getPublishedCategories(), connected: false };
 
-  const [categoryResult, productResult] = await Promise.all([
+
+export async function getStorefrontCatalogue(productLimit = 8, page = 1): Promise<{ products: Product[]; categories: Category[]; connected: boolean; totalCount: number }> {
+  const safeProductLimit = Number.isInteger(productLimit) ? Math.min(24, Math.max(1, productLimit)) : 8;
+  const safePage = Number.isSafeInteger(page) ? Math.min(400, Math.max(1, page)) : 1;
+  const offset = (safePage - 1) * safeProductLimit;
+  const supabase = createPublicSupabaseClient();
+  if (!supabase) {
+    const fallback = getPublishedProducts();
+    return { products: fallback.slice(offset, offset + safeProductLimit), categories: getPublishedCategories(), connected: false, totalCount: fallback.length };
+  }
+
+  const [categoryResult, productResult, countResult] = await Promise.all([
     supabase.from("catalog_categories").select("id,parent_id,slug,name,description,sort_order").order("sort_order").order("name"),
-    supabase.from("catalog_products").select("id,category_id,sku,slug,name,brand,short_description,description,price_bdt,public_availability,orderable,sort_order,published_at").order("sort_order").order("name").limit(safeProductLimit),
+    supabase.from("catalog_products").select("id,category_id,sku,slug,name,brand,short_description,description,price_bdt,public_availability,orderable,sort_order,published_at").order("sort_order").order("name").range(offset, offset + safeProductLimit - 1),
+    supabase.from("catalog_products").select("id", { count: "exact", head: true }),
   ]);
 
   // A failed public query does not fall back to stale or fabricated data.
-  if (categoryResult.error || productResult.error) {
-    return { products: [], categories: [], connected: true };
+  if (categoryResult.error || productResult.error || countResult.error) {
+    return { products: [], categories: [], connected: true, totalCount: 0 };
   }
 
   const categoryRows = categoryResult.data ?? [];
@@ -97,7 +107,7 @@ export async function getStorefrontCatalogue(productLimit = 8): Promise<{ produc
     }];
   });
 
-  return { products, categories, connected: true };
+  return { products, categories, connected: true, totalCount: countResult.count ?? 0 };
 }
 
 export async function getStorefrontCategories(): Promise<Category[]> {
@@ -190,5 +200,10 @@ export async function getPublicCheckoutConfig(): Promise<PublicCheckoutConfig> {
     return [{ id: row.id, code: row.code, name: row.name, description: typeof row.description === "string" ? row.description : null, deliveryChargeBdt: charge }];
   }) : [];
   const paymentMethods = parsePublicPaymentMethods(config.paymentMethods);
-  return { checkoutEnabled: config.checkoutEnabled === true, deliveryZones, paymentMethods };
+  const serverCheckoutReady = Boolean(parseHmacSecret(process.env.APP_HMAC_SECRET) && createAdminSupabaseClient());
+  return {
+    checkoutEnabled: config.checkoutEnabled === true && serverCheckoutReady,
+    deliveryZones,
+    paymentMethods,
+  };
 }
