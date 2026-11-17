@@ -1,4 +1,3 @@
-/* Generated from Supabase project tcapxmiroikbsozvucmt on 2026-11-17. Do not hand-edit. */
 export type Json =
   | string
   | number
@@ -1181,6 +1180,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      count_catalog_products: {
+        Args: {
+          p_category_slug?: string
+          p_max_price_bdt?: number
+          p_min_price_bdt?: number
+          p_query?: string
+        }
+        Returns: number
+      }
       create_checkout_order: {
         Args: {
           p_customer_details: Json
@@ -1209,6 +1217,10 @@ export type Database = {
       get_public_checkout_config: { Args: never; Returns: Json }
       has_store_role: {
         Args: { p_roles: Database["public"]["Enums"]["admin_role"][] }
+        Returns: boolean
+      }
+      is_published_category: {
+        Args: { p_category_id: string }
         Returns: boolean
       }
       is_store_admin: { Args: never; Returns: boolean }
