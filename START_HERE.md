@@ -56,5 +56,5 @@ Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` a
 - bKash/Nagad, delivery areas/charges and checkout remain disabled until owner-approved receiving details, instructions, delivery rules and server secrets are configured and verified.
 - Checkout requires `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` as server-only hosting environment variables.
 - A submitted transaction reference is not payment verification.
-- Public admin registration is disabled. Owner provisioning and role assignment must be performed through Supabase Auth and the protected database.
+- Public admin registration is disabled. One owner admin profile is now linked to an email-confirmed Supabase Auth user; successful sign-in still needs a test.
 - Never expose Supabase secret/service-role keys in `NEXT_PUBLIC_*`, browser code, Git or chat.
