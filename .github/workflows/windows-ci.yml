@@ -215,6 +215,10 @@ jobs:
           if ($counts.high -gt 0) {
             "High findings remain in development-only tooling; they are recorded, not suppressed." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
+          # npm audit returns exit code 1 for any finding, including accepted
+          # high-only findings that were verified above to be devDependencies.
+          # Set success only after the severity and dev-only checks have passed.
+          exit 0
 
       - name: Typecheck
         run: npm run typecheck
