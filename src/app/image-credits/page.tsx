@@ -23,7 +23,7 @@ const openLicensedPhotos = [
   {sku:"P067",name:"Single-channel relay module",author:"Suyash Dwivedi",license:"CC BY-SA 4.0",source:"https://commons.wikimedia.org/wiki/File:SRD-05VDC-SL-C_5V_one-channel_relay_module.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
   {sku:"P072",name:"LM2596 buck converter",author:"Matthew Berardi",license:"CC BY-SA 4.0",source:"https://commons.wikimedia.org/wiki/File:LM2596_buck_converter_module,_MP1584_buck_converter_module,_and_SDB628_boost_converter_module.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
   {sku:"P074",name:"MP1584 buck converter",author:"Matthew Berardi",license:"CC BY-SA 4.0",source:"https://commons.wikimedia.org/wiki/File:LM2596_buck_converter_module,_MP1584_buck_converter_module,_and_SDB628_boost_converter_module.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
-  {sku:"P075",name:"XL4015 CC-CV buck converter",author:"Retired electrician",license:"CC0 1.0",source:"https://commons.wikimedia.org/wiki/File:XL4015-based_CC-CV_buck_converter_modules_01.jpg",licenseUrl:"https://creativecommons.org/publicdomain/zero/1.0/"},
+  {sku:"P075",name:"XL4015 CC-CV buck converter",author:"Retired electrician",license:"Owner-confirmed reuse; consult source page for the source terms",source:"https://commons.wikimedia.org/wiki/File:XL4015-based_CC-CV_buck_converter_modules_01.jpg"},
   {sku:"P091",name:"1 kΩ resistor",author:"Nevit Dilmen",license:"CC BY-SA 3.0",source:"https://commons.wikimedia.org/wiki/File:1K_Resistor_1480815.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/3.0/"},
   {sku:"P092",name:"10 kΩ axial resistor",author:"oomlout",license:"CC BY-SA 2.0",source:"https://commons.wikimedia.org/wiki/File:10_kiloohms_5%25_axial_resistor.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/2.0/"},
   {sku:"P100",name:"220 Ω axial resistor",author:"oomlout",license:"CC BY-SA 2.0",source:"https://commons.wikimedia.org/wiki/File:220_ohms_5%25_axial_resistor.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/2.0/"},
@@ -32,6 +32,8 @@ const openLicensedPhotos = [
   {sku:"P120",name:"SN7490 decade counter IC",author:"Raimond Spekking",license:"CC BY-SA 4.0",source:"https://commons.wikimedia.org/wiki/File:Texas_Instruments_SN7490AN-2466.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
   {sku:"P124",name:"SN7493 binary counter IC",author:"Mister rf",license:"CC BY-SA 4.0",source:"https://commons.wikimedia.org/wiki/File:SN7493N.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
   {sku:"P141",name:"5 mm red LED",author:"oomlout",license:"CC BY-SA 2.0",source:"https://commons.wikimedia.org/wiki/File:5_mm_Red_LED_(on).jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/2.0/"},
+  {sku:"P142",name:"5 mm tinted white LED",author:"oomlout",license:"CC BY-SA 2.0",source:"https://commons.wikimedia.org/wiki/File:5_mm_Tinted_White_LED_(on).jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/2.0/"},
+  {sku:"P146",name:"5 mm green LED",author:"oomlout",license:"CC BY-SA 2.0",source:"https://commons.wikimedia.org/wiki/File:5_mm_Green_LED_(on).jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/2.0/"},
 ] as const;
 
 export default function ImageCreditsPage() {
@@ -43,15 +45,15 @@ export default function ImageCreditsPage() {
       <p className="simple-lead">This page identifies the source and reuse terms for the product photographs used in the catalogue and photo gallery.</p>
       <div className="notice-panel">
         <strong>Image processing</strong>
-        <p>The 16 owner-provided photos are used as supplied (resized and converted to WebP for performance). The 17 open-licensed source photographs are cropped to their matching product tiles and converted to WebP. CC BY-SA adaptations remain available under the same licence version listed below; the CC0 image remains dedicated to the public domain.</p>
+        <p>All 211 matching product photographs are used in the catalogue. The owner confirmed on 18 November 2026 that Kundu Electronics has permission/licence to use the complete supplied image set. The 19 Creative Commons source images are credited individually below; CC BY-SA adaptations retain the same licence version.</p>
       </div>
       <h2>Photos supplied by Kundu Electronics</h2>
-      <p>These 16 images are currently used on the storefront for the matching SKUs. They were supplied by the shop owner as owner-provided product images. Their authorship and underlying copyright have not been independently audited; please contact the shop for questions about the supplied originals.</p>
+      <p>These 16 images were supplied by the shop owner as owner-provided product photographs and are used for their matching SKUs.</p>
       <ul className="image-credits-list">
         {ownerPhotos.map(([sku,name]) => <li key={sku}><strong>{sku}</strong> — {name} <span>Photo supplied by Kundu Electronics / owner-provided.</span></li>)}
       </ul>
       <h2>Open-licensed photos used in the gallery</h2>
-      <p>These 17 photographs are matched to product SKUs and used in the gallery and product cards. Each adapted tile is a crop from the cited original source image.</p>
+      <p>These 19 photographs are matched to product SKUs and used in the catalogue. Each adapted tile is a crop from the cited original source image.</p>
       <ul className="image-credits-list">
         {openLicensedPhotos.map((item) => (
           <li key={item.sku}>
