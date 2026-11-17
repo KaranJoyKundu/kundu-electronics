@@ -637,3 +637,29 @@ button { cursor: pointer; }
   .catalogue-pagination > .button:last-child { order: 4; }
   .catalogue-page-number { min-width: 32px; min-height: 36px; }
 }
+
+
+/* One optimized sprite contains a separate photographic tile for every SKU P001-P211. */
+.product-photo-catalogue-sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 160px;
+  aspect-ratio: 1 / 1;
+  background-image: url("/product-previews/kundu-catalogue-sprite.webp");
+  background-repeat: no-repeat;
+  background-size: 1600% 1400%;
+  background-color: #fff;
+}
+.product-tile-image .product-photo-catalogue-sprite,
+.preview-image .product-photo-catalogue-sprite,
+.product-detail-image .product-photo-catalogue-sprite,
+.owner-gallery-image .product-photo-catalogue-sprite {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.owner-gallery-price { display:block; font-weight:800; }
+.owner-gallery-stock { display:block; font-size:11px; color:#357d52; }
+.owner-gallery-stock-low_stock, .owner-gallery-stock-availability_on_request, .owner-gallery-stock-unknown { color:#a46b22; }
+.owner-gallery-stock-out_of_stock { color:#8c6666; }
