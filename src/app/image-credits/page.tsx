@@ -43,15 +43,15 @@ export default function ImageCreditsPage() {
       <p className="simple-lead">This page identifies the source and reuse terms for the product photographs used in the catalogue and photo gallery.</p>
       <div className="notice-panel">
         <strong>Image processing</strong>
-        <p>The 16 owner-provided photos currently used on the site were resized and converted to WebP for performance. The open-licensed entries below are reviewed source candidates only and are not currently deployed.</p>
+        <p>The 16 owner-provided photos are used as supplied (resized and converted to WebP for performance). The 17 open-licensed source photographs are cropped to their matching product tiles and converted to WebP. CC BY-SA adaptations remain available under the same licence version listed below; the CC0 image remains dedicated to the public domain.</p>
       </div>
       <h2>Photos supplied by Kundu Electronics</h2>
       <p>These 16 images are currently used on the storefront for the matching SKUs. They were supplied by the shop owner as owner-provided product images. Their authorship and underlying copyright have not been independently audited; please contact the shop for questions about the supplied originals.</p>
       <ul className="image-credits-list">
         {ownerPhotos.map(([sku,name]) => <li key={sku}><strong>{sku}</strong> — {name} <span>Photo supplied by Kundu Electronics / owner-provided.</span></li>)}
       </ul>
-      <h2>Additional reuse-cleared sources reviewed</h2>
-      <p>These 17 Wikimedia Commons images were reviewed as possible matches for listed products. They are not currently published in the product cards or gallery; the entries below are retained as provenance notes for a future, deliberate import.</p>
+      <h2>Open-licensed photos used in the gallery</h2>
+      <p>These 17 photographs are matched to product SKUs and used in the gallery and product cards. Each adapted tile is a crop from the cited original source image.</p>
       <ul className="image-credits-list">
         {openLicensedPhotos.map((item) => (
           <li key={item.sku}>
