@@ -23,7 +23,7 @@ export default async function HomePage() {
           </div>
           <HomeIllustration />
         </div>
-        <div className="hero-bottom-rule"><div className="container"><span>COMPONENTS / PROTOTYPING / DISCOVERY</span><span>EST. DETAILS TO BE CONFIRMED</span></div></div>
+        <div className="hero-bottom-rule"><div className="container"><span>COMPONENTS / PROTOTYPING / DISCOVERY</span><span>PARTS / BOARDS / TOOLS</span></div></div>
       </section>
 
       <section className="intro-section container">

@@ -80,6 +80,36 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
     setQuery(""); setCategory(""); setMinPrice(""); setMaxPrice(""); setSort("relevance"); setPage(1);
   }
   const priceInvalid = minPrice !== "" && maxPrice !== "" && Number(minPrice) > Number(maxPrice);
+  const pageNumbers = Array.from(new Set([
+    1,
+    ...(page > 2 ? [page - 1] : []),
+    page,
+    ...(hasMore ? [page + 1] : []),
+  ])).sort((a, b) => a - b);
+
+  function renderPagination(position: "top" | "bottom") {
+    if (priceInvalid || loading || failed || !configured || (page === 1 && !hasMore)) return null;
+    return (
+      <nav className={`catalogue-pagination catalogue-pagination-${position}`} aria-label="Catalogue pagination">
+        <button className="button button-outline" type="button" disabled={page === 1}
+          aria-label="Previous page" onClick={() => setPage((current) => Math.max(1, current - 1))}>Previous</button>
+        <div className="catalogue-page-numbers">
+          {pageNumbers.map((pageNumber, index) => (
+            <span className="catalogue-page-number-wrap" key={pageNumber}>
+              {index > 0 && pageNumber - pageNumbers[index - 1] > 1 ? <span className="catalogue-page-ellipsis" aria-hidden="true">…</span> : null}
+              <button type="button" className="catalogue-page-number" aria-label={`Page ${pageNumber}`}
+                aria-current={pageNumber === page ? "page" : undefined}
+                onClick={() => setPage(pageNumber)}>{pageNumber}</button>
+            </span>
+          ))}
+        </div>
+        <span className="catalogue-pagination-current" aria-live="polite">Page {page}</span>
+        <button className="button button-outline" type="button" disabled={!hasMore}
+          aria-label="Next page" onClick={() => setPage((current) => current + 1)}>Next</button>
+      </nav>
+    );
+  }
+
 
   return (
     <section className="container shop-page">
@@ -93,14 +123,15 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
           <button className="price-preset" type="button" onClick={() => { setMinPrice("0"); setMaxPrice("200"); setPage(1); }}>Use ৳0–৳200 range</button>
           <p className="filter-hint">Price limits are inclusive. No price limit is applied until you enter one or choose a range.</p>
         </aside>
-        <div className="shop-results"><div className="results-toolbar"><span>{loading ? "Loading products…" : `${products.length}${hasMore ? "+" : ""} products on this page`}</span><label>Sort by <select value={sort} onChange={(event) => resetPage(() => setSort(event.target.value as Sort))}><option value="relevance">Relevance</option><option value="name-asc">Name A–Z</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="newest">Newest</option></select></label></div>
+        <div className="shop-results"><div className="results-toolbar"><span>{loading ? "Loading products…" : `Showing ${products.length} products · Page ${page}`}</span><label>Sort by <select value={sort} onChange={(event) => resetPage(() => setSort(event.target.value as Sort))}><option value="relevance">Relevance</option><option value="name-asc">Name A–Z</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="newest">Newest</option></select></label></div>
+          {renderPagination("top")}
           {priceInvalid ? <div className="empty-catalogue"><h2>Check your price range</h2><p>The minimum cannot be greater than the maximum.</p></div>
             : failed ? <div className="empty-catalogue"><h2>Catalogue temporarily unavailable</h2><p>Please try again. No cached or fabricated product data is being shown.</p><button className="button button-dark" onClick={() => setPage(1)} type="button">Retry</button></div>
             : !configured ? <div className="empty-catalogue"><h2>The catalogue is not connected yet.</h2><p>Connect the approved database to display published products.</p></div>
             : loading ? <div className="empty-catalogue" aria-live="polite"><h2>Loading catalogue…</h2></div>
             : products.length === 0 ? <div className="empty-catalogue"><div className="empty-catalogue-icon">＋</div><span className="state-tag">NO PUBLISHED PRODUCTS</span><h2>{page > 1 ? "No more products on this page." : "The catalogue is being prepared."}</h2><p>{page > 1 ? "Return to the previous page." : "Product listings will appear here once the inventory and customer-facing selling prices have been reviewed and added."}</p><button className="button button-dark" type="button" onClick={page > 1 ? () => setPage(page - 1) : clearFilters}>{page > 1 ? "Previous page" : "Clear filters"}</button></div>
             : <div className="product-grid">{products.map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="product-tile"><div className="product-tile-image">{product.images[0] ? <Image src={product.images[0].src} alt={product.images[0].alt} width={480} height={360} unoptimized /> : <span>IMAGE PENDING</span>}</div><span className="product-tile-sku">{product.sku}</span><strong>{product.name}</strong><span className="product-tile-price">{formatPriceBdt(product.priceBdt)}</span><span className={`product-tile-availability product-tile-availability-${product.availability}`}>{availabilityLabels[product.availability] ?? availabilityLabels.unknown}</span></Link>)}</div>}
-          {!priceInvalid && !loading && !failed && configured && (page > 1 || hasMore) ? <div className="catalogue-pagination"><button className="button button-outline" type="button" disabled={page === 1} onClick={() => setPage((current) => Math.max(1, current - 1))}>Previous</button><span>Page {page}</span><button className="button button-outline" type="button" disabled={!hasMore} onClick={() => setPage((current) => current + 1)}>Next</button></div> : null}
+          {renderPagination("bottom")}
         </div>
       </div>
     </section>

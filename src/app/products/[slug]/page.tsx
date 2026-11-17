@@ -42,7 +42,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="product-price">{formatPriceBdt(product.priceBdt)}</p>
           <p className="product-availability">{availabilityLabels[product.availability] ?? availabilityLabels.unknown}</p>
           {product.summary ? <p className="simple-lead">{product.summary}</p> : null}
-          {product.description ? <p>{product.description}</p> : <p>Additional product description has not been supplied yet.</p>}
+          {product.description ? <p>{product.description}</p> : null}
           <ProductPurchaseControl productId={product.id} basePriceBdt={product.priceBdt} orderable={product.orderable === true} variants={details.variants} />
           <Link className="button button-outline" href={whatsappUrl} target="_blank" rel="noopener noreferrer">Ask about this product on WhatsApp ↗</Link>
           <p className="product-order-note">Stock status comes from the shop inventory workbook and can change. Please reconfirm availability with the shop before travelling. Inventory counts are not displayed publicly.</p>
