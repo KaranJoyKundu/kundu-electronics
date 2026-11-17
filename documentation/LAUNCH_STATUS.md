@@ -1,4 +1,4 @@
-# Launch status — 17 November 2026
+# Launch status — 18 November 2026
 
 ## Verified implementation
 
@@ -41,8 +41,8 @@
 
 - Existing Vercel project: `kundu-electronics` (`prj_Rjsn0UkM5UbbFmdILo6wSHYe0JWD`) in the connected team.
 - Vercel has a verified project domain `kundu-electronics.vercel.app`. The most recent production-target deployment currently associated with that domain is an older READY deployment from commit `90f70e160350d5dc2c921c52d7b21f2d6ae569f0`. It was not replaced during this work.
-- A separate **READY preview deployment** was created for current feature-branch commit `9230e23e63cb07a8a612c8500f6f2dab2377ac2d`:
-  https://kundu-electronics-31lo99v7o-kundu2409056-5098.vercel.app
+- A separate **READY preview deployment** was created for current feature-branch commit `3aa7a646fd50933bff1ebe95b509d6f0d338d93f`:
+  https://kundu-electronics-9m5a2bgty-kundu2409056-5098.vercel.app
 - The preview has its own branch alias and did not receive the production domain. The preview build ran Next.js 16.4.6 and completed successfully.
 - The Vercel project has `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `NEXT_PUBLIC_SITE_URL` set. The sensitive values for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are currently blank. They were not read or changed.
 - Checkout therefore remains disabled; no secret was inserted into Vercel or Git.
