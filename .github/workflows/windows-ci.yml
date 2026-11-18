@@ -180,19 +180,27 @@ jobs:
           node-version: 24
           cache: npm
 
-      - name: Assemble the complete 211-product photo sprite
+      - name: Verify or assemble the complete 211-product photo sprite
         shell: pwsh
         run: |
-          $parts = Get-ChildItem "tmp-assets/sprite-parts/part-*.txt" | Sort-Object Name
-          if ($parts.Count -ne 13) { throw "Expected 13 sprite data chunks, found $($parts.Count)." }
-          $encoded = ($parts | ForEach-Object { (Get-Content $_.FullName -Raw).Trim() }) -join ""
-          $bytes = [Convert]::FromBase64String($encoded)
+          $assetPath = "public/product-previews/kundu-catalogue-sprite.webp"
+          if (Test-Path $assetPath) {
+            $bytes = [IO.File]::ReadAllBytes($assetPath)
+            "Using the committed catalogue photo sprite." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          } else {
+            $parts = Get-ChildItem "tmp-assets/sprite-parts/part-*.txt" | Sort-Object Name
+            if ($parts.Count -ne 13) { throw "Expected 13 sprite data chunks, found $($parts.Count)." }
+            $encoded = ($parts | ForEach-Object { (Get-Content $_.FullName -Raw).Trim() }) -join ""
+            $bytes = [Convert]::FromBase64String($encoded)
+            New-Item -ItemType Directory -Force -Path "public/product-previews" | Out-Null
+            [IO.File]::WriteAllBytes($assetPath, $bytes)
+          }
           if ($bytes.Length -ne 46362) { throw "Unexpected photo sprite size: $($bytes.Length)." }
           if ($bytes[0] -ne 0x52 -or $bytes[1] -ne 0x49 -or $bytes[2] -ne 0x46 -or $bytes[3] -ne 0x46) { throw "The generated asset is not a WebP RIFF file." }
-          New-Item -ItemType Directory -Force -Path "public/product-previews" | Out-Null
-          [IO.File]::WriteAllBytes("public/product-previews/kundu-catalogue-sprite.webp", $bytes)
-          git rm -r -- tmp-assets/sprite-parts
-          "Assembled 211 SKU photographs into a $($bytes.Length)-byte optimized WebP sprite." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          $spriteHash = (Get-FileHash $assetPath -Algorithm SHA1).Hash.ToLowerInvariant()
+          if ($spriteHash -ne "851998ade5b297a527dd3ee1ebb5ab3cf98f8162") { throw "The complete 211-product photo sprite SHA-1 does not match." }
+          if (Test-Path "tmp-assets/sprite-parts") { git rm -r -- tmp-assets/sprite-parts }
+          "Verified 211 SKU photographs in a $($bytes.Length)-byte WebP sprite (SHA-1 $spriteHash)." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
 
       - name: Install the committed dependency tree
         run: npm ci
@@ -266,7 +274,8 @@ jobs:
           if ($changed) {
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add -A -- tmp-assets/sprite-parts package.json package-lock.json public/product-previews/kundu-catalogue-sprite.webp
+            git add -A -- tmp-assets/sprite-parts package.json package-lock.json
+git add -f -- public/product-previews/kundu-catalogue-sprite.webp
             git commit -m "chore(catalog): publish all 211 product photos"
             git fetch origin "refs/heads/$env:GITHUB_HEAD_REF"
             git rebase FETCH_HEAD
