@@ -9,6 +9,7 @@ import { useCart } from "@/components/cart/cart-provider";
 import { formatPriceBdt } from "@/lib/format";
 import { resolveCartLinePrice } from "@/lib/catalog/cart-pricing";
 import { parseCartProducts } from "@/lib/catalog/response";
+import { business } from "@/config/business";
 
 interface ProductRequest {
   ids: string;
@@ -85,16 +86,24 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
   const estimatedTotal = subtotal + (selectedZone?.deliveryChargeBdt ?? 0);
   const everyItemOrderable = !productsLoading && !productsFailed && cartRows.length > 0
     && cartRows.every((row) => row.product?.orderable === true && row.product.published && row.price?.valid === true);
-  const checkoutReady = checkout.checkoutEnabled && checkout.deliveryZones.length > 0 && checkout.paymentMethods.length > 0;
+  const checkoutReady = checkout.checkoutEnabled && checkout.deliveryZones.length > 0;
   const cartEnquiryReady = cartRows.length > 0 && cartRows.every((row) => !!row.product && row.product.published);
   const cartEnquiryMessage = [
-    "Hello Kundu Electronics, I would like to enquire about these cart items:",
-    ...cartRows.filter((row) => row.product).map(({ line, product }) =>
-      `- ${product!.name}${product!.sku ? ` (${product!.sku})` : ""} × ${line.quantity}${rowVariantLabel(product, line.variantId) ? ` — ${rowVariantLabel(product, line.variantId)}` : ""}`
-    ),
-    "Please confirm current availability and final prices. I understand this is an enquiry, not an order.",
+    "Hello Kundu Electronics, I would like to place this order request:",
+    ...cartRows.map(({ line, product, price }) => {
+      const productId = product?.sku || line.productId;
+      const productName = product?.name ?? "Product unavailable";
+      const variant = rowVariantLabel(product, line.variantId);
+      const name = variant ? productName + " (" + variant + ")" : productName;
+      const unit = price?.valid ? formatPriceBdt(price.priceBdt) : "Price to confirm";
+      const lineTotal = price?.valid ? formatPriceBdt(price.priceBdt * line.quantity) : "To confirm";
+      return productId + " - " + name + " - " + unit + " x " + line.quantity + " - " + lineTotal;
+    }),
+    "Delivery: " + (selectedZone ? selectedZone.name + " - " + formatPriceBdt(selectedZone.deliveryChargeBdt) : "Please confirm delivery option"),
+    "Total: " + (cartRows.length > 0 && cartRows.every((row) => row.price?.valid) && selectedZone ? formatPriceBdt(estimatedTotal) : "To be confirmed by the shop"),
+    "Please confirm stock and delivery before payment. No payment has been made.",
   ].join("\n");
-  const cartEnquiryUrl = "https://wa.me/8801570263442?text=" + encodeURIComponent(cartEnquiryMessage);
+  const cartEnquiryUrl = business.contact.whatsappUrl + "?text=" + encodeURIComponent(cartEnquiryMessage);
 
   function updateField(field: keyof CheckoutFormState, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -105,7 +114,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
     event.preventDefault();
     setError("");
     if (!everyItemOrderable || !selectedZone || !checkoutReady) {
-      setError("Checkout is not ready. Confirm product availability and store payment/delivery settings.");
+      setError("Checkout is not ready. Confirm product availability and delivery details.");
       return;
     }
 
@@ -193,12 +202,12 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
 
       <section className="checkout-section">
         <span className="section-kicker">SECURE ORDER CREATION</span>
-        <h2>Delivery details</h2>
+        <h2>Place your order</h2>
         {!checkoutReady ? (
           <div className="notice-panel">
-            <strong>Checkout is not enabled yet</strong>
-            <p>The store has not configured and enabled an approved delivery charge, delivery area and manual payment receiving instructions. Your cart is saved locally; no order or payment will be simulated.</p>
-            {cartEnquiryReady ? <Link className="button button-primary" href={cartEnquiryUrl} target="_blank" rel="noopener noreferrer">Enquire about this cart on WhatsApp ↗</Link> : <p>Load or remove unavailable cart items before sending a complete enquiry.</p>}
+            <strong>Website order checkout is unavailable in this session</strong>
+            <p>You can still send the complete cart on WhatsApp or call the shop. Online payment is not collected; the shop confirms stock and delivery before arranging payment.</p>
+            {cartEnquiryReady ? <Link className="button button-primary" href={cartEnquiryUrl} target="_blank" rel="noopener noreferrer">Send order on WhatsApp ↗</Link> : <p>Load or remove unavailable cart items before sending a complete enquiry.</p>}
           </div>
         ) : (
           <form className="checkout-form" onSubmit={placeOrder}>
@@ -211,15 +220,23 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
               <label>Area (optional)<input maxLength={120} value={form.area} onChange={(e) => updateField("area", e.target.value)} /></label>
               <label>City<input required maxLength={120} value={form.city} onChange={(e) => updateField("city", e.target.value)} /></label>
               <label>Postal code (optional)<input maxLength={24} value={form.postalCode} onChange={(e) => updateField("postalCode", e.target.value)} /></label>
-              <label>Delivery area<select required value={zoneId} onChange={(e) => { setZoneId(e.target.value); idempotency.current = null; }}><option value="">Choose a delivery area</option>{checkout.deliveryZones.map((zone) => <option key={zone.id} value={zone.id}>{zone.name} — {formatPriceBdt(zone.deliveryChargeBdt)}</option>)}</select></label>
+              <label>Delivery speed<select required value={zoneId} onChange={(e) => { setZoneId(e.target.value); idempotency.current = null; }}><option value="">Choose a delivery speed</option>{checkout.deliveryZones.map((zone) => <option key={zone.id} value={zone.id}>{zone.name} — {formatPriceBdt(zone.deliveryChargeBdt)}</option>)}</select></label>
               <label className="checkout-note">Order note (optional)<textarea maxLength={500} value={form.note} onChange={(e) => updateField("note", e.target.value)} rows={3} /></label>
             </div>
             {!everyItemOrderable ? <p className="form-error">One or more cart items are unpublished or not currently orderable. Remove them before checkout.</p> : null}
             {error ? <p className="form-error" role="alert">{error}</p> : null}
-            <button className="button button-primary" type="submit" disabled={submitting || productsLoading || productsFailed || !everyItemOrderable || !selectedZone}>{submitting ? "Creating order…" : "Place order"}</button>
-            <p className="checkout-disclaimer">Order totals are determined by the server. Payment is not taken automatically; manual payment submissions remain pending until the shop verifies them.</p>
+            <button className="button button-primary" type="submit" disabled={submitting || productsLoading || productsFailed || !everyItemOrderable || !selectedZone}>{submitting ? "Saving your order…" : "Place order on website"}</button>
+            <div className="checkout-payment-note"><strong>No online payment is taken at checkout.</strong><p>Your order request is recorded first. The shop confirms stock and the delivery address, then contacts you to arrange payment.</p></div><p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. An order is not marked paid until the shop verifies payment separately.</p>
           </form>
         )}
+      </section>
+    </div>
+      <section className="order-channel-section">
+        <div><span className="section-kicker">OTHER WAYS TO ORDER</span><h2>Prefer WhatsApp or a call?</h2><p>The WhatsApp message includes each product code, name, unit price × quantity, line total, delivery charge and final total.</p></div>
+        <div className="order-channel-actions">
+          <Link className="button button-primary" href={cartEnquiryUrl} target="_blank" rel="noopener noreferrer">Send full order on WhatsApp ↗</Link>
+          <a className="button button-outline" href={"tel:" + business.contact.publicPhone}>Call {business.contact.publicPhoneDisplay}</a>
+        </div>
       </section>
     </div>
   );

@@ -43,3 +43,16 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 ## Current session handoff
 
 13 November 2026 follow-up after remote base `5949f4c`: payment method narrowing, order confirmation request-state refactor, cart product-map memo warning, and the const test fixture are fixed in source. Added payment configuration/order summary parser tests; `npm test` reports 42 passed. The strict parser TypeScript check passes and 78 TS/TSX files have zero syntax diagnostics. `git diff --check` passes. Full typecheck/lint/build are blocked here because Next/ESLint dependencies are not installed; `npm audit` is blocked by the absent Windows lockfile. The current audit document in Library is dated 12 November and is not a fresh report for this branch state. Import the follow-up bundle and run all five commands on the Windows clone. See `documentation/TEST_REPORT.md`.
+
+
+## 18 November 2026 follow-up task records
+
+| ID | Priority | Task | Status | Evidence / acceptance criteria |
+|---|---|---|---|---|
+| KE-031 | P1 | Keep only P091 as a published resistor item | Completed | P091 remains published at its existing ৳1 price; the other 12 resistor-named records are archived and marked discontinued, not deleted. |
+| KE-032 | P1 | Publish three-tier robot bundles | Completed | Nine database-backed bundles added with the exact source-sheet prices and BOMs: LFR-T1–T3, SB-T1–T3 and RC-T1–T3. |
+| KE-033 | P1 | Add founder story and projects showcase | Completed | About the Founder page, 3-second five-project homepage carousel and /projects showcase added. |
+| KE-034 | P1 | Complete website, WhatsApp and phone order paths | Completed in source | Website order procedure records unpaid requests; WhatsApp message contains code/name/unit price × qty/line total/delivery/final total; phone link is available. |
+| KE-035 | P1 | Configure delivery modes | Completed | Standard 12h–1 day / ৳0 and Urgent 30–60 minutes / ৳50 are live and used by server checkout calculations. |
+| KE-036 | P1 | Upload Kundu Brothers brand logo and update documentation | In progress | Logo asset and docs added on follow-up branch; verify CI and Vercel preview. |
+| KE-037 | P1 | Verify production-ready order flow, UI and deployment | Needs verification | Run Windows typecheck/lint/tests/build, preview browser checks, production deployment, and a test order before declaring the launch verified. |

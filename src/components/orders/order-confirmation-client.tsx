@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { formatPriceBdt } from "@/lib/format";
 import type { PublicCheckoutConfig } from "@/data/storefront";
 import { parseOrderSummary, type OrderSummary } from "@/lib/orders/order-summary";
+import { business } from "@/config/business";
 
 const orderStatusLabel: Record<string, string> = {
   pending_stock_confirmation: "Waiting for stock confirmation",
@@ -142,7 +143,7 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
       <section className="order-summary-panel">
         <span className="section-kicker">ORDER {order.orderNumber}</span>
         <h2>{orderStatusLabel[order.orderStatus] ?? order.orderStatus.replaceAll("_", " ")}</h2>
-        <p>Thank you, {order.customerName}. Your order record has been saved.</p>
+        <p>Thank you, {order.customerName}. Your order request has been saved. The shop will confirm stock and delivery with you before payment.</p>
         <div className="order-status-grid">
           <div><span>Order status</span><strong>{orderStatusLabel[order.orderStatus] ?? order.orderStatus}</strong></div>
           <div><span>Payment status</span><strong>{order.paymentStatus.replaceAll("_", " ")}</strong></div>
@@ -162,7 +163,7 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
       </section>
 
       {order.orderStatus === "pending_stock_confirmation" ? (
-        <section className="notice-panel"><strong>Stock confirmation is pending</strong><p>The shop must confirm availability before payment can be submitted. No payment is due yet.</p></section>
+        <section className="notice-panel"><strong>Stock confirmation is pending</strong><p>The shop will confirm kit/component availability and delivery timing. No payment has been taken.</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
       ) : null}
 
       {order.paymentStatus === "pending_verification" ? (
@@ -179,7 +180,7 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
         <section className="checkout-section">
           <span className="section-kicker">MANUAL PAYMENT</span>
           <h2>Pay {formatPriceBdt(order.totalBdt)}</h2>
-          {checkout.paymentMethods.length === 0 ? <div className="notice-panel"><p>Payment methods are not configured. Contact the shop before transferring money.</p></div> : (
+          {checkout.paymentMethods.length === 0 ? <div className="notice-panel"><p>No online payment method is enabled. Please do not transfer money yet. The shop will contact you after confirming your order and arrange payment directly.</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, I am following up on order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Continue on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></div> : (
             <form className="checkout-form" onSubmit={submitPayment}>
               <label>Payment method<select value={method} onChange={(event) => { setMethod(event.target.value as "bkash" | "nagad"); idempotency.current = null; }}>
                 {checkout.paymentMethods.map((item) => <option key={item.method} value={item.method}>{item.method === "bkash" ? "bKash" : "Nagad"}</option>)}

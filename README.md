@@ -5,28 +5,31 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 ## Current implementation
 
 - Next.js 16 App Router, React 19, TypeScript and Tailwind CSS 4.
-- Homepage, searchable and filterable shop, product details, full 211-product photo gallery, enquiry cart, contact, support, shipping-policy placeholder and image credits.
+- Homepage with five-project horizontal carousel, founder story, /projects build showcase, searchable/filterable shop, product details, cart, contact, support and image credits.
 - Live Supabase project provisioned in ap-northeast-1. The initial schema and public catalogue count migrations are applied.
-- Live database currently has **211 published product rows across 17 categories**, matching all 211 SKUs in the approved image set.
+- Live database currently has **208 published product rows across 18 categories**: 199 original non-resistor products plus nine build-to-order robot kits; P091 is the sole published resistor listing.
 - Shop search, category and BDT price filters use server-side catalogue queries. Pagination uses an exact filtered count; all nine pages (24 products per page) are available for the current catalogue.
 - **All 211 products have matching photographs** in the optimized catalogue sprite. The owner confirmed permission/licensing for the complete supplied set; the 19 Creative Commons sources are attributed at `/image-credits`. Product images are selected by SKU P001–P211.
 - Supabase has 21 public tables with RLS enabled and two private storage buckets. Generated database types are in `src/lib/supabase/database.types.ts`.
 - Protected admin routes cover products, categories, image uploads, variants, inventory, orders, payment verification and store settings. Public admin registration is disabled; an owner-provisioned Supabase user and role are required.
 
-## Not ready to accept orders
+## Website orders, WhatsApp and delivery
 
-- Checkout is disabled in Supabase.
-- bKash and Nagad receiving details/instructions are not configured or enabled.
-- No delivery zones or delivery charges are configured.
-- The cart can be used to compile a WhatsApp enquiry, but customer checkout remains unavailable. The API and database reject order creation while prerequisites are missing.
-- One admin profile now exists with the `admin` role and is linked to an email-confirmed Supabase Auth user. A successful sign-in and protected-page session have not yet been verified.
-- Product prices and stock labels require final owner review before sales are accepted.
+- Website order requests are enabled. The checkout procedure uses server-authoritative current prices, delivery charges, quantity limits, stock locks and idempotency protection.
+- Orders containing untracked/build-to-order items start at pending_stock_confirmation. The shop confirms stock and the delivery address before arranging payment.
+- No online payment is collected. bKash and Nagad remain disabled because no verified receiving number or customer payment instructions have been supplied. Payment status starts as not_submitted; the site never marks an order paid automatically.
+- Delivery choices: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop confirms the address and whether the requested window can be met.
+- WhatsApp order messages include one line per cart item in the form: product code - product name - unit price x quantity - line total, followed by delivery and the final Total: line. A click-to-call action is also available.
+- P091 (1kΩ Resistor Box 5000pcs) is the only published resistor product and remains at its existing ৳1 price. The other 12 resistor-named records are archived, not deleted, preserving order history.
+- Nine complete robot-kit bundles are published: LFR (৳4,999 / ৳7,499 / ৳9,999), Soccer Bot (৳3,999 / ৳9,999 / ৳14,999), RC Speed Battle (৳3,999 / ৳9,999 / ৳16,999). Their full BOMs are on each kit’s product page.
+- Drone remains a custom project enquiry because the uploaded robot-kit list contains no drone BOM or price.
+- One owner admin profile exists with the admin role and is linked to an email-confirmed Supabase Auth user. A successful sign-in and protected-page session still need owner verification.
 
 ## Hosting and deployment
 
 The production site is live at **https://kundu-electronics.vercel.app**. The latest Vercel production deployment is READY from `feat/launch-prep` commit `900d331f396027becca4e95fcdd8b91683a55087`; the canonical alias points to the deployment. `main` remains unchanged.
 
-A separate preview is available at `https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app`. The production site is enquiry-only: checkout remains disabled because no payment method or delivery zone is enabled in Supabase.
+A separate preview is available at `https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app`. Website order requests are available without online payment; bKash/Nagad remain disabled pending verified receiving details.
 
 The Vercel project has the public Supabase URL/key and sensitive server-only entries. The values for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are not included in this repository or this documentation.
 
@@ -37,7 +40,7 @@ Required hosting environment variables for local/other environments:
 - `APP_HMAC_SECRET` (server-only, 32 cryptographically random bytes encoded as 64 hex characters)
 - `NEXT_PUBLIC_SITE_URL` (the final canonical origin)
 
-Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or chat. Do not enable checkout until payment and delivery configuration is approved and checkout is tested end-to-end.
+Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or chat. Keep online payment disabled until verified bKash/Nagad receiving details and instructions are supplied. Website order creation remains separate from payment verification.
 
 ## Current CI security status
 

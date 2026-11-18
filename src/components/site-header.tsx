@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
-import { CartIcon, CloseIcon, MenuIcon, SparkIcon } from "@/components/icons";
+import { CartIcon, CloseIcon, MenuIcon } from "@/components/icons";
 import { SearchBox } from "@/components/search-box";
 import { useCart } from "@/components/cart/cart-provider";
 
 const primaryLinks = [
   { href: "/shop", label: "Shop" },
+  { href: "/projects", label: "Projects" },
   { href: "/gallery", label: "Photo gallery" },
   { href: "/support", label: "Support" },
-  { href: "/about", label: "About us" },
+  { href: "/about", label: "About the Founder" },
 ];
 
 export function SiteHeader() {
@@ -23,7 +25,7 @@ export function SiteHeader() {
       <header className="site-header">
         <div className="header-main container">
           <Link href="/" className="brand" onClick={() => setMenuOpen(false)}>
-            <span className="brand-mark"><SparkIcon /></span>
+            <span className="brand-mark"><Image src="/brand/kundu-brothers-logo.png" alt="" width={54} height={54} priority /></span>
             <span className="brand-copy"><strong>KUNDU</strong><small>ELECTRONICS</small></span>
           </Link>
           <div className="header-search"><SearchBox /></div>
