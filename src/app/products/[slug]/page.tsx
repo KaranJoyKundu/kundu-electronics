@@ -59,10 +59,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <span className="section-kicker">{product.categorySlug.replaceAll("-", " ")}</span>
           <h1>{product.name}</h1>
           {product.sku ? <p className="product-sku">SKU: {product.sku}</p> : null}
-          <p className="product-price">{formatPriceBdt(product.priceBdt)}</p>
+          <p className={product.categorySlug === "project-kits" ? "product-price project-estimated-price" : "product-price"}>{formatPriceBdt(product.priceBdt)}</p>
+          {product.categorySlug === "project-kits" ? <p className="project-estimate-note">Estimated package cost from the supplied parts list. The shop confirms the exact components, availability and final amount before payment.</p> : null}
           <p className="product-availability">{availabilityLabels[product.availability] ?? availabilityLabels.unknown}</p>
           {product.summary ? <p className="simple-lead">{product.summary}</p> : null}
-          {product.description ? <p>{product.description}</p> : null}
+          {product.description ? <p className={product.categorySlug === "project-kits" ? "project-kit-description" : undefined}>{product.description}</p> : null}
           {!product.summary && !product.description && details.specifications.length === 0 ? (
             <div className="notice-panel product-details-pending">
               <strong>Technical details not published yet</strong>

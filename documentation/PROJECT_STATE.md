@@ -1,7 +1,8 @@
 # PROJECT_STATE — Kundu Electronics
 
 **Last updated:** 18 November 2026 (Asia/Dhaka)
-**Active launch branch:** `feat/launch-prep`
+**Production branch:** feat/launch-prep
+**Current follow-up branch:** `feat/founder-projects-storefront-orders` (PR #4 open against production branch)
 **Latest verified launch-branch commit:** `900d331f396027becca4e95fcdd8b91683a55087`
 **Remote main:** `7f2a448426fb78f4467eaa377af8489f115c427a` (unchanged by launch work)
 **Launch PR:** [#3](https://github.com/KaranJoyKundu/kundu-electronics/pull/3) (open, draft, not merged)
@@ -29,7 +30,7 @@ The repository is private. Active launch changes remain isolated on `feat/launch
 
 ## Implemented foundation
 
-- Responsive storefront and routes for home, shop, products, cart, about, contact, support and shipping/returns.
+- Responsive storefront and routes for home, shop, products, cart, founder story, projects, contact, support and shipping/returns.
 - Centralized public business settings with verified contact details; missing facts remain unset.
 - Supabase browser/server/public/admin client boundaries, auth proxy, admin/staff authorization and protected admin foundations.
 - Product/category/variant and image management; product images use a private Storage bucket.
@@ -37,7 +38,7 @@ The repository is private. Active launch changes remain isolated on `feat/launch
 - Cart external store using `useSyncExternalStore`, persisted browser cart restore/write and blocked-storage fallback.
 - Server checkout/order/payment APIs with authoritative DB price and delivery calculation, idempotency and guest-order access.
 - Inventory states distinguish unknown, tracked and untracked stock; stock movements are auditable.
-- Manual bKash/Nagad submission and authorized verification states exist but payments and delivery remain unconfigured.
+- Website order creation is enabled without collecting payment. Manual bKash/Nagad submission remains unavailable until receiving details and customer instructions are configured. Delivery speed options are Standard 12h–1 day / ৳0 and Urgent 30–60 minutes / ৳50.
 - All SparkFun research documents are preserved under `documentation/research/`.
 
 ## Latest Windows-verification follow-up changes
@@ -79,14 +80,14 @@ The available supplied `npm-audit.json` is UTF-16LE and reports 7 moderate, 0 lo
 
 ## Business data and catalogue status — 18 November 2026
 
-The complete 211-SKU product set from the owner's inventory workbook has been imported into the live Supabase catalogue:
+The original 211-SKU product set from the owner's inventory workbook remains in the live Supabase catalogue, with 12 resistor-named rows archived and nine project bundle rows added:
 
-- 211 published product rows, 17 published categories and 211 inventory records.
-- Exact public catalogue count function returns 211.
+- 208 published product rows, 18 published categories and 220 inventory records (199 original catalogue rows remain published, including P091, plus nine kits).
+- Published catalogue count is 208.
 - Public price state: 49 products have no selling price and show “Price on request”.
-- Public availability state: 129 in stock, 34 low stock, 42 out of stock and six unknown/unrecorded.
+- Current public availability: 117 in stock, 34 low stock, 42 out of stock, six unknown/unrecorded and nine build-to-order kits.
 - All 211 product photographs from the supplied archive are included in the SKU-mapped optimized sprite `public/product-previews/kundu-catalogue-sprite.webp`. The owner confirmed rights/licensing for the complete set; 19 Creative Commons source photos are attributed on `/image-credits`.
-- The product shop has nine pages at 24 records per page. The gallery renders all 211 products.
+- The product shop has nine pages at 24 records per page. The photo sprite retains all 211 original SKU tiles; project kits use labelled vector artwork.
 
 The original inventory workbook remains private and is not committed. Only customer-facing names, categories, selling prices and public availability states were imported. Buying prices, margins, suppliers, internal notes and private stock counts remain excluded. Six unknown stock rows and 49 missing selling prices were not filled by inference.
 
@@ -96,7 +97,7 @@ The original inventory workbook remains private and is not committed. Only custo
 2. Owner to sign in at `/admin/login` and verify protected admin access; one admin profile exists, but sign-in has not been confirmed in this run.
 3. Owner to verify physical prices and stock; fill the 49 selling prices and six unknown stock quantities when confirmed.
 4. Configure owner-approved delivery zones/charges and bKash/Nagad receiving details/instructions.
-5. Keep checkout disabled until protected server secrets, payment/delivery settings and order/payment flows have passed end-to-end testing.
+5. Keep bKash/Nagad disabled until verified receiving numbers and instructions are supplied. Website orders remain unpaid until the shop confirms stock, delivery and the final amount.
 6. Continue reviewing the remaining 14 high development-only dependency audit findings (GHSA-fc5q-39xc-vjpf in picomatch) and Supabase security-advisor warnings.
 
 ## Guardrails
@@ -111,3 +112,14 @@ Never publish supplier identity, purchase prices, profit margin, master workbook
 - Current stable `@typescript-eslint/typescript-estree` observed on npm is `8.72.2`; `8.72.3-alpha.8` is a prerelease and is not suitable as a production dependency update without explicit prerelease evaluation.
 - Next.js `v16.4.6` source was inspected: `useTypeScriptCli` is an accepted boolean in `config-schema.ts`; `false` selects the TypeScript API worker in `packages/next/src/build/type-check.ts`. `runTypeCheck.ts` explicitly filters `.next/dev/types` during build typechecking. Keep the setting pending owner verification; the warning marker is consistent with the disabled experimental CLI checker, not an unknown config property.
 - GitHub integration can inspect repository files but cannot run npm commands in the owner's Windows environment or produce a full Git bundle from the connected remote. `npm explain`, `npm ls`, `npm audit fix --dry-run`, `npm ci`, typecheck, lint, tests and build were not executed in this session. Preserve the owner's prior Windows PASS report; it is not a rerun for this security follow-up.
+
+
+## 18 November 2026 founder, project-kits and ordering follow-up
+
+- Database catalogue state after the storefront migration: 208 published rows, 18 published categories. P091 (1kΩ Resistor Box 5000pcs) stays published at the existing ৳1 price. Twelve other resistor-named records are archived with discontinued availability; records were not deleted so historical order lines remain intact.
+- Nine build-to-order project kit products were added: LFR-T1–T3, SB-T1–T3 and RC-T1–T3. Kit costs are copied from the uploaded BOM sheet, which labels the amounts as estimates. The site treats them as estimates until the shop confirms final scope and amount. Exact component P-codes are annotated only where the catalogue item is an exact match; the kit's own bundle ID is not a component SKU.
+- Added /projects with Bee Biped Robot, LFR, Soccer Bot, RC Speed Battle and Drone enquiry cards. Added a horizontal five-slide home carousel (3-second interval) and /about founder story. The Bee Biped repo contains no tracked project photos, so the project card uses a labelled original illustration and links to the source repo.
+- Website orders enabled with server-side prices, delivery charges, idempotency and existing stock-confirmation logic. Delivery speeds Standard 12h–1day / ৳0 and Urgent 30–60min / ৳50.
+- No payment is taken. bKash/Nagad remain disabled pending verified receiving details. Order payment status remains not_submitted; shop confirms inventory/address and arranges payment.
+- Cart offers website checkout, WhatsApp formatted order summary and direct phone call.
+- Follow-up branch: feat/founder-projects-storefront-orders; production branch remains feat/launch-prep; default main is not targeted.

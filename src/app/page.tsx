@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { HomeIllustration } from "@/components/home-illustration";
+import { HomeProjectShowcase } from "@/components/home-project-showcase";
 import { ArrowRightIcon } from "@/components/icons";
 import { getStorefrontCatalogue } from "@/data/storefront";
 import { formatPriceBdt } from "@/lib/format";
@@ -13,18 +13,23 @@ export default async function HomePage() {
       <section className="hero-section">
         <div className="container hero-grid">
           <div className="hero-copy">
-            <div className="eyebrow"><span className="eyebrow-line" /> THE COMPONENT WORKBENCH <span className="eyebrow-index">01 / 04</span></div>
+            <div className="eyebrow"><span className="eyebrow-line" /> THE PROJECT WORKBENCH <span className="eyebrow-index">01 / 04</span></div>
             <h1>Make your next idea <em>real.</em></h1>
-            <p className="hero-description">A place for the components, boards and tools that turn curiosity into working prototypes.</p>
+            <p className="hero-description">Stuck on a project? Need help with a build, or getting close to a deadline? Let us help you turn the idea into something that works.</p>
             <div className="hero-actions">
-              <Link href="/shop" className="button button-primary">Explore the catalogue <ArrowRightIcon /></Link>
-              <Link href="/support" className="text-link">Need a hand? <ArrowRightIcon /></Link>
+              <Link href="/projects" className="button button-primary">Explore projects <ArrowRightIcon /></Link>
+              <Link href="/support" className="text-link">Get project help <ArrowRightIcon /></Link>
             </div>
             <div className="hero-footnote"><span className="status-pip" /> Kundu Electronics <span className="hero-footnote-separator">·</span> Khulna, Bangladesh</div>
           </div>
-          <HomeIllustration />
+          <HomeProjectShowcase />
         </div>
         <div className="hero-bottom-rule"><div className="container"><span>COMPONENTS / PROTOTYPING / DISCOVERY</span><span>PARTS / BOARDS / TOOLS</span></div></div>
+      </section>
+
+      <section className="project-intro-band container">
+        <div><span className="section-kicker">PROJECTS / BUILDS / KITS</span><h2>From first prototype to competition-ready robot.</h2><p>See completed builds, compare the three kit tiers, and add a complete robot kit to your cart.</p></div>
+        <Link className="button button-outline" href="/projects">See all projects <ArrowRightIcon /></Link>
       </section>
 
       <section className="intro-section container">
@@ -40,7 +45,7 @@ export default async function HomePage() {
           <div className="section-kicker">02 — THE CATALOGUE</div>
           <div className="catalogue-state-card">
             <div className="state-visual"><div className="state-grid-mark"><span /><span /><span /><span /><span /><span /><span /><span /><span /></div><span className="state-visual-label">CATALOGUE / LIVE</span></div>
-            <div className="state-copy"><span className="state-tag">LIVE CATALOGUE</span><h2>Find the right part<br />for your next build.</h2><p>Browse components across 17 categories, compare published BDT selling prices, and check each product’s current availability status. Ask us to reconfirm availability before you travel.</p><Link href="/shop" className="button button-dark">Browse products <ArrowRightIcon /></Link></div>
+            <div className="state-copy"><span className="state-tag">LIVE CATALOGUE</span><h2>Find the right part<br />for your next build.</h2><p>Browse components across 18 categories, compare published BDT selling prices, and check each product’s current availability status. Ask us to reconfirm availability before you travel.</p><Link href="/shop" className="button button-dark">Browse products <ArrowRightIcon /></Link></div>
           </div>
         </div>
       </section>

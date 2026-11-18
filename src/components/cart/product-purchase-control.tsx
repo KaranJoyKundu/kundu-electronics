@@ -54,7 +54,7 @@ export function ProductPurchaseControl({ productId, basePriceBdt, orderable, enq
       }}>
         {enquiryOnly ? (added ? "Added to enquiry cart" : "Add to enquiry cart") : !orderable ? "Currently unavailable" : !price.valid ? "Select an option" : !validQuantity ? "Check quantity" : added ? "Added to cart" : "Add to cart"}
       </button>
-      {added ? <span role="status" aria-live="polite">Added to your enquiry cart.</span> : null}
+      {added ? <span role="status" aria-live="polite">Added to your cart.</span> : null}
     </div>
   );
 }

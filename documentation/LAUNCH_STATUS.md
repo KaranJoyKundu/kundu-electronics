@@ -22,14 +22,16 @@ The imported inventory is represented as recorded; missing values were not guess
 - Customer-facing inventory counts, buying prices, margins, supplier identities and private notes are not exposed.
 - These values should still be physically reconfirmed by the owner before accepting paid orders or advertising availability.
 
-## Enquiry-only safeguards
+## Website order requests and payment separation
 
-- Supabase `checkout_enabled = false`.
-- No delivery zones/charges or enabled payment methods are configured; bKash/Nagad receiving details and payment instructions are not enabled.
-- Customers can browse the complete catalogue and add items to the enquiry cart or message the shop on WhatsApp. The site does not simulate an order or payment.
-- The checkout API/database guards prevent order creation while the prerequisites remain disabled.
-- A single `admin` profile exists. The owner still needs to sign in and verify protected admin pages in a browser before using the portal operationally.
-- Vercel has public Supabase URL/publishable-key variables and protected server-only entries for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET`. Secret values are not present in source control or this document.
+- Supabase checkout_enabled = true.
+- Two enabled delivery choices: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop confirms address/feasibility.
+- The website order API and database create unpaid order requests using server-authoritative current prices, idempotency, quantity bounds and stock locks.
+- Orders containing untracked build-to-order items begin in pending_stock_confirmation. The shop must confirm stock and delivery before arranging payment.
+- No online payment is collected. There are currently zero enabled payment methods, so bKash/Nagad receiving details and payment instructions are not shown. New orders have payment status not_submitted.
+- WhatsApp handoff includes each product’s SKU, name, price × quantity, line total, delivery charge and final Total: line. Click-to-call is available as an alternative.
+- A single admin profile exists; the owner still needs to sign in and verify protected admin pages in a browser.
+- Vercel has public Supabase URL/publishable-key variables and protected server-only entries for SUPABASE_SECRET_KEY and APP_HMAC_SECRET. Secret values are not present in source control or this document.
 
 ## CI and security
 
@@ -41,17 +43,17 @@ The imported inventory is represented as recorded; missing values were not guess
 
 ## GitHub review state
 
-- Launch work remains isolated on `feat/launch-prep`.
-- Draft PR #3: https://github.com/KaranJoyKundu/kundu-electronics/pull/3
-- PR #3 is open and unmerged. Do not merge it into `main` until owner visual checks and remaining security/configuration reviews are complete.
+- The live production deployment remains on `feat/launch-prep`; this follow-up is isolated on `feat/founder-projects-storefront-orders`.
+- Follow-up PR #4: https://github.com/KaranJoyKundu/kundu-electronics/pull/4 — targets `feat/launch-prep`, not `main`, and remains open/unmerged.
+- Separate draft PR #3 to `main` remains unchanged and unmerged.
+- Latest follow-up commit: `2a10d885381ea3b9c351cf8df1d7ce5dd7d78def`; Vercel preview deployment from that commit is READY at `https://kundu-electronics-hv1bft3mf-kundu2409056-5098.vercel.app`.
 
 ## Verification still required by the owner
 
 1. Open https://kundu-electronics.vercel.app on desktop and mobile. Check the home page, all 9 shop pages, search, category/price filters, each product photo, product detail pages and WhatsApp enquiry-cart flow.
 2. Sign in at `/admin/login` and confirm the protected admin pages work.
 3. Reconfirm the selling prices and physical stock. In particular, fill the 49 missing prices and six unrecorded stock quantities if they are now known.
-4. Approve delivery areas, delivery charges and customer-facing policy.
-5. Configure bKash/Nagad receiving details and instructions only after confirming the exact business details.
-6. Keep checkout disabled until the server-only secrets, payment/delivery settings, order creation and payment verification have been tested end-to-end.
+4. Confirm that Standard and Urgent delivery windows are feasible for each order address before dispatch.
+5. Supply verified bKash/Nagad receiving numbers and payment instructions before enabling online transfer. Until then, arrange payment directly after the shop confirms the order.
 
-The complete 211-product photo catalogue is deployed in **enquiry-only mode**. Paid ordering remains intentionally disabled until the owner completes the checks above.
+The public catalogue and project kits are published. Website order requests can be recorded without online payment; paid mobile-transfer submissions remain disabled until verified business receiving details and customer instructions are configured.
