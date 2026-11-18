@@ -107,7 +107,7 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
   return (
     <div className={"project-artwork project-artwork-" + kind} role="img" aria-label={labels[kind] + " — catalogue component photo collage"}>
       <div className="project-artwork-photo-grid">
-        {components[kind].map((part) => (
+        {components[kind as ProjectKind].map((part) => (
           <figure className="project-artwork-photo" key={part.sku}>
             {part.sku === "P021" ? <img className="project-artwork-nano-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Arduino_Nano.jpg" alt="Arduino Nano board photographed on a plain background" loading="lazy" /> : <ProductPhoto name={part.name} sku={part.sku} category={part.category} />}
             <figcaption>{part.name}</figcaption>
