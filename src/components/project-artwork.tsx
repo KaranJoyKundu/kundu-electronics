@@ -60,18 +60,37 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
   if (kind === "lfr") {
     return (
       <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a real line follower robot">
-        <img src="https://3zuli.github.io/img/linefollower.jpg" alt="Compact line follower robot on a track" loading="lazy" />
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/LineFollower.jpg" alt="Compact line follower robot on a track" loading="lazy" />
         <span className="project-artwork-caption">REAL LINE-FOLLOWER BUILD · PHOTO CREDIT</span>
-        <a className="project-artwork-source" href="https://3zuli.github.io/robotics.html" target="_blank" rel="noreferrer">Source photo: 3zuli Robotics ↗</a>
+        <a className="project-artwork-source" href="https://commons.wikimedia.org/wiki/File:LineFollower.jpg" target="_blank" rel="noreferrer">Photo: HimaliKhabar / Wikimedia Commons ↗</a>
       </div>
     );
   }
   if (kind === "soccerbot") {
     return (
       <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a four-wheel Arduino soccer robot">
-        <img src="https://static-01.daraz.com.bd/p/cd19eaa8b5d313b4bfe772c83a433ca9.png" alt="Four-wheel DIY Arduino soccer bot on artificial turf" loading="lazy" />
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Soccer_Playing_Robots_During_RoboCup_2013.jpg" alt="Four-wheel DIY Arduino soccer bot on artificial turf" loading="lazy" />
         <span className="project-artwork-caption">SOCCER ROBOT REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://www.daraz.com.bd/products/soccer-bot-diy-arduino-based-robotic-soccer-robot-robobox-4-i323729310.html" target="_blank" rel="noreferrer">Image source: Daraz listing ↗</a>
+        <a className="project-artwork-source" href="https://commons.wikimedia.org/wiki/File:Soccer_Playing_Robots_During_RoboCup_2013.jpg" target="_blank" rel="noreferrer">Photo: Albert van Breemen / Wikimedia Commons ↗</a>
+      </div>
+    );
+  }
+
+  if (kind === "rc") {
+    return (
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of an RC hobby car">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/RC-car.jpg" alt="Remote control hobby car reference photo" loading="lazy" />
+        <span className="project-artwork-caption">RC HOBBY CAR · REFERENCE PHOTO</span>
+        <a className="project-artwork-source" href="https://commons.wikimedia.org/wiki/Category:Remote-controlled_models" target="_blank" rel="noreferrer">Photo reference: Wikimedia Commons ↗</a>
+      </div>
+    );
+  }
+  if (kind === "drone") {
+    return (
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a quadrotor drone">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/ReuseumMakerFaireQuadrotor.JPG" alt="Small quadrotor drone reference photo" loading="lazy" />
+        <span className="project-artwork-caption">QUADROTOR · REFERENCE PHOTO</span>
+        <a className="project-artwork-source" href="https://commons.wikimedia.org/wiki/Category:Robotics" target="_blank" rel="noreferrer">Photo reference: Wikimedia Commons ↗</a>
       </div>
     );
   }
@@ -81,7 +100,7 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
       <div className="project-artwork-photo-grid">
         {components[kind].map((part) => (
           <figure className="project-artwork-photo" key={part.sku}>
-            <ProductPhoto name={part.name} sku={part.sku} category={part.category} />
+            {part.sku === "P021" ? <img className="project-artwork-nano-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Arduino_Nano.jpg" alt="Arduino Nano board photographed on a plain background" loading="lazy" /> : <ProductPhoto name={part.name} sku={part.sku} category={part.category} />}
             <figcaption>{part.name}</figcaption>
           </figure>
         ))}
