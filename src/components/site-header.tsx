@@ -25,7 +25,7 @@ export function SiteHeader() {
       <header className="site-header">
         <div className="header-main container">
           <Link href="/" className="brand" onClick={() => setMenuOpen(false)}>
-            <span className="brand-mark"><Image src="/brand/kundu-brothers-logo.png" alt="" width={54} height={54} priority /></span>
+            <span className="brand-mark"><Image src="/images/brand/logo.png" alt="Kundu Electronics logo" width={52} height={52} priority /></span>
             <span className="brand-copy"><strong>KUNDU</strong><small>ELECTRONICS</small></span>
           </Link>
           <div className="header-search"><SearchBox /></div>
