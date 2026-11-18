@@ -42,7 +42,6 @@ export default async function ProjectDetailPage({params}:{params:Promise<{slug:s
  const {slug}=await params; const project=projects.find(p=>p.slug===slug); if(!project) notFound();
  const {products}=await getStorefrontCatalogue(250,1);
  const bySku=new Map(products.map(p=>[p.sku,p]));
- const kits=(project.kits??[]).map(sku=>bySku.get(sku)).filter((p):p is NonNullable<typeof p>=>Boolean(p));
  return <section className="container simple-page project-detail-page">
   <div className="breadcrumb"><Link href="/">Home</Link><span>/</span><Link href="/projects">Projects</Link><span>/</span><span>{project.title}</span></div>
   <header className="project-detail-header"><span className="section-kicker">{project.kicker}</span><h1>{project.title}</h1><p className="simple-lead">{project.summary}</p></header>
