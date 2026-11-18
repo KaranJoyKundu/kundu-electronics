@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - feat/launch-prep
   push:
     branches:
       - feat/storefront-foundation

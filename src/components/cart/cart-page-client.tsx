@@ -220,7 +220,27 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
               <label>Area (optional)<input maxLength={120} value={form.area} onChange={(e) => updateField("area", e.target.value)} /></label>
               <label>City<input required maxLength={120} value={form.city} onChange={(e) => updateField("city", e.target.value)} /></label>
               <label>Postal code (optional)<input maxLength={24} value={form.postalCode} onChange={(e) => updateField("postalCode", e.target.value)} /></label>
-              <label>Delivery speed<select required value={zoneId} onChange={(e) => { setZoneId(e.target.value); idempotency.current = null; }}><option value="">Choose a delivery speed</option>{checkout.deliveryZones.map((zone) => <option key={zone.id} value={zone.id}>{zone.name} — {formatPriceBdt(zone.deliveryChargeBdt)}</option>)}</select></label>
+              <div className="delivery-speed-field">
+                <span className="delivery-speed-label">Choose delivery speed</span>
+                <div className="delivery-speed-choices" role="group" aria-label="Delivery speed">
+                  {checkout.deliveryZones.map((zone) => {
+                    const urgent = zone.code === "urgent-30m-1h";
+                    return (
+                      <button
+                        className={`delivery-speed-choice ${urgent ? "delivery-speed-urgent" : "delivery-speed-standard"} ${zoneId === zone.id ? "is-selected" : ""}`}
+                        type="button"
+                        key={zone.id}
+                        aria-pressed={zoneId === zone.id}
+                        onClick={() => { setZoneId(zone.id); idempotency.current = null; }}
+                      >
+                        <span className="delivery-speed-choice-heading"><strong>{urgent ? "Urgent" : "Standard"}</strong><b>{formatPriceBdt(zone.deliveryChargeBdt)}</b></span>
+                        <span>{urgent ? "30–60 minutes" : "12 hours–1 day"}</span>
+                        {urgent ? <small>Priority handling · subject to address confirmation</small> : <small>Regular delivery</small>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
               <label className="checkout-note">Order note (optional)<textarea maxLength={500} value={form.note} onChange={(e) => updateField("note", e.target.value)} rows={3} /></label>
             </div>
             {!everyItemOrderable ? <p className="form-error">One or more cart items are unpublished or not currently orderable. Remove them before checkout.</p> : null}
