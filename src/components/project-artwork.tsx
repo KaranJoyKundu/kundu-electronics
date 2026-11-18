@@ -1,4 +1,8 @@
+import { ProductPhoto } from "@/components/product-photo";
+
 export type ProjectKind = "bee" | "lfr" | "soccerbot" | "rc" | "drone";
+
+type ComponentPhoto = { sku: string; name: string; category: string };
 
 const labels: Record<ProjectKind, string> = {
   bee: "BEE BIPED ROBOT",
@@ -8,57 +12,81 @@ const labels: Record<ProjectKind, string> = {
   drone: "DRONE BUILD",
 };
 
+// Catalogue photos are real component photographs. They are not photographs of the assembled kits.
+const components: Record<ProjectKind, ComponentPhoto[]> = {
+  bee: [
+    { sku: "P021", name: "Arduino Nano", category: "Microcontrollers & Development Boards" },
+    { sku: "P037", name: "SG90 Servo", category: "Sensors & Modules" },
+    { sku: "P031", name: "MAX7219 LED Matrix", category: "Displays" },
+    { sku: "P175", name: "HC-05 Bluetooth", category: "Sensors & Modules" },
+    { sku: "P036", name: "HC-SR04 Ultrasonic", category: "Sensors & Modules" },
+    { sku: "P181", name: "18650 Battery", category: "Power" },
+  ],
+  lfr: [
+    { sku: "P021", name: "Arduino Nano", category: "Microcontrollers & Development Boards" },
+    { sku: "P064", name: "TB6612FNG Driver", category: "Motor Drivers" },
+    { sku: "P006", name: "N20 Gear Motor", category: "Robotics Parts & Mechanical" },
+    { sku: "P050", name: "TCRT5000 Sensor", category: "Sensors & Modules" },
+    { sku: "P052", name: "QTR-8A Array", category: "Sensors & Modules" },
+    { sku: "P036", name: "HC-SR04 Sensor", category: "Sensors & Modules" },
+  ],
+  soccerbot: [
+    { sku: "P021", name: "Arduino Nano", category: "Microcontrollers & Development Boards" },
+    { sku: "P175", name: "HC-05 Bluetooth", category: "Sensors & Modules" },
+    { sku: "P063", name: "L298N Driver", category: "Motor Drivers" },
+    { sku: "P009", name: "Yellow BO Motor", category: "Robotics Parts & Mechanical" },
+    { sku: "P013", name: "65mm Rubber Wheel", category: "Robotics Parts & Mechanical" },
+    { sku: "P011", name: "GA25 Gear Motor", category: "Robotics Parts & Mechanical" },
+  ],
+  rc: [
+    { sku: "P023", name: "ESP32 DevKit", category: "Microcontrollers & Development Boards" },
+    { sku: "P063", name: "L298N Driver", category: "Motor Drivers" },
+    { sku: "P065", name: "BTS7960 Driver", category: "Motor Drivers" },
+    { sku: "P009", name: "Yellow BO Motor", category: "Robotics Parts & Mechanical" },
+    { sku: "P001", name: "65mm Robot Wheel", category: "Robotics Parts & Mechanical" },
+    { sku: "P012", name: "GA37 Gear Motor", category: "Robotics Parts & Mechanical" },
+  ],
+  drone: [
+    { sku: "P023", name: "ESP32 DevKit", category: "Microcontrollers & Development Boards" },
+    { sku: "P024", name: "ESP32-CAM", category: "Microcontrollers & Development Boards" },
+    { sku: "P025", name: "ESP32-S3", category: "Microcontrollers & Development Boards" },
+    { sku: "P040", name: "MPU6050 IMU", category: "Sensors & Modules" },
+    { sku: "P036", name: "Ultrasonic Sensor", category: "Sensors & Modules" },
+    { sku: "P181", name: "18650 Battery", category: "Power" },
+  ],
+};
+
 export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
+  if (kind === "lfr") {
+    return (
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a real line follower robot">
+        <img src="https://3zuli.github.io/img/linefollower.jpg" alt="Compact line follower robot on a track" loading="lazy" />
+        <span className="project-artwork-caption">REAL LINE-FOLLOWER BUILD · PHOTO CREDIT</span>
+        <a className="project-artwork-source" href="https://3zuli.github.io/robotics.html" target="_blank" rel="noreferrer">Source photo: 3zuli Robotics ↗</a>
+      </div>
+    );
+  }
+  if (kind === "soccerbot") {
+    return (
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a four-wheel Arduino soccer robot">
+        <img src="https://static-01.daraz.com.bd/p/cd19eaa8b5d313b4bfe772c83a433ca9.png" alt="Four-wheel DIY Arduino soccer bot on artificial turf" loading="lazy" />
+        <span className="project-artwork-caption">SOCCER ROBOT REFERENCE PHOTO</span>
+        <a className="project-artwork-source" href="https://www.daraz.com.bd/products/soccer-bot-diy-arduino-based-robotic-soccer-robot-robobox-4-i323729310.html" target="_blank" rel="noreferrer">Image source: Daraz listing ↗</a>
+      </div>
+    );
+  }
+
   return (
-    <div className={"project-artwork project-artwork-" + kind} role="img" aria-label={labels[kind] + " — original illustration"}>
-      <svg viewBox="0 0 520 340" aria-hidden="true" focusable="false">
-        <rect x="10" y="10" width="500" height="320" rx="24" fill="#e9f0e9" />
-        <g fill="none" stroke="#244238" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round">
-          {kind === "bee" ? <>
-            <path d="M260 92v54M260 148l-59 37-38 75M260 148l59 37 38 75" />
-            <path d="M201 185l-56 24-18 54M319 185l56 24 18 54" strokeWidth="8"/>
-            <circle cx="260" cy="112" r="45" fill="#d5ad61" />
-            <rect x="231" y="94" width="58" height="38" rx="6" fill="#203c36"/>
-            <path d="M241 105h2M255 105h2M269 105h2M283 105h2M241 118h2M255 118h2M269 118h2M283 118h2" stroke="#c5e3b5" strokeWidth="7"/>
-            <circle cx="201" cy="185" r="16" fill="#d5ad61"/>
-            <circle cx="319" cy="185" r="16" fill="#d5ad61"/>
-            <circle cx="163" cy="261" r="16" fill="#d5ad61"/>
-            <circle cx="357" cy="261" r="16" fill="#d5ad61"/>
-          </> : null}
-          {kind === "lfr" ? <>
-            <path d="M165 240h190l-18-90H183z" fill="#668c73"/>
-            <circle cx="155" cy="244" r="48" fill="#293a34"/>
-            <circle cx="365" cy="244" r="48" fill="#293a34"/>
-            <path d="M190 150h140" strokeWidth="8"/>
-            <circle cx="210" cy="150" r="12" fill="#e6c36f"/>
-            <circle cx="243" cy="150" r="12" fill="#e6c36f"/>
-            <circle cx="277" cy="150" r="12" fill="#e6c36f"/>
-            <circle cx="310" cy="150" r="12" fill="#e6c36f"/>
-          </> : null}
-          {kind === "soccerbot" ? <>
-            <path d="M160 234h200l-26-91H186z" fill="#477c68"/>
-            <circle cx="150" cy="236" r="49" fill="#273832"/>
-            <circle cx="370" cy="236" r="49" fill="#273832"/>
-            <path d="M210 143h100M235 114h50" strokeWidth="8"/>
-            <circle cx="426" cy="261" r="29" fill="#f7f1d9"/>
-          </> : null}
-          {kind === "rc" ? <>
-            <path d="M142 220l34-86h168l34 86-25 33H167z" fill="#6b8b74"/>
-            <circle cx="153" cy="243" r="40" fill="#26352f"/>
-            <circle cx="367" cy="243" r="40" fill="#26352f"/>
-            <path d="M207 163h106M190 193h140M260 135V75M260 75l45-23M260 75l-45-23" strokeWidth="7"/>
-          </> : null}
-          {kind === "drone" ? <>
-            <path d="M260 164L138 82M260 164l122-82M260 164l-122 82M260 164l122 82" strokeWidth="15"/>
-            <rect x="213" y="132" width="94" height="65" rx="23" fill="#60866e"/>
-            <ellipse cx="138" cy="82" rx="61" ry="14" strokeWidth="7"/>
-            <ellipse cx="382" cy="82" rx="61" ry="14" strokeWidth="7"/>
-            <ellipse cx="138" cy="246" rx="61" ry="14" strokeWidth="7"/>
-            <ellipse cx="382" cy="246" rx="61" ry="14" strokeWidth="7"/>
-          </> : null}
-        </g>
-      </svg>
-      <span className="project-artwork-caption">PROJECT PREVIEW · ORIGINAL ILLUSTRATION</span>
+    <div className={"project-artwork project-artwork-" + kind} role="img" aria-label={labels[kind] + " — catalogue component photo collage"}>
+      <div className="project-artwork-photo-grid">
+        {components[kind].map((part) => (
+          <figure className="project-artwork-photo" key={part.sku}>
+            <ProductPhoto name={part.name} sku={part.sku} category={part.category} />
+            <figcaption>{part.name}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <span className="project-artwork-caption">CATALOGUE COMPONENT PHOTOS · NOT A BUILD PHOTO</span>
       <span className="project-artwork-index">{labels[kind]}</span>
     </div>
   );

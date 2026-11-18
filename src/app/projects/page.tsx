@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectArtwork, type ProjectKind } from "@/components/project-artwork";
 import { ProductPurchaseControl } from "@/components/cart/product-purchase-control";
+import { ProductPhoto } from "@/components/product-photo";
 import { getPublicCheckoutConfig, getStorefrontCatalogue } from "@/data/storefront";
 import { formatPriceBdt } from "@/lib/format";
 import { business } from "@/config/business";
@@ -11,12 +12,12 @@ export const metadata: Metadata = {
   description: "Explore Kundu Electronics robot builds and complete line follower, soccer bot and RC speed battle kits.",
 };
 
-const projectTypes: Array<{ id: string; kind: ProjectKind; title: string; summary: string; detail: string; external?: string }> = [
-  { id: "bee", kind: "bee", title: "Bee Biped Robot", summary: "A working Bluetooth-controlled biped robot with a 3D-printed body.", detail: "Built around an Arduino Nano, six SG90 servos, an HC-05 Bluetooth module, an HC-SR04 ultrasonic sensor and a MAX7219 8×8 LED-matrix face. The prototype was developed as a hands-on learning demonstration.", external: "https://github.com/KaranJoyKundu/bee-biped-robot" },
-  { id: "lfr", kind: "lfr", title: "Line Following Robot", summary: "Three complete kit tiers for an autonomous line-following build.", detail: "Choose an entry, competitive or elite configuration. Each package includes the components and quantities listed in the supplied kit specification." },
-  { id: "soccerbot", kind: "soccerbot", title: "Soccer Bot", summary: "A three-tier kit range for a student soccer robot.", detail: "Start with the Budget Scrapper, move up to the Precision Striker, or choose the Optimized Juggernaut." },
-  { id: "rc", kind: "rc", title: "RC Speed Battle", summary: "Robot and remote-controller components packaged together.", detail: "Each tier includes the bot and matching remote components, based on the supplied RC Speed Battle parts list." },
-  { id: "drone", kind: "drone", title: "Drone Projects", summary: "A custom project enquiry—not a pre-priced kit.", detail: "Tell me your intended build, requirements and budget. There is no published drone BOM or package price yet, so I can help scope the parts before quoting." },
+const projectTypes: Array<{ id: string; kind: ProjectKind; title: string; summary: string; detail: string; destination: string; external?: string }> = [
+  { id: "bee", kind: "bee", title: "Bee Biped Robot", summary: "A working Bluetooth-controlled biped robot with a 3D-printed body.", detail: "Built around an Arduino Nano, six SG90 servos, an HC-05 Bluetooth module, an HC-SR04 ultrasonic sensor and a MAX7219 8×8 LED-matrix face. The prototype was developed as a hands-on learning demonstration.", destination: "#bee-bom-title", external: "https://github.com/KaranJoyKundu/bee-biped-robot" },
+  { id: "lfr", kind: "lfr", title: "Line Following Robot", summary: "Three complete kit tiers for an autonomous line-following build.", detail: "Choose an entry, competitive or elite configuration. Each package includes the components and quantities listed in the supplied kit specification.", destination: "#lfr-kits" },
+  { id: "soccerbot", kind: "soccerbot", title: "Soccer Bot", summary: "A three-tier kit range for a student soccer robot.", detail: "Start with the Budget Scrapper, move up to the Precision Striker, or choose the Optimized Juggernaut.", destination: "#soccerbot-kits" },
+  { id: "rc", kind: "rc", title: "RC Speed Battle", summary: "Robot and remote-controller components packaged together.", detail: "Each tier includes the bot and matching remote components, based on the supplied RC Speed Battle parts list.", destination: "#rc-kits" },
+  { id: "drone", kind: "drone", title: "Drone Projects", summary: "A custom project enquiry—not a pre-priced kit.", detail: "Tell me your intended build, requirements and budget. There is no published drone BOM or package price yet, so I can help scope the parts before quoting.", destination: "#project-help-callout" },
 ];
 
 const kitGroups = [
@@ -28,6 +29,19 @@ const kitGroups = [
 export default async function ProjectsPage() {
   const [catalogue, checkout] = await Promise.all([getStorefrontCatalogue(250, 1), getPublicCheckoutConfig()]);
   const bySku = new Map(catalogue.products.map((product) => [product.sku, product]));
+  const beeParts = [
+    { sku: "P021", name: "Arduino Nano", quantity: 1, role: "Main controller" },
+    { sku: "P037", name: "SG90 micro servo", quantity: 6, role: "Legs, feet and arms" },
+    { sku: "P031", name: "MAX7219 8×8 LED matrix", quantity: 1, role: "Expressions and scrolling text" },
+    { sku: "P175", name: "HC-05 Bluetooth module", quantity: 1, role: "Wireless command link" },
+    { sku: "P036", name: "HC-SR04 ultrasonic sensor", quantity: 1, role: "Distance readout" },
+    { sku: "P181", name: "Sunfort 18650 battery", quantity: 2, role: "Parallel battery supply" },
+  ];
+  const beeKnownSubtotal = beeParts.reduce((sum, part) => {
+    const product = bySku.get(part.sku);
+    return sum + (product?.priceBdt ?? 0) * part.quantity;
+  }, 0);
+
 
   return (
     <section className="container simple-page projects-page">
@@ -46,12 +60,41 @@ export default async function ProjectsPage() {
               <h2>{project.title}</h2>
               <p className="project-card-summary">{project.summary}</p>
               <p>{project.detail}</p>
-              {project.external ? <a className="underlined-link" href={project.external} target="_blank" rel="noreferrer">View source project on GitHub ↗</a> : null}
-              {project.id === "drone" ? <a className="button button-outline" href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, I would like to discuss a drone project. Can you help me plan the parts and cost?")} target="_blank" rel="noreferrer">Discuss a drone build ↗</a> : null}
             </div>
+            <Link className="project-card-full-link" href={project.destination} aria-label={"View details, components and prices for " + project.title}>View project details and prices</Link>
           </article>
         ))}
       </div>
+      <section className="bee-bom-section" aria-labelledby="bee-bom-title">
+        <div className="bee-bom-heading">
+          <span className="section-kicker">COMPLETED BUILD / BEE BIPED</span>
+          <h2 id="bee-bom-title">What makes Bee work?</h2>
+          <p>Bluetooth-controlled, six-servo walking robot with an LED-matrix face, distance sensing and a custom 3D-printed body. Parts below are matched to the current shop catalogue. <a className="underlined-link" href={projectTypes[0].external} target="_blank" rel="noreferrer">View source on GitHub ↗</a></p>
+        </div>
+        <div className="bee-bom-photo-strip" aria-label="Photos of the components used in Bee">
+          {beeParts.map((part) => {
+            const product = bySku.get(part.sku);
+            return <article className="bee-bom-photo-card" key={part.sku}>
+              <div className="bee-bom-photo"><ProductPhoto name={product?.name ?? part.name} sku={part.sku} category={product?.categorySlug} /></div>
+              <h3>{part.name}</h3><p>{part.role}</p><span>× {part.quantity}</span>
+            </article>;
+          })}
+        </div>
+        <div className="bee-bom-details">
+          <div className="bee-bom-table-wrap">
+            <table className="bee-bom-table"><thead><tr><th>Component</th><th>Qty</th><th>Catalogue unit price</th><th>Subtotal</th></tr></thead><tbody>
+              {beeParts.map((part) => {
+                const product = bySku.get(part.sku);
+                const unitPrice = product?.priceBdt ?? null;
+                return <tr key={part.sku}><td>{part.name}</td><td>{part.quantity}</td><td>{unitPrice !== null ? formatPriceBdt(unitPrice) : "Not priced"}</td><td>{unitPrice !== null ? formatPriceBdt(unitPrice * part.quantity) : "—"}</td></tr>;
+              })}
+            </tbody></table>
+          </div>
+          <aside className="bee-bom-total"><span>Catalogue-value subtotal</span><strong>{formatPriceBdt(beeKnownSubtotal)}</strong><p>Current selling-price estimate for the priced components above, not the shop&apos;s purchase cost or a project quote.</p></aside>
+        </div>
+        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. The Bee repository README references project photos at media/images/photo1.jpg and photo2.jpg, but those files are absent from the public repo, so this section uses catalogue component photos—not fake photos of the assembled robot.</p>
+      </section>
+
       <section className="project-kit-area">
         <div className="section-heading"><div><span className="section-kicker">COMPLETE BUILD PACKAGES</span><h2>Pick a kit and add the whole package to your cart.</h2></div><Link href="/cart" className="underlined-link">Open cart →</Link></div>
         <p className="project-kit-disclaimer">Figures are the estimated costs stated in the supplied robot-kit list, not guaranteed final quotes. The BOM and catalogue codes are shown on each kit page; only exact catalogue matches are assigned P-codes. Kits are build-to-order and the shop confirms exact parts, availability and final amount before payment.</p>
@@ -77,7 +120,7 @@ export default async function ProjectsPage() {
           </section>
         ))}
       </section>
-      <section className="project-help-callout">
+      <section className="project-help-callout" id="project-help-callout">
         <div><span className="section-kicker">YOUR IDEA / YOUR DEADLINE</span><h2>Need a custom parts list or a little project guidance?</h2><p>Message me with what you are trying to build. I can help you choose components even if you are not ready to order.</p></div>
         <a className="button button-primary" href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Karan, I am stuck on a project and need some help choosing components.")} target="_blank" rel="noreferrer">Ask for project help ↗</a>
       </section>

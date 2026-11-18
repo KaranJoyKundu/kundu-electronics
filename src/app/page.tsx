@@ -6,7 +6,7 @@ import { formatPriceBdt } from "@/lib/format";
 import { ProductPhoto } from "@/components/product-photo";
 
 export default async function HomePage() {
-  const { products } = await getStorefrontCatalogue(8);
+  const { products } = await getStorefrontCatalogue(250);
   return (
     <>
       <section className="hero-section">
@@ -39,6 +39,8 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">SHOP PICKS</span><h2>From the catalogue</h2><p className="catalogue-scroll-hint">Browse all published products — scroll sideways to see more.</p></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid" role="region" aria-label="All published catalogue products" tabIndex={0}>{products.map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image"><ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} /></div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
+
       <section className="catalogue-state-section">
         <div className="container catalogue-state-grid">
           <div className="section-kicker">02 — THE CATALOGUE</div>
@@ -59,8 +61,6 @@ export default async function HomePage() {
       </section>
 
       <section className="help-strip"><div className="container help-strip-inner"><div><span className="section-kicker">04 — NEED SOMETHING?</span><h2>Not sure which part you need?</h2><p>Get product guidance or ask about availability through the shop’s verified contact channels.</p></div><Link href="/contact" className="button button-outline">Contact the shop <ArrowRightIcon /></Link></div></section>
-
-      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">SHOP PICKS</span><h2>From the catalogue</h2></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid">{products.slice(0, 4).map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image"><ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} /></div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
     </>
   );
 }
