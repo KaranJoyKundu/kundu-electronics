@@ -71,6 +71,18 @@ export default async function ProjectsPage() {
           <h2 id="bee-bom-title">What makes Bee work?</h2>
           <p>Bluetooth-controlled, six-servo walking robot with an LED-matrix face, distance sensing and a custom 3D-printed body. Parts below are matched to the current shop catalogue. <a className="underlined-link" href={projectTypes[0].external} target="_blank" rel="noreferrer">View source on GitHub ↗</a></p>
         </div>
+        <div className="bee-build-gallery" aria-label="Bee Biped build photos">
+          <figure><img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/photo1.jpg" alt="Bee completed robot standing on a table beside detached 3D-printed parts" loading="lazy" /><figcaption>Completed working prototype</figcaption></figure>
+          <figure><img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/20260819_141629.jpg" alt="Bee internal torso wiring, Arduino Nano, servo connections and parallel battery pack" loading="lazy" /><figcaption>Internal electronics and wiring</figcaption></figure>
+          <figure><img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/20260819_142150.jpg" alt="Close-up of the robot's 3D-printed hat" loading="lazy" /><figcaption>Custom 3D-printed details</figcaption></figure>
+        </div>
+        <div className="bee-project-facts">
+          <p><strong>Built for:</strong> a hands-on robotics demonstration at Khulna City College, delivered on 19 August 2026.</p>
+          <p><strong>Core features:</strong> 30+ Bluetooth commands, six servo joints for walking and gestures, 8×8 LED-matrix expressions, and on-demand HC-SR04 distance readout.</p>
+          <p><strong>Build:</strong> Arduino Nano, six SG90 servos, MAX7219 matrix, HC-05 Bluetooth, HC-SR04, two 1100 mAh cells in parallel, and customized 3D-printed PLA/PETG body.</p>
+          <p><strong>Result:</strong> completed after around six weeks and 50+ hardware/software iterations; estimated typical runtime about six hours per charge.</p>
+          <p><a className="underlined-link" href="https://karanjoykundu.github.io/portfolio/projects/bee-biped-robot" target="_blank" rel="noreferrer">Read the full Bee Biped case study ↗</a></p>
+        </div>
         <div className="bee-bom-photo-strip" aria-label="Photos of the components used in Bee">
           {beeParts.map((part) => {
             const product = bySku.get(part.sku);
@@ -92,7 +104,7 @@ export default async function ProjectsPage() {
           </div>
           <aside className="bee-bom-total"><span>Catalogue-value subtotal</span><strong>{formatPriceBdt(beeKnownSubtotal)}</strong><p>Current selling-price estimate for the priced components above, not the shop&apos;s purchase cost or a project quote.</p></aside>
         </div>
-        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. The Bee repository README references media/images/photo1.jpg and photo2.jpg, but GitHub currently returns no files in that folder. The final assembled robot photo is still needed; this page uses component photos until those two images are uploaded.</p>
+        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. Build photos and detailed project information are sourced from the Bee Biped case study on Karan's portfolio. Catalogue component photos and price estimates below are separate from the full project build cost.</p>
       </section>
 
       <section className="project-kit-area">
