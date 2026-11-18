@@ -2,73 +2,61 @@
 
 ## Project identity
 
-- Project: Kundu Electronics — electronics-components e-commerce store
+- Project: Kundu Electronics — electronics-components storefront
 - Location/currency: Khulna, Bangladesh · BDT (৳)
-- Reference: https://www.sparkfun.com/
+- Design reference: https://www.sparkfun.com/
 - GitHub: https://github.com/KaranJoyKundu/kundu-electronics (private)
-- Active branch: `feat/storefront-foundation`
-- Main must remain unchanged; do not merge without explicit owner approval.
+- Default branch: `main`
+- Latest storefront release: PR #4 merged into `feat/launch-prep` at commit `e8fe75e445b84f802a470d4ef373d3d33e232a89`.
+- Production branch: feat/launch-prep; review and merge the follow-up there, not into main.
+- PR #4: https://github.com/KaranJoyKundu/kundu-electronics/pull/4 — merged into `feat/launch-prep`. Separate draft PR #3 to `main` remains open and unmerged.
+- Do not force-push, merge launch changes into `main`, or commit secrets.
 
 ## Read first
 
-1. `documentation/PROJECT_STATE.md`
-2. `documentation/TASK_TRACKER.md`
-3. `documentation/TEST_REPORT.md`
-4. `documentation/TYPECHECK_LINT_AUDIT_REMEDIATION.md`
-5. `documentation/DECISIONS.md`
-6. `documentation/IMPLEMENTATION_PLAN.md`
-7. `documentation/ISSUES_AND_LIMITATIONS.md`
-8. `documentation/PRODUCT_DATA_IMPORT.md`
-9. `documentation/research/README.md`
+1. `documentation/LAUNCH_STATUS.md` — current verified hosting and launch state
+2. `documentation/PROJECT_STATE.md`
+3. `documentation/TASK_TRACKER.md`
+4. `documentation/TEST_REPORT.md`
+5. `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`
+6. `documentation/DECISIONS.md`
+7. `documentation/PRODUCT_DATA_IMPORT.md`
+8. `documentation/research/README.md`
 
-## Current remote state before this verification follow-up
+## Stack and local commands
 
-- Connected GitHub identity: `KaranJoyKundu`.
-- Repository visibility: private.
-- Remote `feat/storefront-foundation`: `5949f4cd3152aa595dd6433aaac27a7b85f3a87a`.
-- Remote `main`: `d88339395e6a1e34f9da904650efd1421480cf00`.
-- Continue only on `feat/storefront-foundation`. Never force-push or update `main`.
+- Next.js 16.4.6 App Router, React 19.3.0, strict TypeScript and Tailwind CSS 4.3.3.
+- Node.js 24 and npm 11 are used in Windows CI.
 
-## Stack and commands
+Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` and `npm audit`.
 
-- Next.js 16.4.6 App Router, React 19.3.0, strict TypeScript, Tailwind CSS 4.3.3.
-- Supabase PostgreSQL/Auth/Storage integration is implemented but no real/staging project has been connected or verified.
-- Owner Windows environment: Node 24.14.0, npm 11.21.1, PowerShell 5.1.
+## Current catalogue and photos
 
-```powershell
-npm ci
-npm run typecheck
-npm run lint
-npm test
-npm run build
-npm audit
-```
+- Supabase currently has **208 published products across 18 categories**: 199 remaining original catalogue products (including P091) plus nine project bundles. The other 12 resistor-named listings are archived.
+- The shop supports search, category and BDT price filtering with exact-count pagination.
+- The photo sprite retains all 211 original SKU photo tiles P001–P211. The active catalogue now shows 199 original products and nine robot-kit bundles; project bundles use labelled artwork. The owner confirmed usage rights for the full image set; the 19 Creative Commons source images are credited at `/image-credits`.
+- The optimized photo sprite is committed at `public/product-previews/kundu-catalogue-sprite.webp` (46 KB) and is used by both the shop and product/gallery views.
+- The original product-image archive covers 211 catalogue SKUs. The robot-kit Markdown labels its tier totals as estimated costs; the shop confirms final kit scope and amount before payment. Twelve other resistor-named product records are archived; P091 remains published at ৳1. 49 original products are still “Price on request”; six have unrecorded stock. Confirm details before guaranteeing availability.
 
-## Latest verification follow-up
+## Hosting and production
 
-- Payment method parsing now validates and narrows untrusted runtime values to exactly `"bkash" | "nagad"`; malformed/unsupported configuration is discarded.
-- Order status loading uses a pure async request plus an order-id-keyed result state. The effect does not synchronously set state; async completions are guarded by `AbortController` and a monotonically increasing request sequence. Refresh after payment uses the same stale-response guard.
-- Cart product lookup no longer memoizes against a freshly-created empty array; the bounded cart product map is built directly.
-- The immutability test fixture uses `const` for its unchanging stored value.
-- Base `tsconfig.json` includes both Next 16 generated type directories. `tsconfig.typecheck.json` deliberately checks `.next/types` and source while excluding `.next/dev/types`. Production build uses Next's TypeScript API checker (`experimental.useTypeScriptCli: false`) so stale isolated-dev route validators are filtered on the build path.
-- `npm test`: **42 passed, 0 failed** in this assistant runtime (Node 22.16.0 / npm 10.9.2).
-- Targeted strict TypeScript check of the new dependency-free parser modules passed (global TypeScript 5.8.3).
-- Full `npm run typecheck`, `npm run lint`, and `npm run build` could not run here: `next` and `eslint` are not installed, and npm registry DNS returned `EAI_AGAIN`.
-- `npm audit` could not run here (`ENOLOCK`). No `package-lock.json` exists in the downloaded branch, GitHub tree, or uploaded files. The only Library `npm-audit.json` is dated 12 November 2026 and reports seven moderate indirect findings; it is not a fresh audit for the current dependency graph. No dependency changes were made.
+- Production site is live: https://kundu-electronics.vercel.app
+- Vercel reports the latest production deployment READY from `feat/launch-prep` merge commit `e8fe75e445b84f802a470d4ef373d3d33e232a89`.
+- Preview used for release verification: https://kundu-electronics-elepd16xd-kundu2409056-5098.vercel.app (READY before production promotion).
+- `main` remains unchanged; the current production deployment was built from the launch feature branch.
+- Website order requests are enabled with server-calculated totals and stock confirmation. Payment is not collected online; bKash/Nagad remain disabled until verified receiving numbers and instructions are supplied. Delivery: Standard (12 hours–1 day, ৳0) or Urgent (30–60 minutes, ৳50). WhatsApp messages include product code, name, unit price × quantity, line total, delivery and final total; direct calling is supported.
+- Vercel holds sensitive `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` entries; their values are not written into this repository or documentation.
+- Stable TypeScript-ESLint `8.73.0` is committed. Windows application verification and candidate checks passed; 14 high development-tooling findings remain. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
 
 ## Privacy and publication rules
 
 - Public business settings are centralized in `src/config/business.ts`.
-- Public Product types expose selling prices only. Never add purchase prices, supplier identity or margins to public records.
+- Public product records expose customer-facing selling prices only. Never add purchase prices, supplier identity, margins or internal notes.
 - Never commit the raw business brief, master workbook, supplier documents, credentials or `.env.local`.
-- Candidate products remain unapproved; do not invent stock, specifications, photographs, reviews, hours, warranty, delivery charges or payment numbers.
-- bKash/Nagad and delivery configuration stay disabled until owner-approved values are configured.
+- Do not publish photos with unverified reuse rights.
+- Nine build-to-order bundles (LFR, Soccer Bot and RC Speed Battle, three tiers each) can be added to cart. Bundle orders require shop stock confirmation.
+- bKash/Nagad transfers remain disabled until exact business receiving numbers and customer instructions are supplied. Website order requests can still be recorded without payment; payment status remains not_submitted until arranged and verified by the shop.
+- Checkout requires `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` as server-only hosting environment variables.
 - A submitted transaction reference is not payment verification.
+- Public admin registration is disabled. One owner admin profile is now linked to an email-confirmed Supabase Auth user; successful sign-in still needs a test.
 - Never expose Supabase secret/service-role keys in `NEXT_PUBLIC_*`, browser code, Git or chat.
-
-## Exact next action
-
-1. On the owner's Windows clone, import the latest feature-branch Git bundle or pull the committed update, then verify the branch and working tree.
-2. Provide the actual Windows-generated `package-lock.json` and the fresh `npm audit --json` output. They are not available in this worktree and must be inspected before any dependency remediation.
-3. Run the full five-command verification set above on Node 24/npm 11, then share the output if any command fails.
-4. Only after app verification, proceed with local/staging Supabase migrations, RLS/pgTAP and browser checkout testing.

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
   description: "Explore electronics components and tools from Kundu Electronics in Khulna, Bangladesh.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: "/images/brand/logo.png", apple: "/images/brand/logo.png" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

@@ -1,0 +1,212 @@
+product_id,product_name,category,researchComplete,imageFound,hasApprovedImage,approvedImageFilename,matchConfidence,rightsStatus,status,exclusionCategory,rejectionReason,neededActions
+P001,65mm Standard Plastic Wheel,Robotics Parts & Mechanical,yes,yes,yes,P001--65mm-standard-plastic-wheel--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P002,Mini Metal Ball Caster Wheel,Robotics Parts & Mechanical,yes,yes,yes,P002--mini-metal-ball-caster-wheel--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P003,Large Metal Ball Caster Wheel,Robotics Parts & Mechanical,yes,yes,yes,P003--large-metal-ball-caster-wheel--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P004,BO Motor 6V 100RPM Geared DC Motor,Robotics Parts & Mechanical,yes,yes,yes,P004--bo-motor-6v-100rpm-geared-dc-motor--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P005,65mm Robot Wheel with Rubber Tyre,Robotics Parts & Mechanical,yes,yes,yes,P005--65mm-robot-wheel-with-rubber-tyre--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P006,N20 Gear Motor 6V 300 RPM (metal / cheap),Robotics Parts & Mechanical,yes,yes,yes,P006--n20-gear-motor-6v-300-rpm-metal-cheap--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P007,N20 Gear Motor 6V 600 RPM,Robotics Parts & Mechanical,yes,yes,yes,P007--n20-gear-motor-6v-600-rpm--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P008,N20 Motor with Encoder,Robotics Parts & Mechanical,yes,yes,yes,P008--n20-motor-with-encoder--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P009,Yellow BO Motor (Good),Robotics Parts & Mechanical,yes,yes,yes,P009--yellow-bo-motor-good--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P010,Yellow BO Motor (Low),Robotics Parts & Mechanical,yes,yes,yes,P010--yellow-bo-motor-low--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P011,GA25-370 Metal Gear Motor,Robotics Parts & Mechanical,yes,yes,yes,P011--ga25-370-metal-gear-motor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P012,GA37-555 Metal Gear Motor,Robotics Parts & Mechanical,yes,yes,yes,P012--ga37-555-metal-gear-motor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P013,65mm Rubber-rimmed Wheel,Robotics Parts & Mechanical,yes,yes,yes,P013--65mm-rubber-rimmed-wheel--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P014,Wide-track 80mm Wheel,Robotics Parts & Mechanical,yes,yes,yes,P014--wide-track-80mm-wheel--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P015,Off-road Rubber Wheel,Robotics Parts & Mechanical,yes,yes,yes,P015----01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P016,GA25 L-Bracket Mount,Robotics Parts & Mechanical,yes,yes,yes,P016--ga25-l-bracket-mount--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P017,GA37 Steel L-Bracket,Robotics Parts & Mechanical,yes,yes,yes,P017--ga37-steel-l-bracket--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P018,Stepper Motor Nema 17 (Original),Robotics Parts & Mechanical,yes,yes,yes,P018--nema-17-stepper-motor--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P019,Arduino Uno SMD,Microcontrollers & Development Boards,yes,yes,yes,P019--arduino-uno-smd--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P020,Arduino Uno R3 ATmega328P DIP,Microcontrollers & Development Boards,yes,yes,yes,P020--arduino-uno-r3-atmega328p-dip--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P021,Arduino Nano (ATmega328P),Microcontrollers & Development Boards,yes,yes,yes,P021--arduino-nano-v3-atmega328p--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P022,Arduino Nano Expansion Shield,Microcontrollers & Development Boards,yes,yes,yes,P022--arduino-nano-expansion-shield--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P023,ESP32 DevKit v1,Microcontrollers & Development Boards,yes,yes,yes,P023--esp32-devkit-v1-30pin--01.webp,Exact match,Owner-provided,approved,,,Ready for product gallery import.
+P024,ESP32-CAM,Microcontrollers & Development Boards,yes,yes,yes,P024--esp32-cam-ai-thinker-ov2640--01.webp,Exact match,Permission confirmed,approved,,,Ready for product gallery import.
+P025,ESP32-S3,Microcontrollers & Development Boards,yes,yes,yes,P025--esp32-s3-devkitc-1--01.webp,Exact match,Owner-provided,approved,,,Ready for product gallery import.
+P026,STM32 Blue Pill,Microcontrollers & Development Boards,yes,yes,yes,P026--stm32-blue-pill--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P027,STM32 Black Pill,Microcontrollers & Development Boards,yes,yes,yes,P027--stm32-black-pill-f411--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P028,NodeMCU (ESP8266),Microcontrollers & Development Boards,yes,yes,yes,P028--nodemcu-esp8266-esp-12e--01.webp,Exact match,Permission confirmed,approved,,,Ready for product gallery import.
+P029,0.96 Inch OLED Display I2C Module,Displays,yes,yes,yes,P029--0-96-inch-oled-i2c-ssd1306--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P030,16x2 LCD Display Module with I2C,Displays,yes,yes,yes,P030--16x2-lcd-display-module-with-i2c--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P031,MAX7219 8x8 LED Dot Matrix Module,Displays,yes,yes,yes,P031--max7219-8x8-led-dot-matrix-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P032,"ILI9341 TFT Display (2.8"") with touch",Displays,yes,yes,yes,P032--ili9341-tft-display-2-8-with-touch--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P033,TP4056 Type-C Lithium Battery Charging Module,Sensors & Modules,yes,yes,yes,P033--tp4056-type-c-lithium-battery-charging-module--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P034,TP4056 Type-C Lithium Battery Charging Module protected variant,Sensors & Modules,yes,yes,yes,P034--tp4056-type-c-protected-charger--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P035,DHT11 Temperature and Humidity Sensor Module,Sensors & Modules,yes,yes,yes,P035--dht11-temperature-and-humidity-sensor-module--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P036,HC-SR04 Ultrasonic Distance Sensor Module,Sensors & Modules,yes,yes,yes,P036--hc-sr04-ultrasonic-distance-sensor-module--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P037,SG90 Micro Servo Motor 9G,Sensors & Modules,yes,yes,yes,P037--sg90-micro-servo-motor-9g--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P038,DT830D Digital Multimeter,Sensors & Modules,yes,yes,yes,P038--dt830d-digital-multimeter--01.webp,Exact match,Owner-provided,approved,,,Ready for product gallery import.
+P039,9V 600mA AC-DC Transformer,Sensors & Modules,yes,yes,yes,P039--9v-600ma-ac-dc-transformer--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P040,MPU6050 Gyroscope Accelerometer Module,Sensors & Modules,yes,yes,yes,P040--mpu6050-gyroscope-accelerometer-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P041,PIR Motion Sensor HC-SR501,Sensors & Modules,yes,yes,yes,P041--pir-motion-sensor-hc-sr501--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P042,MQ-135 Air Quality Gas Sensor,Sensors & Modules,yes,yes,yes,P042--mq-135-air-quality-gas-sensor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P043,MQ-2 Gas Sensor,Sensors & Modules,yes,yes,yes,P043--mq-2-gas-sensor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P044,DS3231 RTC Real Time Clock Module,Sensors & Modules,yes,yes,yes,P044--ds3231-rtc-module--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P045,Analog Joystick Module KY-023,Sensors & Modules,yes,yes,yes,P045--analog-joystick-module-ky-023--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P046,FC-51 IR Sensor Module,Sensors & Modules,yes,yes,yes,P046--fc-51-ir-sensor-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P047,KY-026 Flame Sensor Detection Module,Sensors & Modules,yes,yes,yes,P047--ky-026-flame-sensor-detection-module--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P048,MG995 Metal Gear Servo Motor (full metal),Sensors & Modules,yes,yes,yes,P048--mg995-metal-gear-servo-motor-full-metal--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P049,MG995 Metal Gear Servo Motor (metal+plastic),Sensors & Modules,yes,yes,yes,P049--mg995-metal-gear-servo-motor-metal-plastic--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P050,TCRT5000 IR Line Tracking Sensor Module (single),Sensors & Modules,yes,yes,yes,P050--tcrt5000-line-tracking-module--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P051,TCRT5000 8-Channel IR Sensor (array),Sensors & Modules,yes,yes,yes,P051--tcrt5000-8-channel-ir-sensor-array--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P052,Pololu QTR-8A Analog Array,Sensors & Modules,yes,yes,yes,P052--pololu-qtr-8a-analog-array--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P053,VL53L1X ToF Sensor,Sensors & Modules,yes,yes,yes,P053--vl53l1x-tof-sensor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P054,Rain & Steam Detection Sensor Module,Sensors & Modules,yes,yes,yes,P054--rain-and-steam-detection-sensor-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P055,BMP180 Pressure/Temperature Sensor,Sensors & Modules,yes,yes,yes,P055--bmp180-pressure-temperature-sensor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P056,TTP223 Capacitive Touch Sensor Module,Sensors & Modules,yes,yes,yes,P056--ttp223-capacitive-touch-sensor-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P057,RC522 RFID Module + Cards/Tags,Sensors & Modules,yes,yes,yes,P057--rc522-rfid-module-cards-tags--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P058,Cards/Tags,Sensors & Modules,yes,yes,yes,P058--cards-tags--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P059,Fingerprint Sensor (R305 / GT521F32),Sensors & Modules,yes,yes,yes,P059--fingerprint-sensor-r305-gt521f32--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P060,Flex Sensor(original),Sensors & Modules,yes,yes,yes,P060--flex-sensor-original--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P061,VS 1838 IR Reciever Module,Sensors & Modules,yes,yes,yes,P061--vs-1838-ir-reciever-module--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P062,Sound Module,Sensors & Modules,yes,yes,yes,P062--sound-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P063,L298N H-Bridge Motor Driver Module,Motor Drivers & Controllers,yes,yes,yes,P063--l298n-h-bridge-motor-driver-module--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P064,TB6612FNG Motor Driver,Motor Drivers & Controllers,yes,yes,yes,P064--tb6612fng-motor-driver--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P065,BTS7960 43A Motor Driver,Motor Drivers & Controllers,yes,yes,yes,P065--bts7960-43a-motor-driver--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P066,5V 4 Channel Relay Module,Motor Drivers & Controllers,yes,yes,yes,P066--5v-4-channel-relay-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P067,Relay 1 Channel,Motor Drivers & Controllers,yes,yes,yes,P067--1-channel-5v-relay-module--01.webp,Exact match,Permission confirmed,approved,,,Ready for product gallery import.
+P068,LM393 Module LDR Sensor,Motor Drivers & Controllers,yes,yes,yes,P068--lm393-module-ldr-sensor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P069,28BYJ-48 + ULN2003 Stepper Driver 5V Stepper motor,Motor Drivers & Controllers,yes,yes,yes,P069--28byj-48-uln2003-stepper-driver-5v-stepper-motor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P070,PCA9685 16-Channel 12-bit PWM/Servo Driver (I2C),Motor Drivers & Controllers,yes,yes,yes,P070--pca9685-16-channel-12-bit-pwm-servo-driver-i2c--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P071,XL6009 DC-DC Boost Converter Module,Power Management & Converters,yes,yes,yes,P071--xl6009-dc-dc-boost-converter-module--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P072,LM2596 DC-DC Buck Converter Module,Power Management & Converters,yes,yes,yes,P072--lm2596-dc-dc-buck-converter-module--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P073,MT3608 2A DC-DC Boost Converter Module,Power Management & Converters,yes,yes,yes,P073--mt3608-2a-dc-dc-boost-converter-module--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P074,MP1584EN Mini Buck Converter,Power Management & Converters,yes,yes,yes,P074--mp1584en-mini-buck-converter--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P075,XL4015 5A Buck Converter,Power Management & Converters,yes,yes,yes,P075--xl4015-5a-buck-converter--01.webp,Exact match,Permission confirmed,approved,,,Ready for product gallery import.
+P076,BMS Board 3S (20A),Power Management & Converters,yes,yes,yes,P076--bms-board-3s-20a--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P077,BMS Board 3S (10A),Power Management & Converters,yes,yes,yes,P077--bms-board-3s-10a--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P078,9V Powerbank Module,Power Management & Converters,yes,yes,yes,P078--9v-powerbank-module--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P079,Large Solderless Breadboard 830 Pin,Vero Boards / Prototyping Boards,yes,yes,yes,P079--large-solderless-breadboard-830-pin--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P080,Mini Solderless Breadboard 400 Pin,Vero Boards / Prototyping Boards,yes,yes,yes,P080--mini-solderless-breadboard-400-pin--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P081,Vero Board Line Type (6.5 x 14.5 cm),Vero Boards / Prototyping Boards,yes,yes,yes,P081--vero-board-line-type-6-5-x-14-5-cm--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P082,Veroboard Dot Type (14.5 x 6 cm),Vero Boards / Prototyping Boards,yes,yes,yes,P082--veroboard-dot-type-14-5-x-6-cm--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P083,Vero Board Fiberglass Single Dot Type (15 x 10 cm),Vero Boards / Prototyping Boards,yes,yes,yes,P083--vero-board-fiberglass-single-dot-type-15-x-10-cm--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P084,Vero Board Fiberglass Single Dot Type Double Sided (15 x 9 cm),Vero Boards / Prototyping Boards,yes,yes,yes,P084--vero-board-fiberglass-single-dot-type-double-sided-15-x-9-cm--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P085,BC547B NPN Transistor,Transistors,yes,yes,yes,P085--bc547b-npn-transistor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P086,2N3905 PNP Transistor,Transistors,yes,yes,yes,P086--2n3905-pnp-transistor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P087,2N3819 N-Channel JFET Transistor,Transistors,yes,yes,yes,P087--2n3819-n-channel-jfet-transistor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P088,IRF630N N-Channel Power MOSFET,Transistors,yes,yes,yes,P088--irf630n-n-channel-power-mosfet--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P089,2N2222 NPN Transistor (replaced 2N2219),Transistors,yes,yes,yes,P089--2n2222-npn-transistor-replaced-2n2219--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P090,AO3400A MOSFET,Transistors,yes,yes,yes,P090--ao3400a-mosfet--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P091,1kΩ Resistor Box 5000pcs,Resistors,yes,yes,yes,P091--1k-resistor-box-5000pcs--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P092,10kΩ Resistor Box 5000pcs,Resistors,yes,yes,yes,P092--10k-resistor-box-5000pcs--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P093,100kΩ Resistor Box 5000pcs,Resistors,yes,yes,yes,P093--100k-resistor-box-5000pcs--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P094,5W 4.6Ω Power Resistor,Resistors,yes,yes,yes,P094--5w-4-6-power-resistor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P095,180kΩ Resistor,Resistors,yes,yes,yes,P095--180k-resistor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P096,56kΩ Resistor,Resistors,yes,yes,yes,P096--56k-resistor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P097,4.7kΩ Resistor,Resistors,yes,yes,yes,P097--4-7k-resistor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P098,1.8kΩ Resistor,Resistors,yes,yes,yes,P098--1-8k-resistor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P099,300Ω Resistor,Resistors,yes,yes,yes,P099--300-resistor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P100,220Ω Resistor,Resistors,yes,yes,yes,P100--220-resistor--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P101,22Ω Resistor,Resistors,yes,yes,yes,P101--22-resistor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P102,"Resistor Assorted Kit 1000pcs (1Ω-10MΩ, 73 values, 1/4W)",Resistors,yes,yes,yes,P102--resistor-assorted-kit-1000pcs-1-10m-73-values-1-4w--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P103,0.1µF Ceramic Disc Capacitor,Capacitors,yes,yes,yes,P103--0-1-f-ceramic-disc-capacitor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P104,10µF Electrolytic Capacitor,Capacitors,yes,yes,yes,P104--10-f-electrolytic-capacitor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P105,47µF Electrolytic Capacitor,Capacitors,yes,yes,yes,P105--47-f-electrolytic-capacitor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P106,470µF 25V Electrolytic Capacitor,Capacitors,yes,yes,yes,P106--470-f-25v-electrolytic-capacitor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P107,1000µF 16V Electrolytic Capacitor,Capacitors,yes,yes,yes,P107--1000-f-16v-electrolytic-capacitor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P108,10µF 25V Electrolytic Capacitor,Capacitors,yes,yes,yes,P108--10-f-25v-electrolytic-capacitor--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P109,Electrolytic Capacitor Assorted Kit 100pcs,Capacitors,yes,yes,yes,P109--electrolytic-capacitor-assorted-kit-100pcs--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P110,7400 Quad 2-Input NAND Gate IC,Logic ICs & Regulators,yes,yes,yes,P110--7400-quad-nand-dip14--01.webp,Exact match,Permission confirmed,approved,,,Ready for product gallery import.
+P111,7402  Quad 2-Input NOR Gate IC,Logic ICs & Regulators,yes,yes,yes,P111--7402-quad-2-input-nor-gate-ic--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P112,7404 Quad 2-Input NOT Gate IC,Logic ICs & Regulators,yes,yes,yes,P112--7404-quad-2-input-not-gate-ic--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P113,7408 Quad 2-Input AND Gate IC,Logic ICs & Regulators,yes,yes,yes,P113--7408-quad-2-input-and-gate-ic--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P114,7432 Quad 2-Input OR Gate IC,Logic ICs & Regulators,yes,yes,yes,P114--7432-quad-2-input-or-gate-ic--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P115,7486 Quad 2-Input XOR Gate IC,Logic ICs & Regulators,yes,yes,yes,P115--7486-quad-2-input-xor-gate-ic--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P116,7812 Voltage Regulator IC (also 7805/7809/7808),Logic ICs & Regulators,yes,yes,yes,P116--7812-voltage-regulator-ic-also-7805-7809-7808--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P117,7809,Logic ICs & Regulators,yes,yes,yes,P117--7809--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P118,7474 D Flip-Flop IC,Logic ICs & Regulators,yes,yes,yes,P118--7474-d-flip-flop-ic--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P119,7447 BCD to 7-Segment Driver,Logic ICs & Regulators,yes,yes,yes,P119--7447-bcd-to-7-segment-dip16--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P120,7490 Decade Counter (original),Logic ICs & Regulators,yes,yes,yes,P120--7490-decade-counter-dip14--01.webp,Exact match,Permission confirmed,approved,,,Ready for product gallery import.
+P121,7490 Decade Counter (duplicate),Logic ICs & Regulators,yes,yes,yes,P121--7490-decade-counter-duplicate--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P122,7476 JK Flip-Flop,Logic ICs & Regulators,yes,yes,yes,P122--7476-jk-flip-flop--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P123,NE555 Timer IC,Logic ICs & Regulators,yes,yes,yes,P123--ne555-timer-ic--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P124,7493 Binary Counter,Logic ICs & Regulators,yes,yes,yes,P124--7493-binary-counter-dip14--01.webp,Exact match,Permission confirmed,approved,,,Ready for product gallery import.
+P125,74192 Up/Down Counter,Logic ICs & Regulators,yes,yes,yes,P125--74192-up-down-counter--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P126,LM317 Adjustable Voltage Regulator IC,Logic ICs & Regulators,yes,yes,yes,P126--lm317-adjustable-voltage-regulator-ic--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P127,LM741 Op-Amp,Logic ICs & Regulators,yes,yes,yes,P127--lm741-op-amp--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P128,LM358 / LM324 Op-Amp,Logic ICs & Regulators,yes,yes,yes,P128--lm358-lm324-op-amp--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P129,74HC595 Shift Register,Logic ICs & Regulators,yes,yes,yes,P129--74hc595-shift-register--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P130,Common Anode 7-Segment Display,Logic ICs & Regulators,yes,yes,yes,P130--common-anode-7-segment-display--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P131,Common Cathod 7-Segment Display,Logic ICs & Regulators,yes,yes,yes,P131--common-cathod-7-segment-display--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P132,Rocker Switch,Passive Components & Misc,yes,yes,yes,P132--rocker-switch--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P133,4x4 Matrix Membrane Keypad,Passive Components & Misc,yes,yes,yes,P133--4x4-matrix-membrane-keypad--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P134,Passive Buzzer 5V,Passive Components & Misc,yes,yes,yes,P134--passive-buzzer-5v--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P135,Active Buzzer 5V Module,Passive Components & Misc,yes,yes,yes,P135--active-buzzer-5v-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P136,4 Pin Tactile Push Button Switch (Small),Passive Components & Misc,yes,yes,yes,P136--4-pin-tactile-push-button-switch-small--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P137,4 Pin Tactile Push Button Switch (Large),Passive Components & Misc,yes,yes,yes,P137--4-pin-tactile-push-button-switch-large--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P138,IR Transmitter LED (IR LED),Passive Components & Misc,yes,yes,yes,P138--ir-transmitter-led-ir-led--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P139,IR Receiver Photodiode,Passive Components & Misc,yes,yes,yes,P139--ir-receiver-photodiode--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P140,Ir remote,Passive Components & Misc,yes,yes,yes,P140--ir-remote--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P141,5mm LED — Red,Passive Components & Misc,yes,yes,yes,P141--5mm-led-red--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P142,5mm LED — White,Passive Components & Misc,yes,yes,yes,P142--5mm-led-white--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P143,5mm LED — Yellow,Passive Components & Misc,yes,yes,yes,P143--5mm-led-yellow--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P144,5mm LED — Blue,Passive Components & Misc,yes,yes,yes,P144--5mm-led-blue--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P145,5mm LED — Purple,Passive Components & Misc,yes,yes,yes,P145--5mm-led-purple--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P146,5mm LED — Green,Passive Components & Misc,yes,yes,yes,P146--5mm-led-green--01.webp,High-confidence match,Permission confirmed,approved,,,Ready for product gallery import.
+P147,WS2812B RGB LED Strip 1 Meter,Passive Components & Misc,yes,yes,yes,P147--ws2812b-rgb-led-strip-1-meter--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P148,9V Zener Diode (8.2V),Passive Components & Misc,yes,yes,yes,P148--9v-zener-diode-8-2v--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P149,15V Zener Diode,Passive Components & Misc,yes,yes,yes,P149--15v-zener-diode--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P150,500kΩ Potentiometer,Passive Components & Misc,yes,yes,yes,P150--500k-potentiometer--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P151,10kΩ Potentiometer,Passive Components & Misc,yes,yes,yes,P151--10k-potentiometer--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P152,2x Analog Joystick (bundle),Passive Components & Misc,yes,yes,yes,P152--2x-analog-joystick-bundle--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P153,1N5408 Diode,Passive Components & Misc,yes,yes,yes,P153--1n5408-diode--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P154,1N4007 Diode,Passive Components & Misc,yes,yes,yes,P154--1n4007-diode--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P155,Rotary Encoder,Passive Components & Misc,yes,yes,yes,P155--rotary-encoder--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P156,5W 4.6 ohm Watt resistor,Passive Components & Misc,yes,yes,yes,P156--5w-4-6-ohm-watt-resistor--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P157,Male to Male Jumper Wires 40pcs,Wires & Connectors,yes,yes,yes,P157--male-to-male-jumper-wires-40pcs--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P158,Male to Female Jumper Wires 40pcs,Wires & Connectors,yes,yes,yes,P158--male-to-female-jumper-wires-40pcs--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P159,Female to Female Jumper Wires 40pcs,Wires & Connectors,yes,yes,yes,P159--female-to-female-jumper-wires-40pcs--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P160,Jumper Box,Wires & Connectors,yes,yes,yes,P160--jumper-box--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P161,16AWG Silicone Wire (roll),Wires & Connectors,yes,yes,yes,P161--16awg-silicone-wire-roll--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P162,XT60 Connector 2s,Wires & Connectors,yes,yes,yes,P162--xt60-connector-2s--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P163,XT60 Connector 3s,Wires & Connectors,yes,yes,yes,P163--xt60-connector-3s--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P164,SMA Antenna,Wires & Connectors,yes,yes,yes,P164--sma-antenna--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P165,Double Sided Tape,Wires & Connectors,yes,yes,yes,P165--double-sided-tape--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P166,Zip-Ties (pack),Wires & Connectors,yes,yes,yes,P166--zip-ties-pack--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P167,Heat Shrink Tubing (assorted),Wires & Connectors,yes,yes,yes,P167--heat-shrink-tubing-assorted--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P168,"Screw Terminal Blocks (2-pin, 3-pin)",Wires & Connectors,yes,yes,yes,P168--screw-terminal-blocks-2-pin-3-pin--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P169,JST Connectors (PH2.0 / XH2.54),Wires & Connectors,yes,yes,yes,P169--jst-connectors-ph2-0-xh2-54--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P170,DC Barrel Jack 5.5mm/2.1mm (male + female),Wires & Connectors,yes,yes,yes,P170--dc-barrel-jack-5-5mm-2-1mm-male-female--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P171,Full Wire Kit,Wires & Connectors,yes,yes,yes,P171--full-wire-kit--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P172,M3 Standoff/Screw Kit,Wires & Connectors,yes,yes,yes,P172--m3-standoff-screw-kit--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P173,Male header,Wires & Connectors,yes,yes,yes,P173--male-header--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P174,Female header,Wires & Connectors,yes,yes,yes,P174--female-header--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P175,HC-05 Bluetooth Wireless Module,Communication Modules,yes,yes,yes,P175--hc-05-bluetooth-wireless-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P176,NEO-6M GPS Module with Antenna,Communication Modules,yes,yes,yes,P176--neo-6m-gps-module-with-antenna--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P177,SX1278 LoRa Module,Communication Modules,yes,yes,yes,P177--sx1278-lora-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P178,IR Remote Control Kit with TSOP1738 Receiver,Communication Modules,yes,yes,yes,P178--ir-remote-control-kit-with-tsop1738-receiver--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P179,Micro SD Card Reader Module,Communication Modules,yes,yes,yes,P179--micro-sd-card-reader-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P180,SIM800L GSM/GPRS Module,Communication Modules,yes,yes,yes,P180--sim800l-gsm-gprs-module--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P181,18650 Sunfort Rechargeable Battery,Batteries & Power Sources,yes,yes,yes,P181--18650-sunfort-rechargeable-battery--01.webp,High-confidence match,Owner-provided,approved,,,Ready for product gallery import.
+P182,1s Charger,Batteries & Power Sources,yes,yes,yes,P182--1s-charger--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P183,1S 18650 Battery Holder Case 3.7V,Batteries & Power Sources,yes,yes,yes,P183--1s-18650-battery-holder-case-3-7v--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P184,2S 18650 Battery Holder Case,Batteries & Power Sources,yes,yes,yes,P184--2s-18650-battery-holder-case--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P185,3S 18650 Battery Holder Case,Batteries & Power Sources,yes,yes,yes,P185--3s-18650-battery-holder-case--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P186,4S 18650 Battery Holder Case,Batteries & Power Sources,yes,yes,yes,P186--4s-18650-battery-holder-case--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P187,2S 900mAh LiPo Battery + Charger,Batteries & Power Sources,yes,yes,yes,P187--2s-900mah-lipo-battery-charger--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P188,Lipo Battery charger,Batteries & Power Sources,yes,yes,yes,P188--lipo-battery-charger--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P189,3S 2200mAh LiPo Battery,Batteries & Power Sources,yes,yes,yes,P189--3s-2200mah-lipo-battery--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P190,3S 1550mAh LiPo Battery + Charger,Batteries & Power Sources,yes,yes,yes,P190--3s-1550mah-lipo-battery-charger--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P191,3S 35C High-Discharge LiPo Battery,Batteries & Power Sources,yes,yes,yes,P191--3s-35c-high-discharge-lipo-battery--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P192,2S LiPo Battery (Remote),Batteries & Power Sources,yes,yes,yes,P192--2s-lipo-battery-remote--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P193,9V Battery + Snapper,Batteries & Power Sources,yes,yes,yes,P193--9v-battery-snapper--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P194,3x AA Battery Holder,Batteries & Power Sources,yes,yes,yes,P194--3x-aa-battery-holder--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P195,Sony Battery,Batteries & Power Sources,yes,yes,yes,P195--sony-battery--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P196,Solar Panel 5V-6V,Batteries & Power Sources,yes,yes,yes,P196--solar-panel-5v-6v--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P197,Transformar 9-0-9,Batteries & Power Sources,yes,yes,yes,P197--transformar-9-0-9--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P198,Helping Hands Soldering Station with Magnifier,Tools & Accessories,yes,yes,yes,P198--helping-hands-soldering-station-with-magnifier--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P199,Digital Multimeter Probes Set,Tools & Accessories,yes,yes,yes,P199--digital-multimeter-probes-set--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P200,Multipurpose Component Box 15 Slot,Tools & Accessories,yes,yes,yes,P200--multipurpose-component-box-15-slot--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P201,Hot Glue Gun (small),Tools & Accessories,yes,yes,yes,P201--hot-glue-gun-small--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P202,"Soldering Iron Kit (Adjustable 60W, Shared)",Tools & Accessories,yes,yes,yes,P202--soldering-iron-kit-adjustable-60w-shared--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P203,"Soldering Iron Kit (Adjustable 60W, Personal)",Tools & Accessories,yes,yes,yes,P203--soldering-iron-kit-adjustable-60w-personal--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P204,Solder Wire 0.8mm/1mm Rosin Core (roll),Tools & Accessories,yes,yes,yes,P204--solder-wire-0-8mm-1mm-rosin-core-roll--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P205,Flux Pen / Paste,Tools & Accessories,yes,yes,yes,P205--flux-pen-paste--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P206,Desoldering Pump / Wick,Tools & Accessories,yes,yes,yes,P206--desoldering-pump-wick--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P207,INMP441 Microphone,Audio / Media,yes,yes,yes,P207--inmp441-microphone--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P208,PAM8403 Amplifier,Audio / Media,yes,yes,yes,P208--pam8403-amplifier--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.
+P209,3W 4Ω Speaker (small),Audio / Media,yes,yes,yes,P209--3w-4-speaker-small--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P210,3W 4Ω Speaker (large),Audio / Media,yes,yes,yes,P210--3w-4-speaker-large--01.webp,High-confidence match,Permission unknown,approved,,,Ready for product gallery import.
+P211,DFPlayer Mini,Audio / Media,yes,yes,yes,P211--dfplayer-mini--01.webp,Exact match,Permission unknown,approved,,,Ready for product gallery import.

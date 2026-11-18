@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getStorePrincipal } from "@/lib/supabase/authz";
+import { parseHmacSecret } from "@/lib/checkout/security";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { setCheckoutEnabled, updateDeliveryZone, updatePaymentSettings } from "../actions";
 
@@ -19,11 +21,13 @@ export default async function AdminSettingsPage({ searchParams }: { searchParams
   if (settingsResult.error || methodsResult.error || zonesResult.error) return <section className="simple-page"><h1>Store settings</h1><p>Settings tables are unavailable. Apply the migration and check administrator access.</p></section>;
   const methods = methodsResult.data ?? [];
   const zones = zonesResult.data ?? [];
+  const serverCheckoutReady = Boolean(parseHmacSecret(process.env.APP_HMAC_SECRET) && createAdminSupabaseClient());
   return <section className="admin-page">
     <div className="admin-page-heading"><div><span className="section-kicker">OWNER CONFIGURATION</span><h1>Store settings</h1><p>Checkout remains disabled until payment instructions and at least one charged delivery zone are configured and approved.</p></div></div>
-    {result ? <p role="status" className={result === "saved" ? "admin-result-success" : "admin-result-error"}>{result === "saved" ? "Settings saved." : result === "checkout-prerequisites" ? "Enable at least one configured manual payment method and one enabled delivery zone with a known charge first." : "Settings could not be saved. Check values and permissions."}</p> : null}
+    {result ? <p role="status" className={result === "saved" ? "admin-result-success" : "admin-result-error"}>{result === "saved" ? "Settings saved." : result === "checkout-prerequisites" ? "Enable at least one configured manual payment method and one enabled delivery zone with a known charge first." : result === "checkout-server-not-ready" ? "Add the server-only Supabase key and APP_HMAC_SECRET in the hosting environment before enabling checkout." : "Settings could not be saved. Check values and permissions."}</p> : null}
     <article className="admin-editor"><h2>Checkout switch</h2><p>Do not enable until receiving numbers, owner-approved instructions and delivery charges have been entered.</p>
-      <form action={setCheckoutEnabled} className="admin-inline-form"><label className="admin-check"><input name="enabled" type="checkbox" defaultChecked={settingsResult.data?.checkout_enabled ?? false} /> Enable customer checkout</label><button className="button button-small" type="submit">Save checkout setting</button></form>
+      <form action={setCheckoutEnabled} className="admin-inline-form"><label className="admin-check"><input name="enabled" type="checkbox" defaultChecked={settingsResult.data?.checkout_enabled ?? false} disabled={!serverCheckoutReady && !(settingsResult.data?.checkout_enabled ?? false)} /> Enable customer checkout</label><button className="button button-small" type="submit">Save checkout setting</button></form>
+      {!serverCheckoutReady ? <p className="admin-footnote">Checkout activation is blocked until the hosting environment has both server-only keys configured. Never paste those keys into this page or the repository.</p> : null}
       <p className="admin-footnote">Reservation expiry is currently unset. Orders will not lose reserved stock on an arbitrary timer.</p>
     </article>
     <h2>Manual payment methods</h2>

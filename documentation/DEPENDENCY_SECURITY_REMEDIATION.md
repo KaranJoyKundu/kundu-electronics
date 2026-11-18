@@ -1,4 +1,66 @@
-# Dependency security investigation — GHSA-g3hv-75wg-m249
+# Current security status — 18 November 2026
+
+This section records the current `feat/launch-prep` dependency tree and Windows verification. The 13 November and 17 November notes below are retained as historical context only.
+
+## Current committed dependency tree
+
+Commit `f29d1887bd336ee95a124469d8b54f43d82d963c` updates only `package.json` and `package-lock.json`:
+
+- `typescript-eslint@8.73.0`
+- `@typescript-eslint/eslint-plugin@8.73.0`
+- `@typescript-eslint/parser@8.73.0`
+- `@typescript-eslint/typescript-estree@8.73.0`
+- Nested `minimatch@11.0.9`
+- `next@16.4.6` and `eslint-config-next@16.4.6` unchanged
+
+The update was generated in a Windows Node 24 job and committed to `feat/launch-prep` only after the candidate tree passed a clean `npm ci`, audit classification, typecheck, lint, tests and production build. The failed automatic push in the first attempt was not forced; the workflow was changed to fetch and rebase the current feature branch before a normal push. The verified commit was then pushed successfully. `main` was not modified.
+
+## Latest candidate audit
+
+The Windows candidate audit reports:
+
+| Severity | Findings |
+|---|---:|
+| Critical | 0 |
+| High | 14 |
+| Moderate | 0 |
+| Low / info | 0 |
+| **Total** | **14** |
+
+All 14 audited package nodes were verified against the candidate lockfile as development-only dependencies. The one direct package entering the affected chain is `eslint-config-next@16.4.6` (a devDependency); the others are transitive lint-tooling packages. Runtime dependencies `next`, `react`, `react-dom` and Supabase clients were not flagged in this report.
+
+The remaining high advisory is GHSA-fc5q-39xc-vjpf, which affects `picomatch <=4.0.7`. The candidate still resolves `picomatch@4.0.7` under `tinyglobby`, so this advisory remains open. A stable patched npm release was not available at the time of the check. The update does not suppress the audit or pretend the package is fixed.
+
+The previous six moderate findings from the TypeScript-ESLint/minimatch chain are eliminated by the stable parser update to `minimatch@11.0.9`.
+
+## Windows verification
+
+Workflow run #44188598920:
+
+- **Windows application verification: success** — clean install, typecheck, lint, tests and production build.
+- **Stable TypeScript-ESLint candidate: success** — clean install, 0 moderate/0 critical audit findings, all 14 remaining high findings classified as dev-only, typecheck, lint, tests, production build, artifact upload and guarded feature-branch commit.
+- **npm audit against the existing committed lockfile at the start of the run: failure, expected** — it reported the 15 old findings (9 high, 6 moderate) before the candidate update.
+- **npm dry-run investigation: success** — full output and package metadata artifact uploaded.
+
+Evidence:
+
+- Windows workflow run #44188598920: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44188598920
+- Tested candidate artifact: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44188598920/artifacts/14361087276
+- Candidate commit: https://github.com/KaranJoyKundu/kundu-electronics/commit/f29d1887bd336ee95a124469d8b54f43d82d963c
+
+The push triggered a follow-up workflow #44189430563 from `github-actions[bot]`. GitHub marked that run `action_required`; this is a workflow approval gate, not a failed application check. If GitHub still shows it waiting, approve the workflow run from the Actions page before relying on a fresh CI status for the new commit.
+
+## Safe decision
+
+The six moderate findings are fixed by the committed stable release. The 14 high findings remain visible and are still confined to development-only lint tooling. Do not run `npm audit fix --force`, downgrade `eslint-config-next` to 14.x, force an incompatible major via overrides, use an unreviewed Git commit of `picomatch`, or suppress the advisory. Keep this PR in draft until the remaining high advisory has a stable, tested resolution.
+
+---
+
+---
+
+## Historical investigation — 13 November 2026
+
+# Dependency security investigation — GHSA-g3hv-75wg-m249 (historical)
 
 **Date:** 2026-11-13  
 **Repository:** KaranJoyKundu/kundu-electronics  

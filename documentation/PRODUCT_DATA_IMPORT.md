@@ -1,54 +1,64 @@
 # Product and inventory data intake
 
-## Source-derived candidate status
+## Current import status — 18 November 2026
 
-The owner-provided `Business Website.md` includes a preliminary table of component/kit customer selling prices and three robot-project price lists. A separate proposal was generated outside this Git repository at `/mnt/data/kundu-private-import-proposal/`:
+The live Supabase catalogue now contains the complete **211-SKU product set (P001–P211)** from the owner's inventory workbook:
 
-- `IMPORT_REVIEW.md`
-- `product-candidates.csv` / `product-candidates.json`
-- `robot-project-price-ranges.csv`
+- **211 published products**
+- **17 published categories**
+- **211 inventory records**
+- The public catalogue count function returns exactly **211**.
 
-Summary of that proposal: **74 component/kit candidates**; 66 have one integer price in the brief; 8 require review due to alternatives, estimates or ranges. The robot project entries are nine tiered price ranges and are not individual component SKUs. All candidates remain `draft_not_imported`; none are published.
+All 211 product image files supplied in the image archive are used. The owner explicitly confirmed permission/licensing for the complete image set. The optimized static sprite at `public/product-previews/kundu-catalogue-sprite.webp` maps one photo tile to each SKU P001–P211. The image credits page lists the 16 owner-supplied photographs and attributes the 19 Creative Commons source photographs.
 
-Do not put original internal inventory or purchasing-cost files in Git. The candidate proposal does not include supplier or purchase-cost columns.
+The workbook's missing customer-facing data was kept missing rather than inferred:
 
-## Original source files still required
+| Inventory field | Current count |
+| --- | ---: |
+| Selling price not supplied | 49 |
+| Stock quantity not recorded | 6 |
+| In stock | 129 |
+| Low stock | 34 |
+| Out of stock | 42 |
 
-The business brief refers to these files, but they were not attached in this session:
+Products with no selling price show **“Price on request”**. Products without recorded stock show **“Availability to confirm”**. Out-of-stock products remain listed with their out-of-stock status. Customer-facing quantities are not shown.
 
-1. `Bussiness/pricing_and_inventory.md` — master inventory and stock/pricing source.
-2. `Bussiness/Final Product with prices/component_pricing_analysis.md` — detailed price analysis/source for the candidate table.
-3. `Bussiness/Final Product with prices/Robot_Price_Lists.md`.
-4. `Bussiness/Final Product with prices/robot_selling_price_list.md`.
-5. `Bussiness/Final Product with prices/robot_project_selling_prices.md`.
-6. Relevant component/product PDFs, datasheets, real product photos, kit contents and robot build documents.
+## Data privacy and import boundaries
 
-Ask for only relevant source files as each data group is prepared; do not ask owner to upload all files at once. The source files may contain buying price/supplier/private notes and must remain outside the public project source and Git history.
+The workbook is a private business source and is not committed to this repository. Only customer-facing fields are imported into public catalogue records.
 
-## Required per-product confirmation
+Never publish or commit:
+- Purchase/buying prices, profit margins or markup calculations.
+- Supplier identities, supplier contacts or private sourcing notes.
+- Private stock notes, reorder details, stock valuation or cash-flow data.
+- The raw master workbook, private business documents, credentials or environment files.
 
-- Product name and model/SKU (if one exists).
-- Category.
-- Exact public selling price in BDT.
-- Variant/option distinction and any price override.
-- Actual availability and stock-tracking mode; no quantity guessing.
-- Customer-facing description and technical specs with source.
-- Owner-provided or licensed product image(s), alt text and order.
-- Publication approval.
+## Required owner follow-up
 
-## Price classification
+- Confirm the 49 missing customer selling prices before advertising a fixed price for those products.
+- Recount the six products whose stock quantity was not recorded.
+- Reconfirm in-stock and low-stock states against physical inventory before promising availability.
+- Add customer-facing product descriptions and technical specifications only when supported by a reliable product source or owner confirmation.
+- Keep variants and price overrides separate; do not combine different models or versions into one listing if their details differ.
 
-- A single explicit integer selling price in the brief is a **candidate**, not automatic approval.
-- Slash-separated values require clarification and must not be auto-resolved.
-- Estimates remain unconfirmed.
-- Price ranges remain ranges and cannot be used as fixed SKU prices.
-- Unknown/missing prices render neither as zero nor as a fabricated value.
+## Price and availability rules
 
-## Import safety
+- Selling price is the public customer price in BDT, never the purchase cost.
+- A missing selling price remains null and is shown as “Price on request”, not ৳0.
+- A missing stock quantity remains unknown and is shown as “Availability to confirm”.
+- Out-of-stock products are labelled out of stock; they are not silently represented as available.
+- Do not infer a selling price from buying cost, markup or a neighbouring product.
+- Do not infer stock from old rows, image files or assumptions.
+- Do not invent descriptions, specifications, compatibility, warranties, reviews, delivery costs or service promises.
 
-- Strip purchasing-cost, supplier, margin, source notes, reorder data and internal inventory fields before data enters application/admin/public schemas.
-- Do not infer selling price from cost or markup.
-- Do not infer stock from old rows; use `unknown` until confirmed.
-- Duplicate SKU/slug must be reported, not overwritten.
-- All rows start as draft. Public `Product`/API contracts contain `priceBdt` (selling price) only, never buy cost.
-- No false product photography, specifications, reviews, shipping claims or stock indicators.
+## Image rights and matching
+
+- The owner confirmed permission/licensing for the full supplied 211-image package on 18 November 2026.
+- SKU-to-image mapping follows P001–P211 and is implemented by `src/components/product-photo.tsx`.
+- The optimized sprite is `public/product-previews/kundu-catalogue-sprite.webp`.
+- Attribution and links for the Creative Commons source set are maintained at `/image-credits`.
+- If a product image is replaced later, confirm the new file maps to the correct SKU and retain its source/permission information.
+
+## Sales activation
+
+The site currently runs in **enquiry-only mode**. Checkout is disabled in Supabase because payment receiving details/instructions and delivery zones/charges are not enabled. Do not enable checkout until the owner approves those values, server-only secrets are configured, and order creation/payment verification have passed end-to-end tests.

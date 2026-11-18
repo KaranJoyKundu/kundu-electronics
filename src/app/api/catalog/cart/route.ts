@@ -80,8 +80,8 @@ export async function GET(request: NextRequest) {
 
   const products: Product[] = visibleRows.flatMap((row) => {
     const categorySlug = categoryById.get(row.category_id);
-    const priceBdt = Number(row.price_bdt);
-    if (!categorySlug || !Number.isSafeInteger(priceBdt) || priceBdt <= 0) return [];
+    const priceBdt = row.price_bdt === null ? null : Number(row.price_bdt);
+    if (!categorySlug || (priceBdt !== null && (!Number.isSafeInteger(priceBdt) || priceBdt <= 0))) return [];
     const availability = typeof row.public_availability === "string" && AVAILABILITY.has(row.public_availability as ProductAvailability)
       ? row.public_availability as ProductAvailability : "unknown";
     return [{
