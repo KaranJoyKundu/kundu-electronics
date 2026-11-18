@@ -7,7 +7,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="container footer-main">
         <div className="footer-brand-column">
-          <Link href="/" className="footer-brand"><Image src="/brand/kundu-brothers-logo.png" alt="Kundu Brothers logo" width={76} height={76} /><span>KUNDU<br />ELECTRONICS</span></Link>
+          <Link href="/" className="footer-brand"><Image src="/images/brand/logo.png" alt="Kundu Electronics logo" width={76} height={76} /><span>KUNDU<br />ELECTRONICS</span></Link>
           <p>{business.tagline}</p>
           <span className="footer-location">{business.locationLabel}</span>
         </div>

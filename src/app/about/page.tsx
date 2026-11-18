@@ -13,7 +13,7 @@ export default function AboutPage() {
     <section className="container simple-page founder-page">
       <div className="breadcrumb"><Link href="/">Home</Link><span>/</span><span>About the Founder</span></div>
       <div className="founder-hero">
-        <div className="founder-logo-wrap"><Image src="/brand/kundu-brothers-logo.png" alt="Kundu Brothers business logo" width={200} height={200} priority /></div>
+        <div className="founder-photo-wrap"><Image src="/images/brand/founder.jpg" alt="Karan Joy Kundu, founder of Kundu Electronics" width={200} height={200} priority /></div>
         <div>
           <span className="section-kicker">THE PERSON BEHIND THE PARTS</span>
           <h1>Hi, I&apos;m <em>Karan Joy Kundu.</em></h1>
