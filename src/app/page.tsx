@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { HomeProjectShowcase } from "@/components/home-project-showcase";
 import { ArrowRightIcon } from "@/components/icons";
 import { getStorefrontCatalogue } from "@/data/storefront";
@@ -61,7 +60,7 @@ export default async function HomePage() {
 
       <section className="help-strip"><div className="container help-strip-inner"><div><span className="section-kicker">04 — NEED SOMETHING?</span><h2>Not sure which part you need?</h2><p>Get product guidance or ask about availability through the shop’s verified contact channels.</p></div><Link href="/contact" className="button button-outline">Contact the shop <ArrowRightIcon /></Link></div></section>
 
-      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">SHOP PICKS</span><h2>From the catalogue</h2></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid">{products.slice(0, 4).map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image">{product.images[0] ? <Image src={product.images[0].src} alt={product.images[0].alt} width={480} height={360} unoptimized /> : <ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} />}</div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
+      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">SHOP PICKS</span><h2>From the catalogue</h2></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid">{products.slice(0, 4).map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image"><ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} /></div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
     </>
   );
 }
