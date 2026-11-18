@@ -90,7 +90,7 @@ export default async function ProjectsPage() {
               })}
             </tbody></table>
           </div>
-          <aside className="bee-bom-total"><span>Catalogue-value subtotal</span><strong>{formatPriceBdt(beeKnownSubtotal)}</strong><p>Current selling-price estimate for the priced components above, not the shop's purchase cost or a project quote.</p></aside>
+          <aside className="bee-bom-total"><span>Catalogue-value subtotal</span><strong>{formatPriceBdt(beeKnownSubtotal)}</strong><p>Current selling-price estimate for the priced components above, not the shop&apos;s purchase cost or a project quote.</p></aside>
         </div>
         <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. The Bee repository README references project photos at media/images/photo1.jpg and photo2.jpg, but those files are absent from the public repo, so this section uses catalogue component photos—not fake photos of the assembled robot.</p>
       </section>
