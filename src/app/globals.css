@@ -865,3 +865,15 @@ button { cursor: pointer; }
 .project-showcase-copy h2 a:hover,.project-detail-copy h2 a:hover{color:var(--brand)}
 .project-card-full-link{z-index:2}
 .featured-products{margin-top:0}
+
+.project-detail-page{padding-bottom:70px}
+.project-detail-header{max-width:850px;padding:34px 0 24px}
+.project-detail-header h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(42px,6vw,68px);font-weight:500;letter-spacing:-.055em;margin:15px 0}
+.project-detail-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);gap:34px;align-items:start;margin:12px 0 34px}
+.project-detail-hero>.project-artwork{min-height:340px}
+.project-detail-description{font-size:14px;line-height:1.85;color:var(--ink-soft)}
+.project-detail-description p{margin:0 0 16px}
+.project-detail-footer{display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding-top:22px;margin-top:40px}
+.project-showcase-art-link{position:relative;z-index:3}
+.project-detail-copy h2 a{position:relative;z-index:3}
+@media(max-width:760px){.project-detail-hero{grid-template-columns:1fr}.project-detail-hero>.project-artwork{min-height:250px}.project-detail-footer{flex-wrap:wrap}}
