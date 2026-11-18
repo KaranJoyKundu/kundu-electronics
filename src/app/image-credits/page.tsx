@@ -14,7 +14,16 @@ const ownerPhotos = [
   ["P063","L298N Motor Driver"],["P080","400-pin Mini Breadboard"],["P181","18650 Rechargeable Battery"],
 ] as const;
 
-const openLicensedPhotos = [
+type OpenLicensedPhoto = {
+  sku: string;
+  name: string;
+  author: string;
+  license: string;
+  source: string;
+  licenseUrl?: string;
+};
+
+const openLicensedPhotos: OpenLicensedPhoto[] = [
   {sku:"P018",name:"NEMA 17 Stepper Motor",author:"oomlout",license:"CC BY-SA 2.0",source:"https://commons.wikimedia.org/wiki/File:Nema_17_Stepper_Motor.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/2.0/"},
   {sku:"P021",name:"Arduino Nano",author:"Nevit Dilmen",license:"CC BY-SA 3.0",source:"https://commons.wikimedia.org/wiki/File:Arduino_Nano_v3_20140410.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/3.0/"},
   {sku:"P024",name:"ESP32-CAM",author:"Nowforever",license:"CC BY-SA 4.0",source:"https://commons.wikimedia.org/wiki/File:ESP32-CAM.jpg",licenseUrl:"https://creativecommons.org/licenses/by-sa/4.0/"},
