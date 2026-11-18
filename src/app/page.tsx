@@ -45,7 +45,7 @@ export default async function HomePage() {
           <div className="section-kicker">02 — THE CATALOGUE</div>
           <div className="catalogue-state-card">
             <div className="state-visual"><div className="state-grid-mark"><span /><span /><span /><span /><span /><span /><span /><span /><span /></div><span className="state-visual-label">CATALOGUE / LIVE</span></div>
-            <div className="state-copy"><span className="state-tag">LIVE CATALOGUE</span><h2>Find the right part<br />for your next build.</h2><p>Browse components across 17 categories, compare published BDT selling prices, and check each product’s current availability status. Ask us to reconfirm availability before you travel.</p><Link href="/shop" className="button button-dark">Browse products <ArrowRightIcon /></Link></div>
+            <div className="state-copy"><span className="state-tag">LIVE CATALOGUE</span><h2>Find the right part<br />for your next build.</h2><p>Browse components across 18 categories, compare published BDT selling prices, and check each product’s current availability status. Ask us to reconfirm availability before you travel.</p><Link href="/shop" className="button button-dark">Browse products <ArrowRightIcon /></Link></div>
           </div>
         </div>
       </section>
