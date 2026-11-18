@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 };
 
 const projectTypes: Array<{ id: string; kind: ProjectKind; title: string; summary: string; detail: string; destination: string; external?: string }> = [
-  { id: "bee", kind: "bee", title: "Bee Biped Robot", summary: "A working Bluetooth-controlled biped robot with a 3D-printed body.", detail: "Built around an Arduino Nano, six SG90 servos, an HC-05 Bluetooth module, an HC-SR04 ultrasonic sensor and a MAX7219 8×8 LED-matrix face. The prototype was developed as a hands-on learning demonstration.", destination: "#bee-bom-title", external: "https://github.com/KaranJoyKundu/bee-biped-robot" },
-  { id: "lfr", kind: "lfr", title: "Line Following Robot", summary: "Three complete kit tiers for an autonomous line-following build.", detail: "Choose an entry, competitive or elite configuration. Each package includes the components and quantities listed in the supplied kit specification.", destination: "#lfr-kits" },
-  { id: "soccerbot", kind: "soccerbot", title: "Soccer Bot", summary: "A three-tier kit range for a student soccer robot.", detail: "Start with the Budget Scrapper, move up to the Precision Striker, or choose the Optimized Juggernaut.", destination: "#soccerbot-kits" },
-  { id: "rc", kind: "rc", title: "RC Speed Battle", summary: "Robot and remote-controller components packaged together.", detail: "Each tier includes the bot and matching remote components, based on the supplied RC Speed Battle parts list.", destination: "#rc-kits" },
-  { id: "drone", kind: "drone", title: "Drone Projects", summary: "A custom project enquiry—not a pre-priced kit.", detail: "Tell me your intended build, requirements and budget. There is no published drone BOM or package price yet, so I can help scope the parts before quoting.", destination: "#project-help-callout" },
+  { id: "bee", kind: "bee", title: "Bee Biped Robot", summary: "A working Bluetooth-controlled biped robot with a 3D-printed body.", detail: "Built around an Arduino Nano, six SG90 servos, an HC-05 Bluetooth module, an HC-SR04 ultrasonic sensor and a MAX7219 8×8 LED-matrix face. The prototype was developed as a hands-on learning demonstration.", destination: "/projects/bee-biped", external: "https://github.com/KaranJoyKundu/bee-biped-robot" },
+  { id: "lfr", kind: "lfr", title: "Line Following Robot", summary: "Three complete kit tiers for an autonomous line-following build.", detail: "Choose an entry, competitive or elite configuration. Each package includes the components and quantities listed in the supplied kit specification.", destination: "/projects/line-follower" },
+  { id: "soccerbot", kind: "soccerbot", title: "Soccer Bot", summary: "A three-tier kit range for a student soccer robot.", detail: "Start with the Budget Scrapper, move up to the Precision Striker, or choose the Optimized Juggernaut.", destination: "/projects/soccer-bot" },
+  { id: "rc", kind: "rc", title: "RC Speed Battle", summary: "Robot and remote-controller components packaged together.", detail: "Each tier includes the bot and matching remote components, based on the supplied RC Speed Battle parts list.", destination: "/projects/rc-speed-battle" },
+  { id: "drone", kind: "drone", title: "Drone Projects", summary: "A custom project enquiry—not a pre-priced kit.", detail: "Tell me your intended build, requirements and budget. There is no published drone BOM or package price yet, so I can help scope the parts before quoting.", destination: "/projects/drone" },
 ];
 
 const kitGroups = [
@@ -54,10 +54,10 @@ export default async function ProjectsPage() {
       <div className="projects-showcase-grid">
         {projectTypes.map((project) => (
           <article className="project-detail-card" id={project.id} key={project.id}>
-            <ProjectArtwork kind={project.kind} />
+            <Link className="project-card-art-link" href={project.destination} aria-label={"Open " + project.title + " project details"}><ProjectArtwork kind={project.kind} /></Link>
             <div className="project-detail-copy">
               <span className="section-kicker">{project.id === "bee" ? "COMPLETED BUILD" : project.id === "drone" ? "CUSTOM ENQUIRY" : "PROJECT KIT"}</span>
-              <h2>{project.title}</h2>
+              <h2><Link href={project.destination}>{project.title}</Link></h2>
               <p className="project-card-summary">{project.summary}</p>
               <p>{project.detail}</p>
             </div>
