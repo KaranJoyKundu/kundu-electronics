@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="breadcrumb"><a href="/shop">Shop</a><span>/</span><span>{product.name}</span></div>
       <div className="product-detail-grid">
         <div className="product-gallery">
-          <div className="product-detail-image"><ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} /></div>
+          <div className="product-detail-image"><ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} imageSrc={product.images?.[0]?.src} /></div>
         </div>
         <div className="product-information">
           <span className="section-kicker">{product.categorySlug.replaceAll("-", " ")}</span>

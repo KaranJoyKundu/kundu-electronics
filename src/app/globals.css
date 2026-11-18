@@ -846,3 +846,34 @@ button { cursor: pointer; }
 
 .project-estimated-price { margin-bottom:4px; }
 .project-estimate-note { margin:0 0 16px; color:var(--muted); font-size:12px; line-height:1.6; }
+
+.project-artwork-nano-photo, .bee-bom-nano-photo { width:100%; height:100%; max-height:240px; object-fit:contain; display:block; background:#fff; }
+.project-artwork-real-photo img { max-width:100%; object-fit:contain; }
+
+.bee-build-gallery { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:22px 0 18px; }
+.bee-build-gallery figure { margin:0; min-width:0; }
+.bee-build-gallery img { width:100%; height:260px; object-fit:cover; display:block; background:#f3f2ed; border:1px solid var(--line); }
+.bee-build-gallery figcaption { padding:8px 0; color:var(--muted); font:10px/1.6 ui-monospace,monospace; text-transform:uppercase; }
+.bee-project-facts { border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:12px 0; margin:10px 0 22px; }
+.bee-project-facts p { margin:7px 0; line-height:1.7; }
+.bee-project-hero-photo img { height:280px; object-fit:contain; }
+@media(max-width:720px) { .bee-build-gallery { grid-template-columns:1fr; } .bee-build-gallery img { height:240px; } }
+
+/* Project cards are fully navigable; keep links visible and keyboard accessible. */
+.project-showcase-art-link,.project-card-art-link{display:block;color:inherit}
+.project-showcase-art-link:focus-visible,.project-card-art-link:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
+.project-showcase-copy h2 a:hover,.project-detail-copy h2 a:hover{color:var(--brand)}
+.project-card-full-link{z-index:2}
+.featured-products{margin-top:0}
+
+.project-detail-page{padding-bottom:70px}
+.project-detail-header{max-width:850px;padding:34px 0 24px}
+.project-detail-header h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(42px,6vw,68px);font-weight:500;letter-spacing:-.055em;margin:15px 0}
+.project-detail-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);gap:34px;align-items:start;margin:12px 0 34px}
+.project-detail-hero>.project-artwork{min-height:340px}
+.project-detail-description{font-size:14px;line-height:1.85;color:var(--ink-soft)}
+.project-detail-description p{margin:0 0 16px}
+.project-detail-footer{display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding-top:22px;margin-top:40px}
+.project-showcase-art-link{position:relative;z-index:3}
+.project-detail-copy h2 a{position:relative;z-index:3}
+@media(max-width:760px){.project-detail-hero{grid-template-columns:1fr}.project-detail-hero>.project-artwork{min-height:250px}.project-detail-footer{flex-wrap:wrap}}

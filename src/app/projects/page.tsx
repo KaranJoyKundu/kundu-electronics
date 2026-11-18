@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 };
 
 const projectTypes: Array<{ id: string; kind: ProjectKind; title: string; summary: string; detail: string; destination: string; external?: string }> = [
-  { id: "bee", kind: "bee", title: "Bee Biped Robot", summary: "A working Bluetooth-controlled biped robot with a 3D-printed body.", detail: "Built around an Arduino Nano, six SG90 servos, an HC-05 Bluetooth module, an HC-SR04 ultrasonic sensor and a MAX7219 8×8 LED-matrix face. The prototype was developed as a hands-on learning demonstration.", destination: "#bee-bom-title", external: "https://github.com/KaranJoyKundu/bee-biped-robot" },
-  { id: "lfr", kind: "lfr", title: "Line Following Robot", summary: "Three complete kit tiers for an autonomous line-following build.", detail: "Choose an entry, competitive or elite configuration. Each package includes the components and quantities listed in the supplied kit specification.", destination: "#lfr-kits" },
-  { id: "soccerbot", kind: "soccerbot", title: "Soccer Bot", summary: "A three-tier kit range for a student soccer robot.", detail: "Start with the Budget Scrapper, move up to the Precision Striker, or choose the Optimized Juggernaut.", destination: "#soccerbot-kits" },
-  { id: "rc", kind: "rc", title: "RC Speed Battle", summary: "Robot and remote-controller components packaged together.", detail: "Each tier includes the bot and matching remote components, based on the supplied RC Speed Battle parts list.", destination: "#rc-kits" },
-  { id: "drone", kind: "drone", title: "Drone Projects", summary: "A custom project enquiry—not a pre-priced kit.", detail: "Tell me your intended build, requirements and budget. There is no published drone BOM or package price yet, so I can help scope the parts before quoting.", destination: "#project-help-callout" },
+  { id: "bee", kind: "bee", title: "Bee Biped Robot", summary: "A working Bluetooth-controlled biped robot with a 3D-printed body.", detail: "Built around an Arduino Nano, six SG90 servos, an HC-05 Bluetooth module, an HC-SR04 ultrasonic sensor and a MAX7219 8×8 LED-matrix face. The prototype was developed as a hands-on learning demonstration.", destination: "/projects/bee-biped", external: "https://github.com/KaranJoyKundu/bee-biped-robot" },
+  { id: "lfr", kind: "lfr", title: "Line Following Robot", summary: "Three complete kit tiers for an autonomous line-following build.", detail: "Choose an entry, competitive or elite configuration. Each package includes the components and quantities listed in the supplied kit specification.", destination: "/projects/line-follower" },
+  { id: "soccerbot", kind: "soccerbot", title: "Soccer Bot", summary: "A three-tier kit range for a student soccer robot.", detail: "Start with the Budget Scrapper, move up to the Precision Striker, or choose the Optimized Juggernaut.", destination: "/projects/soccer-bot" },
+  { id: "rc", kind: "rc", title: "RC Speed Battle", summary: "Robot and remote-controller components packaged together.", detail: "Each tier includes the bot and matching remote components, based on the supplied RC Speed Battle parts list.", destination: "/projects/rc-speed-battle" },
+  { id: "drone", kind: "drone", title: "Drone Projects", summary: "A custom project enquiry—not a pre-priced kit.", detail: "Tell me your intended build, requirements and budget. There is no published drone BOM or package price yet, so I can help scope the parts before quoting.", destination: "/projects/drone" },
 ];
 
 const kitGroups = [
@@ -54,10 +54,10 @@ export default async function ProjectsPage() {
       <div className="projects-showcase-grid">
         {projectTypes.map((project) => (
           <article className="project-detail-card" id={project.id} key={project.id}>
-            <ProjectArtwork kind={project.kind} />
+            <Link className="project-card-art-link" href={project.destination} aria-label={"Open " + project.title + " project details"}><ProjectArtwork kind={project.kind} /></Link>
             <div className="project-detail-copy">
               <span className="section-kicker">{project.id === "bee" ? "COMPLETED BUILD" : project.id === "drone" ? "CUSTOM ENQUIRY" : "PROJECT KIT"}</span>
-              <h2>{project.title}</h2>
+              <h2><Link href={project.destination}>{project.title}</Link></h2>
               <p className="project-card-summary">{project.summary}</p>
               <p>{project.detail}</p>
             </div>
@@ -71,11 +71,23 @@ export default async function ProjectsPage() {
           <h2 id="bee-bom-title">What makes Bee work?</h2>
           <p>Bluetooth-controlled, six-servo walking robot with an LED-matrix face, distance sensing and a custom 3D-printed body. Parts below are matched to the current shop catalogue. <a className="underlined-link" href={projectTypes[0].external} target="_blank" rel="noreferrer">View source on GitHub ↗</a></p>
         </div>
+        <div className="bee-build-gallery" aria-label="Bee Biped build photos">
+          <figure><img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/photo1.jpg" alt="Bee completed robot standing on a table beside detached 3D-printed parts" loading="lazy" /><figcaption>Completed working prototype</figcaption></figure>
+          <figure><img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/20260819_141629.jpg" alt="Bee internal torso wiring, Arduino Nano, servo connections and parallel battery pack" loading="lazy" /><figcaption>Internal electronics and wiring</figcaption></figure>
+          <figure><img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/20260819_142150.jpg" alt="Close-up of the robot's 3D-printed hat" loading="lazy" /><figcaption>Custom 3D-printed details</figcaption></figure>
+        </div>
+        <div className="bee-project-facts">
+          <p><strong>Built for:</strong> a hands-on robotics demonstration at Khulna City College, delivered on 19 August 2026.</p>
+          <p><strong>Core features:</strong> 30+ Bluetooth commands, six servo joints for walking and gestures, 8×8 LED-matrix expressions, and on-demand HC-SR04 distance readout.</p>
+          <p><strong>Build:</strong> Arduino Nano, six SG90 servos, MAX7219 matrix, HC-05 Bluetooth, HC-SR04, two 1100 mAh cells in parallel, and customized 3D-printed PLA/PETG body.</p>
+          <p><strong>Result:</strong> completed after around six weeks and 50+ hardware/software iterations; estimated typical runtime about six hours per charge.</p>
+          <p><a className="underlined-link" href="https://karanjoykundu.github.io/portfolio/projects/bee-biped-robot" target="_blank" rel="noreferrer">Read the full Bee Biped case study ↗</a></p>
+        </div>
         <div className="bee-bom-photo-strip" aria-label="Photos of the components used in Bee">
           {beeParts.map((part) => {
             const product = bySku.get(part.sku);
             return <article className="bee-bom-photo-card" key={part.sku}>
-              <div className="bee-bom-photo"><ProductPhoto name={product?.name ?? part.name} sku={part.sku} category={product?.categorySlug} /></div>
+              <div className="bee-bom-photo">{part.sku === "P021" ? <img className="bee-bom-nano-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Arduino_Nano.jpg" alt="Arduino Nano controller board" loading="lazy" /> : <ProductPhoto name={product?.name ?? part.name} sku={part.sku} category={product?.categorySlug} />}</div>
               <h3>{part.name}</h3><p>{part.role}</p><span>× {part.quantity}</span>
             </article>;
           })}
@@ -92,7 +104,7 @@ export default async function ProjectsPage() {
           </div>
           <aside className="bee-bom-total"><span>Catalogue-value subtotal</span><strong>{formatPriceBdt(beeKnownSubtotal)}</strong><p>Current selling-price estimate for the priced components above, not the shop&apos;s purchase cost or a project quote.</p></aside>
         </div>
-        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. The Bee repository README references project photos at media/images/photo1.jpg and photo2.jpg, but those files are absent from the public repo, so this section uses catalogue component photos—not fake photos of the assembled robot.</p>
+        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. Build photos and detailed project information are sourced from the Bee Biped case study on Karan&apos;s portfolio. Catalogue component photos and price estimates below are separate from the full project build cost.</p>
       </section>
 
       <section className="project-kit-area">
