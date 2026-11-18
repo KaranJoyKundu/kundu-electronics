@@ -104,7 +104,7 @@ export default async function ProjectsPage() {
           </div>
           <aside className="bee-bom-total"><span>Catalogue-value subtotal</span><strong>{formatPriceBdt(beeKnownSubtotal)}</strong><p>Current selling-price estimate for the priced components above, not the shop&apos;s purchase cost or a project quote.</p></aside>
         </div>
-        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. Build photos and detailed project information are sourced from the Bee Biped case study on Karan's portfolio. Catalogue component photos and price estimates below are separate from the full project build cost.</p>
+        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. Build photos and detailed project information are sourced from the Bee Biped case study on Karan&apos;s portfolio. Catalogue component photos and price estimates below are separate from the full project build cost.</p>
       </section>
 
       <section className="project-kit-area">
