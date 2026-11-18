@@ -2,12 +2,13 @@
 
 **Last updated:** 18 November 2026 (Asia/Dhaka)
 **Production branch:** feat/launch-prep
-**Current follow-up branch:** `feat/founder-projects-storefront-orders` (PR #4 open against production branch)
-**Latest verified launch-branch commit:** `900d331f396027becca4e95fcdd8b91683a55087`
+**Latest release:** PR #4 merged into `feat/launch-prep` on 18 November 2026
+**Latest production merge commit:** `e8fe75e445b84f802a470d4ef373d3d33e232a89`
 **Remote main:** `7f2a448426fb78f4467eaa377af8489f115c427a` (unchanged by launch work)
-**Launch PR:** [#3](https://github.com/KaranJoyKundu/kundu-electronics/pull/3) (open, draft, not merged)
+**PR #4:** [merged](https://github.com/KaranJoyKundu/kundu-electronics/pull/4) into `feat/launch-prep`  
+**PR #3:** [open, draft, not merged](https://github.com/KaranJoyKundu/kundu-electronics/pull/3) to `main`
 **Repository:** `KaranJoyKundu/kundu-electronics` (private)
-**Production:** [https://kundu-electronics.vercel.app](https://kundu-electronics.vercel.app) (Vercel READY; deployed from `feat/launch-prep`)
+**Production:** [https://kundu-electronics.vercel.app](https://kundu-electronics.vercel.app) (Vercel READY; deployed from `feat/launch-prep` merge commit `e8fe75e`)
 
 ## Objective
 

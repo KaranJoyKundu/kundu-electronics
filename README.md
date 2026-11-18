@@ -27,9 +27,9 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 
 ## Hosting and deployment
 
-The production site is live at **https://kundu-electronics.vercel.app**. The latest Vercel production deployment is READY from `feat/launch-prep` commit `900d331f396027becca4e95fcdd8b91683a55087`; the canonical alias points to the deployment. `main` remains unchanged.
+The production site is live at **https://kundu-electronics.vercel.app**. The latest Vercel production deployment is READY at `https://kundu-electronics.vercel.app` from `feat/launch-prep` merge commit `e8fe75e445b84f802a470d4ef373d3d33e232a89` (deployment `dpl_FBM9DvHwx7u1KJ981EcqrsDSSKXa`). `main` remains unchanged.
 
-A separate preview of this follow-up is available at `https://kundu-electronics-hv1bft3mf-kundu2409056-5098.vercel.app` (commit `2a10d885`). PR #4 targets the production branch `feat/launch-prep`; it is not merged. Website order requests are available without online payment; bKash/Nagad remain disabled pending verified receiving details.
+PR #4 was merged into `feat/launch-prep` on 18 November 2026. The ready preview before promotion was `https://kundu-electronics-elepd16xd-kundu2409056-5098.vercel.app`. Draft PR #3 to `main` remains open and unmerged. Website order requests are available without online payment; bKash/Nagad remain disabled pending verified receiving details.
 
 The Vercel project has the public Supabase URL/key and sensitive server-only entries. The values for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are not included in this repository or this documentation.
 

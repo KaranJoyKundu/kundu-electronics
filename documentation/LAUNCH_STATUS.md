@@ -3,12 +3,12 @@
 ## Verified live catalogue
 
 - Production storefront: **https://kundu-electronics.vercel.app**
-- Vercel production deployment: `dpl_6tSReMPjewAkPAwSQCo46vTD4R9x`, state **READY**.
-- The deployment source is `feat/launch-prep`, commit `900d331f396027becca4e95fcdd8b91683a55087`. The canonical Vercel alias points to this deployment. The `main` branch remains unchanged.
+- Vercel production deployment: `dpl_FBM9DvHwx7u1KJ981EcqrsDSSKXa`, state **READY**.
+- The deployment source is `feat/launch-prep`, merge commit `e8fe75e445b84f802a470d4ef373d3d33e232a89`. The canonical Vercel alias points to this deployment. The `main` branch remains unchanged.
 - Live Supabase project: `tcapxmiroikbsozvucmt`, region `ap-northeast-1`.
-- The exact public catalogue count function returns **211 products**. There are **17 published categories** and **211 inventory records**.
-- The shop presents all 211 published products using 24 items per page (**9 pages**) with server-side search, category and BDT price filters.
-- The public photo gallery renders all 211 products, not a curated subset. Each SKU P001–P211 maps to its corresponding image tile in `public/product-previews/kundu-catalogue-sprite.webp` (46,362 bytes, 16 columns × 14 rows).
+- The exact public catalogue count function returns **208 published products**. There are **18 published categories** and **220 inventory records**.
+- The shop presents all 208 published products using 24 items per page (**9 pages**) with server-side search, category and BDT price filters.
+- The optimized photo sprite retains all 211 original SKU tiles P001–P211 (46,362 bytes, 16 columns × 14 rows). Twelve resistor-named products are archived; the nine project-kit bundles use labelled project artwork where no kit-specific photo was supplied.
 - The owner confirmed on 18 November 2026 that Kundu Electronics has permission/licensing to use all 211 photographs supplied in the image package. The 19 Creative Commons source photographs have author/source/licence details listed at `/image-credits`; the owner-supplied set is also identified there.
 - Product images are static catalogue assets. The Supabase `product_images` table currently has zero rows; the complete static sprite is the image source used by the storefront.
 
@@ -17,7 +17,7 @@
 The imported inventory is represented as recorded; missing values were not guessed:
 
 - **49 products** have no confirmed customer selling price and show **“Price on request”**.
-- Availability from the supplied workbook: **129 in stock**, **34 low stock**, **42 out of stock**.
+- Current published-catalogue availability: **117 in stock**, **34 low stock**, **42 out of stock**, **6 unknown/unrecorded** and **9 build-to-order** project kits.
 - **6 products** have no recorded stock quantity and show **“Availability to confirm”**.
 - Customer-facing inventory counts, buying prices, margins, supplier identities and private notes are not exposed.
 - These values should still be physically reconfirmed by the owner before accepting paid orders or advertising availability.
@@ -43,10 +43,9 @@ The imported inventory is represented as recorded; missing values were not guess
 
 ## GitHub review state
 
-- The live production deployment remains on `feat/launch-prep`; this follow-up is isolated on `feat/founder-projects-storefront-orders`.
-- Follow-up PR #4: https://github.com/KaranJoyKundu/kundu-electronics/pull/4 — targets `feat/launch-prep`, not `main`, and remains open/unmerged.
-- Separate draft PR #3 to `main` remains unchanged and unmerged.
-- Latest follow-up commit: `2a10d885381ea3b9c351cf8df1d7ce5dd7d78def`; Vercel preview deployment from that commit is READY at `https://kundu-electronics-hv1bft3mf-kundu2409056-5098.vercel.app`.
+- PR #4: https://github.com/KaranJoyKundu/kundu-electronics/pull/4 — merged into `feat/launch-prep` on 18 November 2026; production is deployed from merge commit `e8fe75e445b84f802a470d4ef373d3d33e232a89`.
+- Draft PR #3 to `main` remains unchanged and unmerged; the default branch is still `7f2a448426fb78f4467eaa377af8489f115c427a`.
+- Release preview before promotion: `https://kundu-electronics-elepd16xd-kundu2409056-5098.vercel.app` (READY).
 
 ## Verification still required by the owner
 

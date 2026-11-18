@@ -68,6 +68,6 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 | KE-034 | P1 | Complete website, WhatsApp and phone order paths | Completed | Website order requests use server-side price/delivery calculation. WhatsApp message has code/name/unit price × quantity/line total/delivery/Total; phone link available. No payment is collected online. |
 | KE-035 | P1 | Configure delivery modes | Completed | Standard 12h–1 day / ৳0 and Urgent 30–60 minutes / ৳50 are live; urgent is an explicit button. |
 | KE-036 | P1 | Upload Kundu Brothers brand logo and update documentation | Completed | Logo added to header, footer and browser icons; README, start guide, launch report, project state and kit/checkout docs updated. |
-| KE-037 | P1 | Verify CI and Vercel preview | Completed | Windows CI passed typecheck, lint, tests and production build; Vercel preview deployment READY. Current follow-up PR #4 targets feat/launch-prep and remains unmerged. |
+| KE-037 | P1 | Verify CI and Vercel preview | Completed | Windows CI passed typecheck, lint, tests and production build; Vercel preview deployment READY. Follow-up PR #4 merged into feat/launch-prep on 18 November 2026. |
 | KE-038 | P1 | Label robot-kit prices as estimates | Completed | Source Markdown states “Total estimated cost”; product pages, order confirmation and WhatsApp handoff now say estimates and defer final amount confirmation until before payment. |
 

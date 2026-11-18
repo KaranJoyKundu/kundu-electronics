@@ -7,9 +7,9 @@
 - Design reference: https://www.sparkfun.com/
 - GitHub: https://github.com/KaranJoyKundu/kundu-electronics (private)
 - Default branch: `main`
-- Current storefront follow-up: `feat/founder-projects-storefront-orders` (PR #4 against `feat/launch-prep`)
+- Latest storefront release: PR #4 merged into `feat/launch-prep` at commit `e8fe75e445b84f802a470d4ef373d3d33e232a89`.
 - Production branch: feat/launch-prep; review and merge the follow-up there, not into main.
-- Current follow-up review: PR #4 — https://github.com/KaranJoyKundu/kundu-electronics/pull/4 (targets feat/launch-prep; not merged). Separate draft PR #3 to main remains untouched.
+- PR #4: https://github.com/KaranJoyKundu/kundu-electronics/pull/4 — merged into `feat/launch-prep`. Separate draft PR #3 to `main` remains open and unmerged.
 - Do not force-push, merge launch changes into `main`, or commit secrets.
 
 ## Read first
@@ -41,8 +41,8 @@ Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` a
 ## Hosting and production
 
 - Production site is live: https://kundu-electronics.vercel.app
-- Vercel reports the latest production deployment READY from `feat/launch-prep` commit `900d331f396027becca4e95fcdd8b91683a55087`.
-- Separate preview: https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app
+- Vercel reports the latest production deployment READY from `feat/launch-prep` merge commit `e8fe75e445b84f802a470d4ef373d3d33e232a89`.
+- Preview used for release verification: https://kundu-electronics-elepd16xd-kundu2409056-5098.vercel.app (READY before production promotion).
 - `main` remains unchanged; the current production deployment was built from the launch feature branch.
 - Website order requests are enabled with server-calculated totals and stock confirmation. Payment is not collected online; bKash/Nagad remain disabled until verified receiving numbers and instructions are supplied. Delivery: Standard (12 hours–1 day, ৳0) or Urgent (30–60 minutes, ৳50). WhatsApp messages include product code, name, unit price × quantity, line total, delivery and final total; direct calling is supported.
 - Vercel holds sensitive `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` entries; their values are not written into this repository or documentation.
