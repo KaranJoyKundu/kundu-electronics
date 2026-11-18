@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ProjectArtwork, type ProjectKind } from "@/components/project-artwork";
 
 const slides: Array<{ kind: ProjectKind; title: string; label: string; detail: string; href: string; external?: boolean }> = [
-  { kind: "bee", title: "Bee Biped Robot", label: "COMPLETED BUILD", detail: "A Bluetooth-controlled, 3D-printed walking robot built around an Arduino Nano, six servos and an LED-matrix face.", href: "https://github.com/KaranJoyKundu/bee-biped-robot", external: true },
+  { kind: "bee", title: "Bee Biped Robot", label: "COMPLETED BUILD", detail: "A Bluetooth-controlled, 3D-printed walking robot built around an Arduino Nano, six servos and an LED-matrix face.", href: "/projects#bee-bom-title" },
   { kind: "lfr", title: "Line Following Robot", label: "THREE KIT TIERS", detail: "Start with an entry build, move up to a competitive sensor array, or choose the encoder-based elite kit.", href: "/projects#lfr-kits" },
   { kind: "soccerbot", title: "Soccer Bot", label: "THREE KIT TIERS", detail: "Three complete packages for a student soccer robot, from the Budget Scrapper to the Optimized Juggernaut.", href: "/projects#soccerbot-kits" },
   { kind: "rc", title: "RC Speed Battle", label: "THREE KIT TIERS", detail: "Build the race bot and matching remote together, with a choice of three power and control tiers.", href: "/projects#rc-kits" },
