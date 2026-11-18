@@ -7,9 +7,9 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 - Next.js 16 App Router, React 19, TypeScript and Tailwind CSS 4.
 - Homepage with five-project horizontal carousel, founder story, /projects build showcase, searchable/filterable shop, product details, cart, contact, support and image credits.
 - Live Supabase project provisioned in ap-northeast-1. The initial schema and public catalogue count migrations are applied.
-- Live database currently has **208 published product rows across 18 categories**: 199 original non-resistor products plus nine build-to-order robot kits; P091 is the sole published resistor listing.
+- Live database currently has **208 published product rows across 18 categories**: 199 remaining original catalogue products (including P091) plus nine build-to-order robot kits. The other 12 resistor-named listings are archived.
 - Shop search, category and BDT price filters use server-side catalogue queries. Pagination uses an exact filtered count; all nine pages (24 products per page) are available for the current catalogue.
-- **All 211 products have matching photographs** in the optimized catalogue sprite. The owner confirmed permission/licensing for the complete supplied set; the 19 Creative Commons sources are attributed at `/image-credits`. Product images are selected by SKU P001–P211.
+- The optimized catalogue sprite retains photos for all **211 original inventory SKUs**. The owner confirmed permission/licensing for the complete supplied set; the 19 Creative Commons sources are attributed at `/image-credits`. Original product images are selected by SKU P001–P211. The nine robot-kit bundles use labelled project artwork where no kit-specific photograph was supplied.
 - Supabase has 21 public tables with RLS enabled and two private storage buckets. Generated database types are in `src/lib/supabase/database.types.ts`.
 - Protected admin routes cover products, categories, image uploads, variants, inventory, orders, payment verification and store settings. Public admin registration is disabled; an owner-provisioned Supabase user and role are required.
 
@@ -21,7 +21,7 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 - Delivery choices: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop confirms the address and whether the requested window can be met.
 - WhatsApp order messages include one line per cart item in the form: product code - product name - unit price x quantity - line total, followed by delivery and the final Total: line. A click-to-call action is also available.
 - P091 (1kΩ Resistor Box 5000pcs) is the only published resistor product and remains at its existing ৳1 price. The other 12 resistor-named records are archived, not deleted, preserving order history.
-- Nine complete robot-kit bundles are published: LFR (৳4,999 / ৳7,499 / ৳9,999), Soccer Bot (৳3,999 / ৳9,999 / ৳14,999), RC Speed Battle (৳3,999 / ৳9,999 / ৳16,999). Their full BOMs are on each kit’s product page.
+- Nine complete robot-kit bundles are published from the uploaded BOM sheet. The source calls their totals estimated costs, so the site labels them as estimates and confirms final scope/amount before payment. Bundles: LFR (৳4,999 / ৳7,499 / ৳9,999), Soccer Bot (৳3,999 / ৳9,999 / ৳14,999), RC Speed Battle (৳3,999 / ৳9,999 / ৳16,999). Their full BOMs are on each kit’s product page.
 - Drone remains a custom project enquiry because the uploaded robot-kit list contains no drone BOM or price.
 - One owner admin profile exists with the admin role and is linked to an email-confirmed Supabase Auth user. A successful sign-in and protected-page session still need owner verification.
 
@@ -29,7 +29,7 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 
 The production site is live at **https://kundu-electronics.vercel.app**. The latest Vercel production deployment is READY from `feat/launch-prep` commit `900d331f396027becca4e95fcdd8b91683a55087`; the canonical alias points to the deployment. `main` remains unchanged.
 
-A separate preview is available at `https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app`. Website order requests are available without online payment; bKash/Nagad remain disabled pending verified receiving details.
+A separate preview of this follow-up is available at `https://kundu-electronics-hv1bft3mf-kundu2409056-5098.vercel.app` (commit `2a10d885`). PR #4 targets the production branch `feat/launch-prep`; it is not merged. Website order requests are available without online payment; bKash/Nagad remain disabled pending verified receiving details.
 
 The Vercel project has the public Supabase URL/key and sensitive server-only entries. The values for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are not included in this repository or this documentation.
 

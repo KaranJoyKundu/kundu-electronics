@@ -7,9 +7,9 @@
 - Design reference: https://www.sparkfun.com/
 - GitHub: https://github.com/KaranJoyKundu/kundu-electronics (private)
 - Default branch: `main`
-- Current storefront follow-up: feat/founder-projects-storefront-orders (branched from feat/launch-prep)
+- Current storefront follow-up: `feat/founder-projects-storefront-orders` (PR #4 against `feat/launch-prep`)
 - Production branch: feat/launch-prep; review and merge the follow-up there, not into main.
-- Current review: draft PR #3 — https://github.com/KaranJoyKundu/kundu-electronics/pull/3
+- Current follow-up review: PR #4 — https://github.com/KaranJoyKundu/kundu-electronics/pull/4 (targets feat/launch-prep; not merged). Separate draft PR #3 to main remains untouched.
 - Do not force-push, merge launch changes into `main`, or commit secrets.
 
 ## Read first
@@ -32,11 +32,11 @@ Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` a
 
 ## Current catalogue and photos
 
-- Supabase currently has **208 published products across 18 categories**: 199 original non-resistor products plus nine project bundles. P091 is the sole published resistor product.
+- Supabase currently has **208 published products across 18 categories**: 199 remaining original catalogue products (including P091) plus nine project bundles. The other 12 resistor-named listings are archived.
 - The shop supports search, category and BDT price filtering with exact-count pagination.
-- The photo gallery contains all 211 products, each matched to its supplied/licensed photograph by SKU P001–P211. The owner confirmed usage rights for the full image set; the 19 Creative Commons source images are credited at `/image-credits`.
+- The photo sprite retains all 211 original SKU photo tiles P001–P211. The active catalogue now shows 199 original products and nine robot-kit bundles; project bundles use labelled artwork. The owner confirmed usage rights for the full image set; the 19 Creative Commons source images are credited at `/image-credits`.
 - The optimized photo sprite is committed at `public/product-previews/kundu-catalogue-sprite.webp` (46 KB) and is used by both the shop and product/gallery views.
-- The original product-image archive covers 211 catalogue SKUs. Twelve other resistor-named product records are archived; P091 remains published at ৳1. 49 original products are still “Price on request”; six have unrecorded stock. Confirm details before guaranteeing availability.
+- The original product-image archive covers 211 catalogue SKUs. The robot-kit Markdown labels its tier totals as estimated costs; the shop confirms final kit scope and amount before payment. Twelve other resistor-named product records are archived; P091 remains published at ৳1. 49 original products are still “Price on request”; six have unrecorded stock. Confirm details before guaranteeing availability.
 
 ## Hosting and production
 

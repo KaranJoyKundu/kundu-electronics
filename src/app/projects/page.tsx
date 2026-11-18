@@ -54,7 +54,7 @@ export default async function ProjectsPage() {
       </div>
       <section className="project-kit-area">
         <div className="section-heading"><div><span className="section-kicker">COMPLETE BUILD PACKAGES</span><h2>Pick a kit and add the whole package to your cart.</h2></div><Link href="/cart" className="underlined-link">Open cart →</Link></div>
-        <p className="project-kit-disclaimer">Package totals are from the supplied robot kit price list. The BOM and catalogue codes are shown on each kit page; only exact catalogue matches are assigned P-codes. Kits are build-to-order and stock is confirmed after an order request is received.</p>
+        <p className="project-kit-disclaimer">Figures are the estimated costs stated in the supplied robot-kit list, not guaranteed final quotes. The BOM and catalogue codes are shown on each kit page; only exact catalogue matches are assigned P-codes. Kits are build-to-order and the shop confirms exact parts, availability and final amount before payment.</p>
         {kitGroups.map((group) => (
           <section className="project-kit-group" id={group.id + "-kits"} key={group.id}>
             <div><h3>{group.title}</h3><p>{group.intro}</p></div>

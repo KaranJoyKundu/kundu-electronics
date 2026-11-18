@@ -143,7 +143,7 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
       <section className="order-summary-panel">
         <span className="section-kicker">ORDER {order.orderNumber}</span>
         <h2>{orderStatusLabel[order.orderStatus] ?? order.orderStatus.replaceAll("_", " ")}</h2>
-        <p>Thank you, {order.customerName}. Your order request has been saved. The shop will confirm stock and delivery with you before payment.</p>
+        <p>Thank you, {order.customerName}. Your order request has been saved. The shop will confirm stock, delivery and any estimated kit amount with you before payment.</p>
         <div className="order-status-grid">
           <div><span>Order status</span><strong>{orderStatusLabel[order.orderStatus] ?? order.orderStatus}</strong></div>
           <div><span>Payment status</span><strong>{order.paymentStatus.replaceAll("_", " ")}</strong></div>
@@ -163,7 +163,7 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
       </section>
 
       {order.orderStatus === "pending_stock_confirmation" ? (
-        <section className="notice-panel"><strong>Stock confirmation is pending</strong><p>The shop will confirm kit/component availability and delivery timing. No payment has been taken.</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
+        <section className="notice-panel"><strong>Stock confirmation is pending</strong><p>The shop will confirm kit/component availability, the final amount for estimated-cost robot kits, and delivery timing. No payment has been taken.</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
       ) : null}
 
       {order.paymentStatus === "pending_verification" ? (

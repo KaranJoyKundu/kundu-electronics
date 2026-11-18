@@ -101,6 +101,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
     }),
     "Delivery: " + (selectedZone ? selectedZone.name + " - " + formatPriceBdt(selectedZone.deliveryChargeBdt) : "Please confirm delivery option"),
     "Total: " + (cartRows.length > 0 && cartRows.every((row) => row.price?.valid) && selectedZone ? formatPriceBdt(estimatedTotal) : "To be confirmed by the shop"),
+    ...(cartRows.some((row) => row.product?.categorySlug === "project-kits") ? ["Robot-kit figures are estimates from the supplied BOM; the shop confirms final contents and amount before payment."] : []),
     "Please confirm stock and delivery before payment. No payment has been made.",
   ].join("\n");
   const cartEnquiryUrl = business.contact.whatsappUrl + "?text=" + encodeURIComponent(cartEnquiryMessage);
@@ -246,7 +247,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
             {!everyItemOrderable ? <p className="form-error">One or more cart items are unpublished or not currently orderable. Remove them before checkout.</p> : null}
             {error ? <p className="form-error" role="alert">{error}</p> : null}
             <button className="button button-primary" type="submit" disabled={submitting || productsLoading || productsFailed || !everyItemOrderable || !selectedZone}>{submitting ? "Saving your order…" : "Place order on website"}</button>
-            <div className="checkout-payment-note"><strong>No online payment is taken at checkout.</strong><p>Your order request is recorded first. The shop confirms stock and the delivery address, then contacts you to arrange payment.</p></div><p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. An order is not marked paid until the shop verifies payment separately.</p>
+            <div className="checkout-payment-note"><strong>No online payment is taken at checkout.</strong><p>Your order request is recorded first. The shop confirms stock, exact kit contents and final amount where relevant, plus the delivery address, then contacts you to arrange payment.</p></div><p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. An order is not marked paid until the shop verifies payment separately.</p>
           </form>
         )}
       </section>

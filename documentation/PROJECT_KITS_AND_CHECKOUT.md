@@ -6,7 +6,7 @@ Updated: 18 November 2026 (Asia/Dhaka)
 
 The kit BOM, names, quantities and estimated package totals are based on the owner-supplied robot_selling_price_list_2(1).md.
 
-| Project | Tier 1 | Tier 2 | Tier 3 |
+| Project | Tier 1 estimated cost | Tier 2 estimated cost | Tier 3 estimated cost |
 |---|---:|---:|---:|
 | Line Following Robot | ৳4,999 — Entry / Participation Build | ৳7,499 — Competitive Build | ৳9,999 — Elite Winner Build |
 | Soccer Bot | ৳3,999 — Budget Scrapper | ৳9,999 — Precision Striker | ৳14,999 — Optimized Juggernaut |
@@ -27,7 +27,7 @@ P091 — 1kΩ Resistor Box 5000pcs — remains published at its pre-existing pri
 - These are speed choices; the customer enters an address, and the shop confirms the delivery window can be achieved.
 - Website checkout creates an order using the existing create_checkout_order RPC. The database recalculates current product prices and delivery charges and maintains idempotency and stock-lock behaviour.
 - Order requests containing untracked/build-to-order items require staff stock confirmation.
-- Website checkout does not collect payment. No bKash/Nagad receiving numbers or customer transfer instructions were supplied, so those methods remain disabled. Payment status stays not_submitted until the shop arranges and verifies payment separately.
+- Website checkout does not collect payment. No bKash/Nagad receiving numbers or customer transfer instructions were supplied, so those methods remain disabled. Payment status stays not_submitted until the shop arranges and verifies payment separately. Robot-kit figures are estimates; the shop confirms final kit contents, availability and payable amount before any payment.
 - The WhatsApp message lists one line per product: product code - product name - unit price x quantity - line total. It includes delivery charge and a final Total: line. Phone ordering is also available.
 
 ## Founder story and project showcases

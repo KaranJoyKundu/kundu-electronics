@@ -43,9 +43,10 @@ The imported inventory is represented as recorded; missing values were not guess
 
 ## GitHub review state
 
-- Launch work remains isolated on `feat/launch-prep`.
-- Draft PR #3: https://github.com/KaranJoyKundu/kundu-electronics/pull/3
-- PR #3 is open and unmerged. Do not merge it into `main` until owner visual checks and remaining security/configuration reviews are complete.
+- The live production deployment remains on `feat/launch-prep`; this follow-up is isolated on `feat/founder-projects-storefront-orders`.
+- Follow-up PR #4: https://github.com/KaranJoyKundu/kundu-electronics/pull/4 — targets `feat/launch-prep`, not `main`, and remains open/unmerged.
+- Separate draft PR #3 to `main` remains unchanged and unmerged.
+- Latest follow-up commit: `2a10d885381ea3b9c351cf8df1d7ce5dd7d78def`; Vercel preview deployment from that commit is READY at `https://kundu-electronics-hv1bft3mf-kundu2409056-5098.vercel.app`.
 
 ## Verification still required by the owner
 

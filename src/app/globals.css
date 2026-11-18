@@ -797,3 +797,6 @@ button { cursor: pointer; }
 .delivery-speed-choice > span:nth-child(2) { font-size:13px; font-weight:750; }
 .delivery-speed-choice small { color:var(--muted); font-size:10px; line-height:1.45; }
 @media (max-width:560px) { .delivery-speed-choices { grid-template-columns:1fr; } }
+
+.project-estimated-price { margin-bottom:4px; }
+.project-estimate-note { margin:0 0 16px; color:var(--muted); font-size:12px; line-height:1.6; }

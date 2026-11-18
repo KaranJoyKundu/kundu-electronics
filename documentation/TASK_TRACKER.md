@@ -56,3 +56,18 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 | KE-035 | P1 | Configure delivery modes | Completed | Standard 12h–1 day / ৳0 and Urgent 30–60 minutes / ৳50 are live and used by server checkout calculations. |
 | KE-036 | P1 | Upload Kundu Brothers brand logo and update documentation | In progress | Logo asset and docs added on follow-up branch; verify CI and Vercel preview. |
 | KE-037 | P1 | Verify production-ready order flow, UI and deployment | Needs verification | Run Windows typecheck/lint/tests/build, preview browser checks, production deployment, and a test order before declaring the launch verified. |
+
+
+## 18 November 2026 storefront follow-up — current branch
+
+| ID | Priority | Task | Status | Evidence / acceptance criteria |
+|---|---|---|---|---|
+| KE-031 | P1 | Keep only P091 as a published resistor item | Completed | P091 remains published at its existing ৳1 price; the other 12 resistor-named records are archived and marked discontinued, not deleted. |
+| KE-032 | P1 | Publish three-tier robot bundles | Completed | Nine database-backed bundles use the estimates and BOMs from the uploaded Markdown: LFR-T1–T3, SB-T1–T3, RC-T1–T3. Component P-codes were verified against the live catalogue; unavailable items are identified in the BOM. |
+| KE-033 | P1 | Add founder story and projects showcase | Completed | About the Founder page, 3-second five-project homepage carousel and /projects showcase added. |
+| KE-034 | P1 | Complete website, WhatsApp and phone order paths | Completed | Website order requests use server-side price/delivery calculation. WhatsApp message has code/name/unit price × quantity/line total/delivery/Total; phone link available. No payment is collected online. |
+| KE-035 | P1 | Configure delivery modes | Completed | Standard 12h–1 day / ৳0 and Urgent 30–60 minutes / ৳50 are live; urgent is an explicit button. |
+| KE-036 | P1 | Upload Kundu Brothers brand logo and update documentation | Completed | Logo added to header, footer and browser icons; README, start guide, launch report, project state and kit/checkout docs updated. |
+| KE-037 | P1 | Verify CI and Vercel preview | Completed | Windows CI passed typecheck, lint, tests and production build; Vercel preview deployment READY. Current follow-up PR #4 targets feat/launch-prep and remains unmerged. |
+| KE-038 | P1 | Label robot-kit prices as estimates | Completed | Source Markdown states “Total estimated cost”; product pages, order confirmation and WhatsApp handoff now say estimates and defer final amount confirmation until before payment. |
+
