@@ -5,11 +5,11 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 ## Current implementation
 
 - Next.js 16 App Router, React 19, TypeScript and Tailwind CSS 4.
-- Homepage, searchable and filterable shop, product details, curated photo gallery, cart, contact, support, shipping-policy placeholder and image credits.
+- Homepage, searchable and filterable shop, product details, full 211-product photo gallery, enquiry cart, contact, support, shipping-policy placeholder and image credits.
 - Live Supabase project provisioned in ap-northeast-1. The initial schema and public catalogue count migrations are applied.
-- Live database currently has **158 published product rows across 17 categories**.
-- Shop search, category and BDT price filters use server-side catalogue queries. Pagination uses an exact filtered count; all seven page numbers are available for the current catalogue.
-- **33 products have real photographs:** 16 shop-supplied photos plus 17 open-licensed source photos. Sources and licence details are recorded at `/image-credits`. Other products use component-specific illustrations labelled as illustrations, not photographs.
+- Live database currently has **211 published product rows across 17 categories**, matching all 211 SKUs in the approved image set.
+- Shop search, category and BDT price filters use server-side catalogue queries. Pagination uses an exact filtered count; all nine pages (24 products per page) are available for the current catalogue.
+- **All 211 products have matching photographs** in the optimized catalogue sprite. The owner confirmed permission/licensing for the complete supplied set; the 19 Creative Commons sources are attributed at `/image-credits`. Product images are selected by SKU P001–P211.
 - Supabase has 21 public tables with RLS enabled and two private storage buckets. Generated database types are in `src/lib/supabase/database.types.ts`.
 - Protected admin routes cover products, categories, image uploads, variants, inventory, orders, payment verification and store settings. Public admin registration is disabled; an owner-provisioned Supabase user and role are required.
 
@@ -18,13 +18,13 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 - Checkout is disabled in Supabase.
 - bKash and Nagad receiving details/instructions are not configured or enabled.
 - No delivery zones or delivery charges are configured.
-- The cart remains usable as a saved cart, but the customer checkout form stays unavailable. The API and database reject order creation while prerequisites are missing.
+- The cart can be used to compile a WhatsApp enquiry, but customer checkout remains unavailable. The API and database reject order creation while prerequisites are missing.
 - One admin profile now exists with the `admin` role and is linked to an email-confirmed Supabase Auth user. A successful sign-in and protected-page session have not yet been verified.
 - Product prices and stock labels require final owner review before sales are accepted.
 
 ## Hosting and deployment
 
-The production site is now live at **https://kundu-electronics.vercel.app**. Vercel reports the deployment as READY from `feat/launch-prep` commit `e8735cf5950a27bb1bd512397dbb16b79c5fa808`; the canonical domain alias points to that deployment. `main` remains unchanged.
+The production site is live at **https://kundu-electronics.vercel.app**. The latest Vercel production deployment is READY from `feat/launch-prep` commit `900d331f396027becca4e95fcdd8b91683a55087`; the canonical alias points to the deployment. `main` remains unchanged.
 
 A separate preview is available at `https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app`. The production site is enquiry-only: checkout remains disabled because no payment method or delivery zone is enabled in Supabase.
 
