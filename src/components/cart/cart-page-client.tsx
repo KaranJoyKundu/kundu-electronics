@@ -230,7 +230,6 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
           </form>
         )}
       </section>
-    </div>
       <section className="order-channel-section">
         <div><span className="section-kicker">OTHER WAYS TO ORDER</span><h2>Prefer WhatsApp or a call?</h2><p>The WhatsApp message includes each product code, name, unit price × quantity, line total, delivery charge and final total.</p></div>
         <div className="order-channel-actions">
