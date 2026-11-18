@@ -12,12 +12,12 @@ export const metadata: Metadata = {
   description: "Explore Kundu Electronics robot builds and complete line follower, soccer bot and RC speed battle kits.",
 };
 
-const projectTypes: Array<{ id: string; kind: ProjectKind; title: string; summary: string; detail: string; external?: string }> = [
-  { id: "bee", kind: "bee", title: "Bee Biped Robot", summary: "A working Bluetooth-controlled biped robot with a 3D-printed body.", detail: "Built around an Arduino Nano, six SG90 servos, an HC-05 Bluetooth module, an HC-SR04 ultrasonic sensor and a MAX7219 8×8 LED-matrix face. The prototype was developed as a hands-on learning demonstration.", external: "https://github.com/KaranJoyKundu/bee-biped-robot" },
-  { id: "lfr", kind: "lfr", title: "Line Following Robot", summary: "Three complete kit tiers for an autonomous line-following build.", detail: "Choose an entry, competitive or elite configuration. Each package includes the components and quantities listed in the supplied kit specification." },
-  { id: "soccerbot", kind: "soccerbot", title: "Soccer Bot", summary: "A three-tier kit range for a student soccer robot.", detail: "Start with the Budget Scrapper, move up to the Precision Striker, or choose the Optimized Juggernaut." },
-  { id: "rc", kind: "rc", title: "RC Speed Battle", summary: "Robot and remote-controller components packaged together.", detail: "Each tier includes the bot and matching remote components, based on the supplied RC Speed Battle parts list." },
-  { id: "drone", kind: "drone", title: "Drone Projects", summary: "A custom project enquiry—not a pre-priced kit.", detail: "Tell me your intended build, requirements and budget. There is no published drone BOM or package price yet, so I can help scope the parts before quoting." },
+const projectTypes: Array<{ id: string; kind: ProjectKind; title: string; summary: string; detail: string; destination: string; external?: string }> = [
+  { id: "bee", kind: "bee", title: "Bee Biped Robot", summary: "A working Bluetooth-controlled biped robot with a 3D-printed body.", detail: "Built around an Arduino Nano, six SG90 servos, an HC-05 Bluetooth module, an HC-SR04 ultrasonic sensor and a MAX7219 8×8 LED-matrix face. The prototype was developed as a hands-on learning demonstration.", destination: "#bee-bom-title", external: "https://github.com/KaranJoyKundu/bee-biped-robot" },
+  { id: "lfr", kind: "lfr", title: "Line Following Robot", summary: "Three complete kit tiers for an autonomous line-following build.", detail: "Choose an entry, competitive or elite configuration. Each package includes the components and quantities listed in the supplied kit specification.", destination: "#lfr-kits" },
+  { id: "soccerbot", kind: "soccerbot", title: "Soccer Bot", summary: "A three-tier kit range for a student soccer robot.", detail: "Start with the Budget Scrapper, move up to the Precision Striker, or choose the Optimized Juggernaut.", destination: "#soccerbot-kits" },
+  { id: "rc", kind: "rc", title: "RC Speed Battle", summary: "Robot and remote-controller components packaged together.", detail: "Each tier includes the bot and matching remote components, based on the supplied RC Speed Battle parts list.", destination: "#rc-kits" },
+  { id: "drone", kind: "drone", title: "Drone Projects", summary: "A custom project enquiry—not a pre-priced kit.", detail: "Tell me your intended build, requirements and budget. There is no published drone BOM or package price yet, so I can help scope the parts before quoting.", destination: "#project-help-callout" },
 ];
 
 const kitGroups = [
@@ -60,9 +60,8 @@ export default async function ProjectsPage() {
               <h2>{project.title}</h2>
               <p className="project-card-summary">{project.summary}</p>
               <p>{project.detail}</p>
-              {project.external ? <a className="underlined-link" href={project.external} target="_blank" rel="noreferrer">View source project on GitHub ↗</a> : null}
-              {project.id === "drone" ? <a className="button button-outline" href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, I would like to discuss a drone project. Can you help me plan the parts and cost?")} target="_blank" rel="noreferrer">Discuss a drone build ↗</a> : null}
             </div>
+            <Link className="project-card-full-link" href={project.destination} aria-label={"View details, components and prices for " + project.title}>View project details and prices</Link>
           </article>
         ))}
       </div>
@@ -70,7 +69,7 @@ export default async function ProjectsPage() {
         <div className="bee-bom-heading">
           <span className="section-kicker">COMPLETED BUILD / BEE BIPED</span>
           <h2 id="bee-bom-title">What makes Bee work?</h2>
-          <p>Bluetooth-controlled, six-servo walking robot with an LED-matrix face, distance sensing and a custom 3D-printed body. Parts below are matched to the current shop catalogue.</p>
+          <p>Bluetooth-controlled, six-servo walking robot with an LED-matrix face, distance sensing and a custom 3D-printed body. Parts below are matched to the current shop catalogue. <a className="underlined-link" href={projectTypes[0].external} target="_blank" rel="noreferrer">View source on GitHub ↗</a></p>
         </div>
         <div className="bee-bom-photo-strip" aria-label="Photos of the components used in Bee">
           {beeParts.map((part) => {
@@ -121,7 +120,7 @@ export default async function ProjectsPage() {
           </section>
         ))}
       </section>
-      <section className="project-help-callout">
+      <section className="project-help-callout" id="project-help-callout">
         <div><span className="section-kicker">YOUR IDEA / YOUR DEADLINE</span><h2>Need a custom parts list or a little project guidance?</h2><p>Message me with what you are trying to build. I can help you choose components even if you are not ready to order.</p></div>
         <a className="button button-primary" href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Karan, I am stuck on a project and need some help choosing components.")} target="_blank" rel="noreferrer">Ask for project help ↗</a>
       </section>
