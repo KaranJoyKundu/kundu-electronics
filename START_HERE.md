@@ -31,19 +31,19 @@ Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` a
 
 ## Current catalogue and photos
 
-- Supabase contains 158 published product rows across 17 categories.
+- Supabase contains **211 published product rows across 17 categories**, matching the complete 211-SKU inventory.
 - The shop supports search, category and BDT price filtering with exact-count pagination.
-- The curated photo gallery contains 33 products with actual photographs: 16 shop-supplied images and 17 open-licensed images. See `/image-credits` for attribution and licence details.
-- Products without an approved photograph receive component-specific illustrations explicitly labelled as illustrations.
-- Product prices and availability labels need final owner review before sales are enabled.
+- The photo gallery contains all 211 products, each matched to its supplied/licensed photograph by SKU P001–P211. The owner confirmed usage rights for the full image set; the 19 Creative Commons source images are credited at `/image-credits`.
+- The optimized photo sprite is committed at `public/product-previews/kundu-catalogue-sprite.webp` (46 KB) and is used by both the shop and product/gallery views.
+- 49 products are honestly labelled “Price on request”; six products have unrecorded stock (“Availability to confirm”). Workbook availability currently shows 129 in stock, 34 low stock and 42 out of stock. Confirm selling prices and availability physically before sales are enabled.
 
 ## Hosting and production
 
 - Production site is live: https://kundu-electronics.vercel.app
-- Vercel reports the production deployment READY from `feat/launch-prep` commit `e8735cf5950a27bb1bd512397dbb16b79c5fa808`.
+- Vercel reports the latest production deployment READY from `feat/launch-prep` commit `900d331f396027becca4e95fcdd8b91683a55087`.
 - Separate preview: https://kundu-electronics-58i018i2w-kundu2409056-5098.vercel.app
 - `main` remains unchanged; the current production deployment was built from the launch feature branch.
-- The storefront is enquiry-only. Checkout is disabled by live Supabase settings: zero enabled payment methods and zero configured delivery zones.
+- The storefront is enquiry-only. Checkout is disabled by live Supabase settings; no payment methods or delivery zones are enabled. The cart sends WhatsApp enquiries only.
 - Vercel holds sensitive `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` entries; their values are not written into this repository or documentation.
 - Stable TypeScript-ESLint `8.73.0` is committed. Windows application verification and candidate checks passed; 14 high development-tooling findings remain. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
 
