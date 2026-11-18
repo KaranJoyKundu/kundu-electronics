@@ -858,3 +858,10 @@ button { cursor: pointer; }
 .bee-project-facts p { margin:7px 0; line-height:1.7; }
 .bee-project-hero-photo img { height:280px; object-fit:contain; }
 @media(max-width:720px) { .bee-build-gallery { grid-template-columns:1fr; } .bee-build-gallery img { height:240px; } }
+
+/* Project cards are fully navigable; keep links visible and keyboard accessible. */
+.project-showcase-art-link,.project-card-art-link{display:block;color:inherit}
+.project-showcase-art-link:focus-visible,.project-card-art-link:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
+.project-showcase-copy h2 a:hover,.project-detail-copy h2 a:hover{color:var(--brand)}
+.project-card-full-link{z-index:2}
+.featured-products{margin-top:0}
