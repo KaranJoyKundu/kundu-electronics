@@ -57,6 +57,15 @@ const components: Record<ProjectKind, ComponentPhoto[]> = {
 };
 
 export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
+  if (kind === "bee") {
+    return (
+      <div className="project-artwork project-artwork-real-photo bee-project-hero-photo">
+        <img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/photo1.jpg" alt="Bee biped robot, completed working prototype" loading="lazy" />
+        <span className="project-artwork-caption">BEE BIPED ROBOT · COMPLETED BUILD</span>
+        <a className="project-artwork-source" href="https://karanjoykundu.github.io/portfolio/projects/bee-biped-robot" target="_blank" rel="noreferrer">Project case study & photo source ↗</a>
+      </div>
+    );
+  }
   if (kind === "lfr") {
     return (
       <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a real line follower robot">
@@ -69,9 +78,9 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
   if (kind === "soccerbot") {
     return (
       <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a four-wheel Arduino soccer robot">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Soccer_Playing_Robots_During_RoboCup_2013.jpg" alt="Four-wheel DIY Arduino soccer bot on artificial turf" loading="lazy" />
+        <img src="https://www.aiub.edu/Files/Uploads/webp/botcompetition06.webp" alt="Four-wheel DIY Arduino soccer bot on artificial turf" loading="lazy" />
         <span className="project-artwork-caption">SOCCER ROBOT REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://commons.wikimedia.org/wiki/File:Soccer_Playing_Robots_During_RoboCup_2013.jpg" target="_blank" rel="noreferrer">Photo: Albert van Breemen / Wikimedia Commons ↗</a>
+        <a className="project-artwork-source" href="https://www.aiub.edu/Files/Uploads/webp/botcompetition06.webp" target="_blank" rel="noreferrer">Photo: AIUB competition image ↗</a>
       </div>
     );
   }
@@ -79,18 +88,18 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
   if (kind === "rc") {
     return (
       <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of an RC hobby car">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/RC-car.jpg" alt="Remote control hobby car reference photo" loading="lazy" />
+        <img src="https://preview.redd.it/3d-print-rc-car-based-on-arduino-v0-dd4085qbz1le1.jpg?width=1080&crop=smart&auto=webp&s=94b6b51778ef3c3befbcea9bc9976c8628da92bd" alt="Remote control hobby car reference photo" loading="lazy" />
         <span className="project-artwork-caption">RC HOBBY CAR · REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://commons.wikimedia.org/wiki/Category:Remote-controlled_models" target="_blank" rel="noreferrer">Photo reference: Wikimedia Commons ↗</a>
+        <a className="project-artwork-source" href="https://www.reddit.com/r/arduino/" target="_blank" rel="noreferrer">Photo reference: Reddit / Arduino RC car post ↗</a>
       </div>
     );
   }
   if (kind === "drone") {
     return (
       <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a quadrotor drone">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/ReuseumMakerFaireQuadrotor.JPG" alt="Small quadrotor drone reference photo" loading="lazy" />
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhk07weYQHuDAKKoYfyl_69Nv-TCU9F_azT_slxDwtVyShERGCVXk83bHWzTCxLjFg4NcELOc5kOsQcrWRlAaOEDDNBWw7MkOaf0wN6CLQOAJLmOeD2ipAO6IFM-SZckrAgTx9IbWTD25z1/s1600/IMG_3512.jpg" alt="Small quadrotor drone reference photo" loading="lazy" />
         <span className="project-artwork-caption">QUADROTOR · REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://commons.wikimedia.org/wiki/Category:Robotics" target="_blank" rel="noreferrer">Photo reference: Wikimedia Commons ↗</a>
+        <a className="project-artwork-source" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhk07weYQHuDAKKoYfyl_69Nv-TCU9F_azT_slxDwtVyShERGCVXk83bHWzTCxLjFg4NcELOc5kOsQcrWRlAaOEDDNBWw7MkOaf0wN6CLQOAJLmOeD2ipAO6IFM-SZckrAgTx9IbWTD25z1/s1600/IMG_3512.jpg" target="_blank" rel="noreferrer">Photo source: user-provided image ↗</a>
       </div>
     );
   }
