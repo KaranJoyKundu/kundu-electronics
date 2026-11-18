@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectArtwork, type ProjectKind } from "@/components/project-artwork";
 import { ProductPurchaseControl } from "@/components/cart/product-purchase-control";
+import { ProductPhoto } from "@/components/product-photo";
 import { getPublicCheckoutConfig, getStorefrontCatalogue } from "@/data/storefront";
 import { formatPriceBdt } from "@/lib/format";
 import { business } from "@/config/business";
@@ -28,6 +29,19 @@ const kitGroups = [
 export default async function ProjectsPage() {
   const [catalogue, checkout] = await Promise.all([getStorefrontCatalogue(250, 1), getPublicCheckoutConfig()]);
   const bySku = new Map(catalogue.products.map((product) => [product.sku, product]));
+  const beeParts = [
+    { sku: "P021", name: "Arduino Nano", quantity: 1, role: "Main controller" },
+    { sku: "P037", name: "SG90 micro servo", quantity: 6, role: "Legs, feet and arms" },
+    { sku: "P031", name: "MAX7219 8×8 LED matrix", quantity: 1, role: "Expressions and scrolling text" },
+    { sku: "P175", name: "HC-05 Bluetooth module", quantity: 1, role: "Wireless command link" },
+    { sku: "P036", name: "HC-SR04 ultrasonic sensor", quantity: 1, role: "Distance readout" },
+    { sku: "P181", name: "Sunfort 18650 battery", quantity: 2, role: "Parallel battery supply" },
+  ];
+  const beeKnownSubtotal = beeParts.reduce((sum, part) => {
+    const product = bySku.get(part.sku);
+    return sum + (product?.priceBdt ?? 0) * part.quantity;
+  }, 0);
+
 
   return (
     <section className="container simple-page projects-page">
@@ -52,6 +66,36 @@ export default async function ProjectsPage() {
           </article>
         ))}
       </div>
+      <section className="bee-bom-section" aria-labelledby="bee-bom-title">
+        <div className="bee-bom-heading">
+          <span className="section-kicker">COMPLETED BUILD / BEE BIPED</span>
+          <h2 id="bee-bom-title">What makes Bee work?</h2>
+          <p>Bluetooth-controlled, six-servo walking robot with an LED-matrix face, distance sensing and a custom 3D-printed body. Parts below are matched to the current shop catalogue.</p>
+        </div>
+        <div className="bee-bom-photo-strip" aria-label="Photos of the components used in Bee">
+          {beeParts.map((part) => {
+            const product = bySku.get(part.sku);
+            return <article className="bee-bom-photo-card" key={part.sku}>
+              <div className="bee-bom-photo"><ProductPhoto name={product?.name ?? part.name} sku={part.sku} category={product?.categorySlug} /></div>
+              <h3>{part.name}</h3><p>{part.role}</p><span>× {part.quantity}</span>
+            </article>;
+          })}
+        </div>
+        <div className="bee-bom-details">
+          <div className="bee-bom-table-wrap">
+            <table className="bee-bom-table"><thead><tr><th>Component</th><th>Qty</th><th>Catalogue unit price</th><th>Subtotal</th></tr></thead><tbody>
+              {beeParts.map((part) => {
+                const product = bySku.get(part.sku);
+                const unitPrice = product?.priceBdt ?? null;
+                return <tr key={part.sku}><td>{part.name}</td><td>{part.quantity}</td><td>{unitPrice !== null ? formatPriceBdt(unitPrice) : "Not priced"}</td><td>{unitPrice !== null ? formatPriceBdt(unitPrice * part.quantity) : "—"}</td></tr>;
+              })}
+            </tbody></table>
+          </div>
+          <aside className="bee-bom-total"><span>Catalogue-value subtotal</span><strong>{formatPriceBdt(beeKnownSubtotal)}</strong><p>Current selling-price estimate for the priced components above, not the shop's purchase cost or a project quote.</p></aside>
+        </div>
+        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. The Bee repository README references project photos at media/images/photo1.jpg and photo2.jpg, but those files are absent from the public repo, so this section uses catalogue component photos—not fake photos of the assembled robot.</p>
+      </section>
+
       <section className="project-kit-area">
         <div className="section-heading"><div><span className="section-kicker">COMPLETE BUILD PACKAGES</span><h2>Pick a kit and add the whole package to your cart.</h2></div><Link href="/cart" className="underlined-link">Open cart →</Link></div>
         <p className="project-kit-disclaimer">Figures are the estimated costs stated in the supplied robot-kit list, not guaranteed final quotes. The BOM and catalogue codes are shown on each kit page; only exact catalogue matches are assigned P-codes. Kits are build-to-order and the shop confirms exact parts, availability and final amount before payment.</p>
