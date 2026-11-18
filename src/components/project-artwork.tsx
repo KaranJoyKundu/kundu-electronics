@@ -12,7 +12,6 @@ const labels: Record<ProjectKind, string> = {
   drone: "DRONE BUILD",
 };
 
-// Catalogue photos are real component photographs. They are not photographs of the assembled kits.
 const components: Record<ProjectKind, ComponentPhoto[]> = {
   bee: [
     { sku: "P021", name: "Arduino Nano", category: "Microcontrollers & Development Boards" },
@@ -68,38 +67,37 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
   }
   if (kind === "lfr") {
     return (
-      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a real line follower robot">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/LineFollower.jpg" alt="Compact line follower robot on a track" loading="lazy" />
-        <span className="project-artwork-caption">REAL LINE-FOLLOWER BUILD · PHOTO CREDIT</span>
-        <a className="project-artwork-source" href="https://commons.wikimedia.org/wiki/File:LineFollower.jpg" target="_blank" rel="noreferrer">Photo: HimaliKhabar / Wikimedia Commons ↗</a>
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a line follower robot">
+        <img src="https://makerworkslab.in/projects/projectimages/line_follower_robot.webp" alt="Line follower robot on a marked track" loading="lazy" />
+        <span className="project-artwork-caption">LINE-FOLLOWER ROBOT · REFERENCE PHOTO</span>
+        <a className="project-artwork-source" href="https://makerworkslab.in/projects/projectimages/line_follower_robot.webp" target="_blank" rel="noreferrer">Photo reference: MakerWorks Lab ↗</a>
       </div>
     );
   }
   if (kind === "soccerbot") {
     return (
-      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a four-wheel Arduino soccer robot">
-        <img src="https://www.aiub.edu/Files/Uploads/webp/botcompetition06.webp" alt="Four-wheel DIY Arduino soccer bot on artificial turf" loading="lazy" />
-        <span className="project-artwork-caption">SOCCER ROBOT REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://www.aiub.edu/Files/Uploads/webp/botcompetition06.webp" target="_blank" rel="noreferrer">Photo: AIUB competition image ↗</a>
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Reference photograph of an Arduino soccer robot">
+        <img src="https://static-01.daraz.com.bd/p/cd19eaa8b5d313b4bfe772c83a433ca9.png" alt="Four-wheel Arduino soccer robot beside a football on artificial turf" loading="lazy" />
+        <span className="project-artwork-caption">SOCCER BOT · REFERENCE PHOTO</span>
+        <a className="project-artwork-source" href="https://www.daraz.com.bd/products/soccer-bot-diy-arduino-based-robotic-soccer-robot-robobox-4-i323729310.html" target="_blank" rel="noreferrer">Photo reference: RoboBox-4 product listing ↗</a>
       </div>
     );
   }
-
   if (kind === "rc") {
     return (
-      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of an RC hobby car">
-        <img src="https://preview.redd.it/3d-print-rc-car-based-on-arduino-v0-dd4085qbz1le1.jpg?width=1080&crop=smart&auto=webp&s=94b6b51778ef3c3befbcea9bc9976c8628da92bd" alt="Remote control hobby car reference photo" loading="lazy" />
-        <span className="project-artwork-caption">RC HOBBY CAR · REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://www.reddit.com/r/arduino/" target="_blank" rel="noreferrer">Photo reference: Reddit / Arduino RC car post ↗</a>
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Reference photograph of an Arduino remote-control car">
+        <img src="https://hackster.imgix.net/uploads/attachments/1499405/_k2dhbHE8PH.blob?auto=compress&fit=min&fm=jpg&h=1200&w=1600" alt="Arduino remote-control hobby car with its handheld transmitter" loading="lazy" />
+        <span className="project-artwork-caption">RC SPEED CAR · REFERENCE PHOTO</span>
+        <a className="project-artwork-source" href="https://www.hackster.io/enriquelopezprojects/arduino-rc-car-with-flysky-fs-i6x-controller-and-receiver-994675" target="_blank" rel="noreferrer">Photo reference: Hackster.io Arduino RC car project ↗</a>
       </div>
     );
   }
   if (kind === "drone") {
     return (
-      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a quadrotor drone">
-        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhk07weYQHuDAKKoYfyl_69Nv-TCU9F_azT_slxDwtVyShERGCVXk83bHWzTCxLjFg4NcELOc5kOsQcrWRlAaOEDDNBWw7MkOaf0wN6CLQOAJLmOeD2ipAO6IFM-SZckrAgTx9IbWTD25z1/s1600/IMG_3512.jpg" alt="Small quadrotor drone reference photo" loading="lazy" />
-        <span className="project-artwork-caption">QUADROTOR · REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhk07weYQHuDAKKoYfyl_69Nv-TCU9F_azT_slxDwtVyShERGCVXk83bHWzTCxLjFg4NcELOc5kOsQcrWRlAaOEDDNBWw7MkOaf0wN6CLQOAJLmOeD2ipAO6IFM-SZckrAgTx9IbWTD25z1/s1600/IMG_3512.jpg" target="_blank" rel="noreferrer">Photo source: user-provided image ↗</a>
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Reference photograph of a DIY quadcopter drone">
+        <img src="https://content.instructables.com/FMP/EKWZ/L9ZO4HJ4/FMPEKWZL9ZO4HJ4.jpg?auto=webp&fit=bounds&frame=1&height=1024&width=1024" alt="DIY quadcopter frame with four propellers and exposed flight-control electronics" loading="lazy" />
+        <span className="project-artwork-caption">QUADCOPTER · REFERENCE PHOTO</span>
+        <a className="project-artwork-source" href="https://www.instructables.com/Fusion360-Laser-Cut-Plywood-UAV/" target="_blank" rel="noreferrer">Photo reference: Instructables DIY quadcopter build ↗</a>
       </div>
     );
   }
