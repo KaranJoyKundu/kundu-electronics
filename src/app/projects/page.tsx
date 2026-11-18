@@ -75,7 +75,7 @@ export default async function ProjectsPage() {
           {beeParts.map((part) => {
             const product = bySku.get(part.sku);
             return <article className="bee-bom-photo-card" key={part.sku}>
-              <div className="bee-bom-photo"><ProductPhoto name={product?.name ?? part.name} sku={part.sku} category={product?.categorySlug} /></div>
+              <div className="bee-bom-photo">{part.sku === "P021" ? <img className="bee-bom-nano-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Arduino_Nano.jpg" alt="Arduino Nano controller board" loading="lazy" /> : <ProductPhoto name={product?.name ?? part.name} sku={part.sku} category={product?.categorySlug} />}</div>
               <h3>{part.name}</h3><p>{part.role}</p><span>× {part.quantity}</span>
             </article>;
           })}
@@ -92,7 +92,7 @@ export default async function ProjectsPage() {
           </div>
           <aside className="bee-bom-total"><span>Catalogue-value subtotal</span><strong>{formatPriceBdt(beeKnownSubtotal)}</strong><p>Current selling-price estimate for the priced components above, not the shop&apos;s purchase cost or a project quote.</p></aside>
         </div>
-        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. The Bee repository README references project photos at media/images/photo1.jpg and photo2.jpg, but those files are absent from the public repo, so this section uses catalogue component photos—not fake photos of the assembled robot.</p>
+        <p className="bee-bom-note">Not included: the exact power-bank boost/charging module (not matched to a verified catalogue SKU), custom PLA/PETG printed parts, wiring, switches, connectors and assembly. The Bee repository README references media/images/photo1.jpg and photo2.jpg, but GitHub currently returns no files in that folder. The final assembled robot photo is still needed; this page uses component photos until those two images are uploaded.</p>
       </section>
 
       <section className="project-kit-area">
