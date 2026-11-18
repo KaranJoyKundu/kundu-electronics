@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ProductPurchaseControl } from "@/components/cart/product-purchase-control";
 import { notFound } from "next/navigation";
@@ -49,11 +48,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="breadcrumb"><a href="/shop">Shop</a><span>/</span><span>{product.name}</span></div>
       <div className="product-detail-grid">
         <div className="product-gallery">
-          {product.images.length > 0 ? product.images.map((image, index) => (
-            <div className="product-detail-image" key={`${image.src}-${index}`}>
-              <Image src={image.src} alt={image.alt} width={900} height={900} unoptimized />
-            </div>
-          )) : <div className="product-detail-image"><ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} /></div>}
+          <div className="product-detail-image"><ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} /></div>
         </div>
         <div className="product-information">
           <span className="section-kicker">{product.categorySlug.replaceAll("-", " ")}</span>
