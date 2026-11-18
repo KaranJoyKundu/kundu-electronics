@@ -57,6 +57,25 @@ const components: Record<ProjectKind, ComponentPhoto[]> = {
 };
 
 export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
+  if (kind === "lfr") {
+    return (
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a real line follower robot">
+        <img src="https://3zuli.github.io/img/linefollower.jpg" alt="Compact line follower robot on a track" loading="lazy" />
+        <span className="project-artwork-caption">REAL LINE-FOLLOWER BUILD · PHOTO CREDIT</span>
+        <a className="project-artwork-source" href="https://3zuli.github.io/robotics.html" target="_blank" rel="noreferrer">Source photo: 3zuli Robotics ↗</a>
+      </div>
+    );
+  }
+  if (kind === "soccerbot") {
+    return (
+      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a four-wheel Arduino soccer robot">
+        <img src="https://static-01.daraz.com.bd/p/cd19eaa8b5d313b4bfe772c83a433ca9.png" alt="Four-wheel DIY Arduino soccer bot on artificial turf" loading="lazy" />
+        <span className="project-artwork-caption">SOCCER ROBOT REFERENCE PHOTO</span>
+        <a className="project-artwork-source" href="https://www.daraz.com.bd/products/soccer-bot-diy-arduino-based-robotic-soccer-robot-robobox-4-i323729310.html" target="_blank" rel="noreferrer">Image source: Daraz listing ↗</a>
+      </div>
+    );
+  }
+
   return (
     <div className={"project-artwork project-artwork-" + kind} role="img" aria-label={labels[kind] + " — catalogue component photo collage"}>
       <div className="project-artwork-photo-grid">
