@@ -1,10 +1,10 @@
 import { ProductArtwork } from "@/components/product-artwork";
 import { PRODUCT_IMAGE_PATHS } from "@/lib/product-image-paths";
 
-type ProductPhotoProps = { sku?: string | null; name: string; category?: string | null };
+type ProductPhotoProps = { sku?: string | null; name: string; category?: string | null; imageSrc?: string | null };
 
-export function ProductPhoto({ sku, name, category }: ProductPhotoProps) {
-  const originalImage = sku ? PRODUCT_IMAGE_PATHS[sku] : undefined;
+export function ProductPhoto({ sku, name, category, imageSrc }: ProductPhotoProps) {
+  const originalImage = imageSrc || (sku ? PRODUCT_IMAGE_PATHS[sku] : undefined);
 
   if (originalImage) {
     return (
