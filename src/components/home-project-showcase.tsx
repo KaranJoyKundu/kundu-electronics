@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { ProjectArtwork, type ProjectKind } from "@/components/project-artwork";
 
 const slides: Array<{ kind: ProjectKind; title: string; label: string; detail: string; href: string; external?: boolean }> = [
-  { kind: "bee", title: "Bee Biped Robot", label: "COMPLETED BUILD", detail: "A Bluetooth-controlled, 3D-printed walking robot built around an Arduino Nano, six servos and an LED-matrix face.", href: "/projects#bee-bom-title" },
-  { kind: "lfr", title: "Line Following Robot", label: "THREE KIT TIERS", detail: "Start with an entry build, move up to a competitive sensor array, or choose the encoder-based elite kit.", href: "/projects#lfr-kits" },
-  { kind: "soccerbot", title: "Soccer Bot", label: "THREE KIT TIERS", detail: "Three complete packages for a student soccer robot, from the Budget Scrapper to the Optimized Juggernaut.", href: "/projects#soccerbot-kits" },
-  { kind: "rc", title: "RC Speed Battle", label: "THREE KIT TIERS", detail: "Build the race bot and matching remote together, with a choice of three power and control tiers.", href: "/projects#rc-kits" },
-  { kind: "drone", title: "Drone Projects", label: "CUSTOM ENQUIRY", detail: "Have a drone idea? Tell me what you want to build and I can help scope a suitable parts list.", href: "/contact" },
+  { kind: "bee", title: "Bee Biped Robot", label: "COMPLETED BUILD", detail: "A Bluetooth-controlled, 3D-printed walking robot built around an Arduino Nano, six servos and an LED-matrix face.", href: "/projects/bee-biped" },
+  { kind: "lfr", title: "Line Following Robot", label: "THREE KIT TIERS", detail: "Start with an entry build, move up to a competitive sensor array, or choose the encoder-based elite kit.", href: "/projects/line-follower" },
+  { kind: "soccerbot", title: "Soccer Bot", label: "THREE KIT TIERS", detail: "Three complete packages for a student soccer robot, from the Budget Scrapper to the Optimized Juggernaut.", href: "/projects/soccer-bot" },
+  { kind: "rc", title: "RC Speed Battle", label: "THREE KIT TIERS", detail: "Build the race bot and matching remote together, with a choice of three power and control tiers.", href: "/projects/rc-speed-battle" },
+  { kind: "drone", title: "Drone Projects", label: "CUSTOM ENQUIRY", detail: "Have a drone idea? Tell me what you want to build and I can help scope a suitable parts list.", href: "/projects/drone" },
 ];
 
 export function HomeProjectShowcase() {
@@ -28,12 +28,12 @@ export function HomeProjectShowcase() {
       <div className="project-showcase-topline"><span>PROJECTS / LIVE BUILDS</span><span>{String(active + 1).padStart(2, "0")} / 05</span></div>
       <div className="project-showcase-viewport">
         <div className="project-showcase-track" style={{ transform: "translateX(-" + (active * 20) + "%)" }}>
-          {slides.map((item) => <div className="project-showcase-slide" key={item.kind}><ProjectArtwork kind={item.kind} /></div>)}
+          {slides.map((item) => <div className="project-showcase-slide" key={item.kind}><Link className="project-showcase-art-link" href={item.href} aria-label={"Open " + item.title + " project details"}><ProjectArtwork kind={item.kind} /></Link></div>)}
         </div>
       </div>
       <div className="project-showcase-copy" aria-live="polite">
         <span className="project-showcase-label">{slide.label}</span>
-        <h2>{slide.title}</h2>
+        <h2><Link href={slide.href}>{slide.title}</Link></h2>
         <p>{slide.detail}</p>
         {slide.external
           ? <a className="underlined-link" href={slide.href} target="_blank" rel="noreferrer">View the build on GitHub ↗</a>
