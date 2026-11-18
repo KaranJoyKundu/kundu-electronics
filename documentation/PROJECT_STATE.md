@@ -1,10 +1,12 @@
 # PROJECT_STATE — Kundu Electronics
 
-**Last updated:** 13 November 2026 (Asia/Dhaka)
-**Active branch:** `feat/storefront-foundation`
-**Remote feature base at start of this follow-up:** `5949f4cd3152aa595dd6433aaac27a7b85f3a87a`
-**Remote main:** `d88339395e6a1e34f9da904650efd1421480cf00`
+**Last updated:** 18 November 2026 (Asia/Dhaka)
+**Active launch branch:** `feat/launch-prep`
+**Latest verified launch-branch commit:** `900d331f396027becca4e95fcdd8b91683a55087`
+**Remote main:** `7f2a448426fb78f4467eaa377af8489f115c427a` (unchanged by launch work)
+**Launch PR:** [#3](https://github.com/KaranJoyKundu/kundu-electronics/pull/3) (open, draft, not merged)
 **Repository:** `KaranJoyKundu/kundu-electronics` (private)
+**Production:** [https://kundu-electronics.vercel.app](https://kundu-electronics.vercel.app) (Vercel READY; deployed from `feat/launch-prep`)
 
 ## Objective
 
@@ -23,7 +25,7 @@ Deliver a production-capable Kundu Electronics electronics-components store in K
 
 ## Repository and branch guardrails
 
-The actual repository is `KaranJoyKundu/kundu-electronics`, private, with the connected GitHub account having admin/push access. Work only on `feat/storefront-foundation`. Keep `main` at `d883393...`; no merge or force-push is authorized. At the start of this follow-up the remote feature head was `5949f4c...` and matched the available Git bundle. The current follow-up is being prepared on top of that commit; use `git log -1` for its final SHA. The assistant container has no Windows working tree and no remote shell network access.
+The repository is private. Active launch changes remain isolated on `feat/launch-prep`; PR #3 is open, draft and unmerged. Do not merge to `main`, force-push, or replace owner commits without explicit approval. The current Vercel production branch is `feat/launch-prep`, so commits to this branch can trigger a production deployment; verify the new deployment after every release-relevant commit.
 
 ## Implemented foundation
 
@@ -75,18 +77,27 @@ The owner's last Windows test report (before this follow-up) identified 1 TypeSc
 
 The available supplied `npm-audit.json` is UTF-16LE and reports 7 moderate, 0 low, 0 high, 0 critical findings across 447 dependencies. The findings are indirect and cascade through TypeScript-ESLint packages to a nested `minimatch` under `@typescript-eslint/typescript-estree`. The report marks `fixAvailable: true` but contains no exact package resolution map. Since the actual Windows `package-lock.json` was not supplied and is not in GitHub, **no dependency upgrade, override or audit fix was applied**. Obtain the actual lockfile and a new audit report before choosing a fix. Do not use `npm audit fix --force`.
 
-## Business data status
+## Business data and catalogue status — 18 November 2026
 
-The consolidated business brief is not committed. A private candidate import proposal exists outside Git; all candidate products remain unapproved. Missing stock, specifications and photos are not fabricated. Original inventory/pricing and robot-price source documents are still required. Do not expose buying prices, supplier identity or private financial data.
+The complete 211-SKU product set from the owner's inventory workbook has been imported into the live Supabase catalogue:
 
-## Blockers and next steps
+- 211 published product rows, 17 published categories and 211 inventory records.
+- Exact public catalogue count function returns 211.
+- Public price state: 49 products have no selling price and show “Price on request”.
+- Public availability state: 129 in stock, 34 low stock, 42 out of stock and six unknown/unrecorded.
+- All 211 product photographs from the supplied archive are included in the SKU-mapped optimized sprite `public/product-previews/kundu-catalogue-sprite.webp`. The owner confirmed rights/licensing for the complete set; 19 Creative Commons source photos are attributed on `/image-credits`.
+- The product shop has nine pages at 24 records per page. The gallery renders all 211 products.
 
-1. Import/pull this feature-branch follow-up on Windows; verify no uncommitted owner edits are overwritten.
-2. Supply the actual Windows `package-lock.json` and fresh `npm audit --json`; run non-force dry-run remediation only after inspecting the complete lock graph.
-3. Run `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, and `npm audit` on the owner's Node 24.14/npm 11.21 environment.
-4. If the generated route type error persists, inspect the actual `.next/dev/types/validator.ts`, `.next/dev/types/routes.d.ts` and `.next/types/routes.d.ts`; do not edit generated files.
-5. Once verification is green, run SQL/pgTAP and RLS/concurrency tests on disposable Supabase, then browser checkout and responsive tests.
-6. Configure approved delivery and bKash/Nagad values before enabling checkout.
+The original inventory workbook remains private and is not committed. Only customer-facing names, categories, selling prices and public availability states were imported. Buying prices, margins, suppliers, internal notes and private stock counts remain excluded. Six unknown stock rows and 49 missing selling prices were not filled by inference.
+
+## Remaining launch checks
+
+1. Owner to visually test the production site on desktop and mobile, including all nine shop pages, product photos, search/filtering, product detail pages and WhatsApp enquiry-cart handoff.
+2. Owner to sign in at `/admin/login` and verify protected admin access; one admin profile exists, but sign-in has not been confirmed in this run.
+3. Owner to verify physical prices and stock; fill the 49 selling prices and six unknown stock quantities when confirmed.
+4. Configure owner-approved delivery zones/charges and bKash/Nagad receiving details/instructions.
+5. Keep checkout disabled until protected server secrets, payment/delivery settings and order/payment flows have passed end-to-end testing.
+6. Continue reviewing the remaining 14 high development-only dependency audit findings (GHSA-fc5q-39xc-vjpf in picomatch) and Supabase security-advisor warnings.
 
 ## Guardrails
 
