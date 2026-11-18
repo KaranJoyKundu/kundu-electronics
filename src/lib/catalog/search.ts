@@ -46,19 +46,19 @@ export function filterProducts(products: readonly Product[], filters: CatalogueF
     result = result.filter((product) => product.categorySlug === filters.categorySlug);
   }
   if (filters.minPrice !== undefined && filters.minPrice !== null) {
-    result = result.filter((product) => product.priceBdt >= filters.minPrice!);
+    result = result.filter((product) => product.priceBdt !== null && product.priceBdt >= filters.minPrice!);
   }
   if (filters.maxPrice !== undefined && filters.maxPrice !== null) {
-    result = result.filter((product) => product.priceBdt <= filters.maxPrice!);
+    result = result.filter((product) => product.priceBdt !== null && product.priceBdt <= filters.maxPrice!);
   }
 
   switch (filters.sort) {
     case "name-asc":
       return [...result].sort((a, b) => a.name.localeCompare(b.name));
     case "price-asc":
-      return [...result].sort((a, b) => a.priceBdt - b.priceBdt);
+      return [...result].sort((a, b) => a.priceBdt === null ? (b.priceBdt === null ? 0 : 1) : b.priceBdt === null ? -1 : a.priceBdt - b.priceBdt);
     case "price-desc":
-      return [...result].sort((a, b) => b.priceBdt - a.priceBdt);
+      return [...result].sort((a, b) => a.priceBdt === null ? (b.priceBdt === null ? 0 : 1) : b.priceBdt === null ? -1 : b.priceBdt - a.priceBdt);
     default:
       return result;
   }

@@ -32,7 +32,7 @@ export interface Product {
   brand?: string;
   summary?: string;
   description?: string;
-  priceBdt: number;
+  priceBdt: number | null;
   categorySlug: string;
   availability: ProductAvailability;
   images: ProductImage[];

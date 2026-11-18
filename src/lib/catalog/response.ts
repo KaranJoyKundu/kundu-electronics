@@ -77,7 +77,7 @@ function parseProduct(value: unknown): Product | null {
     || !isOptionalString(value.brand)
     || !isOptionalString(value.summary)
     || !isOptionalString(value.description)
-    || !isPositiveSafeInteger(value.priceBdt)
+    || (value.priceBdt !== null && !isPositiveSafeInteger(value.priceBdt))
     || typeof value.categorySlug !== "string"
     || !isProductAvailability(value.availability)
     || !Array.isArray(value.images)
@@ -109,7 +109,7 @@ function parseProduct(value: unknown): Product | null {
     ...(value.brand === undefined ? {} : { brand: value.brand }),
     ...(value.summary === undefined ? {} : { summary: value.summary }),
     ...(value.description === undefined ? {} : { description: value.description }),
-    priceBdt: Number(value.priceBdt),
+    priceBdt: value.priceBdt === null ? null : Number(value.priceBdt),
     categorySlug: value.categorySlug,
     availability: value.availability,
     images,

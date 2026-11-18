@@ -86,6 +86,15 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
   const everyItemOrderable = !productsLoading && !productsFailed && cartRows.length > 0
     && cartRows.every((row) => row.product?.orderable === true && row.product.published && row.price?.valid === true);
   const checkoutReady = checkout.checkoutEnabled && checkout.deliveryZones.length > 0 && checkout.paymentMethods.length > 0;
+  const cartEnquiryReady = cartRows.length > 0 && cartRows.every((row) => !!row.product && row.product.published);
+  const cartEnquiryMessage = [
+    "Hello Kundu Electronics, I would like to enquire about these cart items:",
+    ...cartRows.filter((row) => row.product).map(({ line, product }) =>
+      `- ${product!.name}${product!.sku ? ` (${product!.sku})` : ""} × ${line.quantity}${rowVariantLabel(product, line.variantId) ? ` — ${rowVariantLabel(product, line.variantId)}` : ""}`
+    ),
+    "Please confirm current availability and final prices. I understand this is an enquiry, not an order.",
+  ].join("\n");
+  const cartEnquiryUrl = "https://wa.me/8801570263442?text=" + encodeURIComponent(cartEnquiryMessage);
 
   function updateField(field: keyof CheckoutFormState, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -161,7 +170,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
                 <strong>{product?.name ?? (productsLoading ? "Checking product…" : "Product no longer available")}</strong>
                 {product?.sku ? <span>SKU: {product.sku}</span> : null}
                 {rowVariantLabel(product, line.variantId) ? <span>Option: {rowVariantLabel(product, line.variantId)}</span> : null}
-                {product && price?.valid ? <span>{formatPriceBdt(price.priceBdt)} each</span> : <span>{productsFailed ? "Product details could not be loaded. Retry the page." : "This product option is unavailable. Remove it before checkout."}</span>}
+                {product && price?.valid ? <span>{formatPriceBdt(price.priceBdt)} each</span> : product?.priceBdt === null ? <span>Price on request — confirm with the shop</span> : <span>{productsFailed ? "Product details could not be loaded. Retry the page." : "This product option is unavailable. Remove it before checkout."}</span>}
               </div>
               <div className="cart-row-actions">
                 <label>Quantity <input type="number" min="1" max="99" value={line.quantity} disabled={!product} onChange={(event) => setQuantity(line.productId, Number(event.target.value), line.variantId)} /></label>
@@ -174,11 +183,11 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
         </section>
 
         <aside className="cart-summary">
-          <h2>Order summary</h2>
-          <div><span>Estimated subtotal</span><strong>{formatPriceBdt(subtotal)}</strong></div>
-          <div><span>Delivery</span><strong>{selectedZone ? formatPriceBdt(selectedZone.deliveryChargeBdt) : "To be configured"}</strong></div>
-          <div className="cart-summary-total"><span>Estimated total</span><strong>{formatPriceBdt(estimatedTotal)}</strong></div>
-          <p>Final prices and delivery charge are recalculated by the server from the live database when you place the order.</p>
+          <h2>{checkoutReady ? "Order summary" : "Enquiry summary"}</h2>
+          <div><span>{checkoutReady ? "Estimated subtotal" : "Prices"}</span><strong>{checkoutReady ? formatPriceBdt(subtotal) : "To be confirmed"}</strong></div>
+          <div><span>Delivery</span><strong>{checkoutReady && selectedZone ? formatPriceBdt(selectedZone.deliveryChargeBdt) : "To be confirmed"}</strong></div>
+          <div className="cart-summary-total"><span>{checkoutReady ? "Estimated total" : "Final total"}</span><strong>{checkoutReady ? formatPriceBdt(estimatedTotal) : "After shop confirmation"}</strong></div>
+          <p>{checkoutReady ? "Final prices and delivery charge are recalculated by the server from the live database when you place the order." : "This is an enquiry only. The shop will confirm prices, stock and delivery before any order is accepted."}</p>
         </aside>
       </div>
 
@@ -189,6 +198,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
           <div className="notice-panel">
             <strong>Checkout is not enabled yet</strong>
             <p>The store has not configured and enabled an approved delivery charge, delivery area and manual payment receiving instructions. Your cart is saved locally; no order or payment will be simulated.</p>
+            {cartEnquiryReady ? <Link className="button button-primary" href={cartEnquiryUrl} target="_blank" rel="noopener noreferrer">Enquire about this cart on WhatsApp ↗</Link> : <p>Load or remove unavailable cart items before sending a complete enquiry.</p>}
           </div>
         ) : (
           <form className="checkout-form" onSubmit={placeOrder}>
