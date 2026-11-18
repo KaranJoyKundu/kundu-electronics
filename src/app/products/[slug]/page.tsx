@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ProductPurchaseControl } from "@/components/cart/product-purchase-control";
@@ -16,6 +17,24 @@ const availabilityLabels: Record<string, string> = {
   discontinued: "Discontinued",
   build_to_order: "Build to order",
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getStorefrontProduct(slug);
+  if (!product) return { title: "Product not found" };
+
+  const description = product.summary
+    ?? `View ${product.name} (${product.sku}) in the Kundu Electronics catalogue. Confirm the latest price, exact version and availability with the shop before ordering.`;
+  return {
+    title: product.name,
+    description,
+    openGraph: {
+      title: `${product.name} | Kundu Electronics`,
+      description,
+      type: "website",
+    },
+  };
+}
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
