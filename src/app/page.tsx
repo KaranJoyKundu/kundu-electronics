@@ -26,6 +26,8 @@ export default async function HomePage() {
         <div className="hero-bottom-rule"><div className="container"><span>COMPONENTS / PROTOTYPING / DISCOVERY</span><span>PARTS / BOARDS / TOOLS</span></div></div>
       </section>
 
+      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">SHOP PICKS</span><h2>From the catalogue</h2><p className="catalogue-scroll-hint">Browse all published products — scroll sideways to see more.</p></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid" role="region" aria-label="All published catalogue products" tabIndex={0}>{products.map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image"><ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} /></div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
+
       <section className="project-intro-band container">
         <div><span className="section-kicker">PROJECTS / BUILDS / KITS</span><h2>From first prototype to competition-ready robot.</h2><p>See completed builds, compare the three kit tiers, and add a complete robot kit to your cart.</p></div>
         <Link className="button button-outline" href="/projects">See all projects <ArrowRightIcon /></Link>
@@ -39,7 +41,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {products.length > 0 && <section className="container featured-products"><div className="section-heading"><div><span className="section-kicker">SHOP PICKS</span><h2>From the catalogue</h2><p className="catalogue-scroll-hint">Browse all published products — scroll sideways to see more.</p></div><Link href="/shop" className="underlined-link">View all <ArrowRightIcon /></Link></div><div className="product-preview-grid" role="region" aria-label="All published catalogue products" tabIndex={0}>{products.map((product) => <Link href={`/products/${product.slug}`} key={product.id} className="preview-product"><div className="preview-image"><ProductPhoto name={product.name} sku={product.sku} category={product.categorySlug} /></div><span>{product.name}</span><strong>{formatPriceBdt(product.priceBdt)}</strong></Link>)}</div></section>}
 
       <section className="catalogue-state-section">
         <div className="container catalogue-state-grid">
