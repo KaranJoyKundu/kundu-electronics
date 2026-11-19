@@ -93,7 +93,7 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 | KE-063 | P1 | Complete desktop/mobile interactive browser QA | Needs verification | Production route/image/header smoke checks pass; full Playwright/Lighthouse at all five requested viewports and manual WCAG checks remain outstanding. |
 
 
-## Final release verification — 19 November 2026
+## Final release verification — 20 November 2026
 
 | ID | Priority | Task | Status | Evidence / acceptance criteria |
 |---|---|---|---|---|
@@ -106,4 +106,4 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 | KE-070 | P1 | Verify owner admin sign-in and protected session | Blocked on owner | Requires owner email inbox/browser session. |
 | KE-071 | P1 | Configure bKash/Nagad with verified receiving details | Completed | Supabase rows verified enabled for bKash and Nagad; both use 01735530174 and public config RPC returns both methods. |
 
-| KE-072 | P1 | Add checkout payment choice, TrxID and customer feedback fields | Needs verification | Feature branch `feat/checkout-payment-options` adds COD/online choices, provider selection, post-order TrxID submission, reference/suggestions, stock-confirmation guard and COD-specific order view. Requires CI and preview verification before merge. |
+| KE-072 | P1 | Add checkout payment choice, TrxID and customer feedback fields | Completed | PR #14 merged as `cf45e25cc1fcd0a956a57e412806bf80674677e2`; Windows CI #207 passed all jobs, Vercel preview reached READY, production deployment `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi` READY. Interactive real-order/payment exercise remains intentionally unperformed. |
