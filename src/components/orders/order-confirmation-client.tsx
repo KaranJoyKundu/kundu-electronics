@@ -140,6 +140,9 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
 
   const selectedMethod = checkout.paymentMethods.find((item) => item.method === method);
   const isCashOnDelivery = paymentPreference === "cash_on_delivery";
+  const displayedOrderStatus = isCashOnDelivery && order.orderStatus === "awaiting_payment"
+    ? "Order request received · Cash on delivery"
+    : orderStatusLabel[order.orderStatus] ?? order.orderStatus.replaceAll("_", " ");
   const canSubmitPayment = !isCashOnDelivery
     && order.orderStatus === "awaiting_payment"
     && !["pending_verification", "verified", "refunded"].includes(order.paymentStatus);
@@ -148,10 +151,12 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
     <div className="order-confirmation">
       <section className="order-summary-panel">
         <span className="section-kicker">ORDER {order.orderNumber}</span>
-        <h2>{orderStatusLabel[order.orderStatus] ?? order.orderStatus.replaceAll("_", " ")}</h2>
-        <p>Thank you, {order.customerName}. Your order request has been saved. The shop will confirm stock, delivery and any estimated kit amount with you before payment.</p>
+        <h2>{displayedOrderStatus}</h2>
+        <p>Thank you, {order.customerName}. {isCashOnDelivery
+          ? "Your order request is saved with cash on delivery selected. Please pay the delivery person when the order arrives; no online transfer is required."
+          : "Your order request has been saved. The shop will confirm stock, delivery and any estimated kit amount with you before payment."}</p>
         <div className="order-status-grid">
-          <div><span>Order status</span><strong>{orderStatusLabel[order.orderStatus] ?? order.orderStatus}</strong></div>
+          <div><span>Order status</span><strong>{displayedOrderStatus}</strong></div>
           <div><span>Payment status</span><strong>{order.paymentStatus.replaceAll("_", " ")}</strong></div>
           <div><span>Delivery area</span><strong>{order.deliveryZone}, {order.deliveryCity}</strong></div>
           <div><span>Fulfilment</span><strong>{order.fulfilmentStatus.replaceAll("_", " ")}</strong></div>
