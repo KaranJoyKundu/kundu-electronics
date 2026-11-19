@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ProjectArtwork, type ProjectKind } from "@/components/project-artwork";
 import { ProductPurchaseControl } from "@/components/cart/product-purchase-control";
@@ -72,9 +73,9 @@ export default async function ProjectsPage() {
           <p>Bluetooth-controlled, six-servo walking robot with an LED-matrix face, distance sensing and a custom 3D-printed body. Parts below are matched to the current shop catalogue. <a className="underlined-link" href={projectTypes[0].external} target="_blank" rel="noreferrer">View source on GitHub ↗</a></p>
         </div>
         <div className="bee-build-gallery" aria-label="Bee Biped build photos">
-          <figure><img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/photo1.jpg" alt="Bee completed robot standing on a table beside detached 3D-printed parts" loading="lazy" /><figcaption>Completed working prototype</figcaption></figure>
-          <figure><img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/20260819_141629.jpg" alt="Bee internal torso wiring, Arduino Nano, servo connections and parallel battery pack" loading="lazy" /><figcaption>Internal electronics and wiring</figcaption></figure>
-          <figure><img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/20260819_142150.jpg" alt="Close-up of the robot's 3D-printed hat" loading="lazy" /><figcaption>Custom 3D-printed details</figcaption></figure>
+          <figure><Image src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/photo1.jpg" alt="Bee completed robot standing on a table beside detached 3D-printed parts" width={1200} height={900} sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" /><figcaption>Completed working prototype</figcaption></figure>
+          <figure><Image src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/20260819_141629.jpg" alt="Bee internal torso wiring, Arduino Nano, servo connections and parallel battery pack" width={1200} height={900} sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" /><figcaption>Internal electronics and wiring</figcaption></figure>
+          <figure><Image src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/20260819_142150.jpg" alt="Close-up of the robot's 3D-printed hat" width={1200} height={900} sizes="(max-width: 768px) 100vw, 33vw" loading="lazy" /><figcaption>Custom 3D-printed details</figcaption></figure>
         </div>
         <div className="bee-project-facts">
           <p><strong>Built for:</strong> a hands-on robotics demonstration at Khulna City College, delivered on 19 August 2026.</p>
@@ -87,7 +88,7 @@ export default async function ProjectsPage() {
           {beeParts.map((part) => {
             const product = bySku.get(part.sku);
             return <article className="bee-bom-photo-card" key={part.sku}>
-              <div className="bee-bom-photo">{part.sku === "P021" ? <img className="bee-bom-nano-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Arduino_Nano.jpg" alt="Arduino Nano controller board" loading="lazy" /> : <ProductPhoto name={product?.name ?? part.name} sku={part.sku} category={product?.categorySlug} />}</div>
+              <div className="bee-bom-photo">{part.sku === "P021" ? <ProductPhoto name={product?.name ?? part.name} sku={part.sku} category={product?.categorySlug} /> : <ProductPhoto name={product?.name ?? part.name} sku={part.sku} category={product?.categorySlug} />}</div>
               <h3>{part.name}</h3><p>{part.role}</p><span>× {part.quantity}</span>
             </article>;
           })}

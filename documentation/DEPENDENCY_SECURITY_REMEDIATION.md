@@ -1,62 +1,63 @@
-# Current security status — 18 November 2026
+# Current security status — 19 November 2026
 
-This section records the current `feat/launch-prep` dependency tree and Windows verification. The 13 November and 17 November notes below are retained as historical context only.
+This is the current status for the `main` production baseline and the production-readiness hardening branch. Older investigations remain below as dated history.
 
-## Current committed dependency tree
+## Dependency audit
 
-Commit `f29d1887bd336ee95a124469d8b54f43d82d963c` updates only `package.json` and `package-lock.json`:
-
-- `typescript-eslint@8.73.0`
-- `@typescript-eslint/eslint-plugin@8.73.0`
-- `@typescript-eslint/parser@8.73.0`
-- `@typescript-eslint/typescript-estree@8.73.0`
-- Nested `minimatch@11.0.9`
-- `next@16.4.6` and `eslint-config-next@16.4.6` unchanged
-
-The update was generated in a Windows Node 24 job and committed to `feat/launch-prep` only after the candidate tree passed a clean `npm ci`, audit classification, typecheck, lint, tests and production build. The failed automatic push in the first attempt was not forced; the workflow was changed to fetch and rebase the current feature branch before a normal push. The verified commit was then pushed successfully. `main` was not modified.
-
-## Latest candidate audit
-
-The Windows candidate audit reports:
+The latest verified complete Windows audit from the prior release reported:
 
 | Severity | Findings |
 |---|---:|
 | Critical | 0 |
 | High | 14 |
 | Moderate | 0 |
-| Low / info | 0 |
-| **Total** | **14** |
+| Low | 0 |
+| Total | 14 |
 
-All 14 audited package nodes were verified against the candidate lockfile as development-only dependencies. The one direct package entering the affected chain is `eslint-config-next@16.4.6` (a devDependency); the others are transitive lint-tooling packages. Runtime dependencies `next`, `react`, `react-dom` and Supabase clients were not flagged in this report.
+All 14 affected lockfile nodes were classified as development-only tooling. The dependency chain includes `picomatch@4.0.7` via build/lint tooling; the GitHub advisory is [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf). The checked npm registry still reported 4.0.7 as the current version on 19 November 2026; no safe stable patched release was available in the evidence inspected for this update.
 
-The remaining high advisory is GHSA-fc5q-39xc-vjpf, which affects `picomatch <=4.0.7`. The candidate still resolves `picomatch@4.0.7` under `tinyglobby`, so this advisory remains open. A stable patched npm release was not available at the time of the check. The update does not suppress the audit or pretend the package is fixed.
+The earlier `npm audit fix --dry-run` exited non-zero and produced no safe resolution. Do not use `npm audit fix --force`, incompatible overrides, arbitrary Git dependencies or a major-version downgrade to make the report green.
 
-The previous six moderate findings from the TypeScript-ESLint/minimatch chain are eliminated by the stable parser update to `minimatch@11.0.9`.
+The hardening workflow now:
+- Keeps the full `npm audit --json` report visible and verifies remaining findings are development-only.
+- Runs a separate `npm audit --omit=dev --json` job that fails if any production dependency advisory remains.
+- Uploads audit evidence.
+- Uses Node 24-compatible GitHub Actions pinned to immutable commit SHAs.
 
-## Windows verification
+**Current production-only audit result is pending the hardening PR's CI run.** A clean production-only audit does not mean the full development dependency tree has zero known findings.
 
-Workflow run #44188598920:
+## Supabase database security review
 
-- **Windows application verification: success** — clean install, typecheck, lint, tests and production build.
-- **Stable TypeScript-ESLint candidate: success** — clean install, 0 moderate/0 critical audit findings, all 14 remaining high findings classified as dev-only, typecheck, lint, tests, production build, artifact upload and guarded feature-branch commit.
-- **npm audit against the existing committed lockfile at the start of the run: failure, expected** — it reported the 15 old findings (9 high, 6 moderate) before the candidate update.
-- **npm dry-run investigation: success** — full output and package metadata artifact uploaded.
+Read-only project inspection on 19 November 2026 confirmed RLS enabled on all 21 public tables. The new migration `20261119094342_security_and_fk_index_hardening` was applied to the live project and:
 
-Evidence:
+- Added indexes for 11 previously unindexed foreign-key columns.
+- Revoked direct anon/authenticated execute on `has_store_role(admin_role[])`.
+- Revoked anon execute on `is_store_admin()` and `is_store_staff()`, while keeping authenticated execute for RLS policies.
+- Documented `rate_limit_windows` as private rate-limit state with no direct anon/authenticated policies or grants; only service_role can reach its rate-limit RPC.
 
-- Windows workflow run #44188598920: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44188598920
-- Tested candidate artifact: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44188598920/artifacts/14361087276
-- Candidate commit: https://github.com/KaranJoyKundu/kundu-electronics/commit/f29d1887bd336ee95a124469d8b54f43d82d963c
+Authorization review of live SECURITY DEFINER functions found the stock/order operations check `is_store_staff()`, payment verification checks `is_store_admin()`, and service-role-only functions are not executable by anon/authenticated. Public catalogue/count/config/category helper functions remain executable for their intended public read use and are constrained to published/public information.
 
-The push triggered a follow-up workflow #44189430563 from `github-actions[bot]`. GitHub marked that run `action_required`; this is a workflow approval gate, not a failed application check. If GitHub still shows it waiting, approve the workflow run from the Actions page before relying on a fresh CI status for the new commit.
+Supabase still reports generic SECURITY DEFINER advisories for those intentional helpers and role-guarded authenticated RPCs, plus the expected no-policy warning on the private rate-limit table. Do not interpret the advisor count as a confirmed exploit without reviewing the function body and grants.
 
-## Safe decision
+## Supabase Auth setting still requiring owner action
 
-The six moderate findings are fixed by the committed stable release. The 14 high findings remain visible and are still confined to development-only lint tooling. Do not run `npm audit fix --force`, downgrade `eslint-config-next` to 14.x, force an incompatible major via overrides, use an unreviewed Git commit of `picomatch`, or suppress the advisory. Keep this PR in draft until the remaining high advisory has a stable, tested resolution.
+The live Auth advisor reports leaked-password protection disabled. Supabase's current [password security documentation](https://supabase.com/docs/guides/auth/password-security) says the HaveIBeenPwned-backed protection is available on Pro and above. This setting is not exposed by the connected Supabase database tools used here, so it was not toggled programmatically. The owner must enable it in Supabase Dashboard → Authentication → Settings / Password security, if the current plan includes it.
 
----
+## HTTP hardening
 
----
+The hardening branch adds:
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+- HSTS with a two-year max-age and subdomains
+
+Verify the actual response headers after the production deployment. A restrictive CSP is deliberately not added until Next.js scripts and inline framework behavior have been validated under a nonce/hash CSP in a real browser.
+
+## Release decision
+
+Do not describe this project as vulnerability-free. Keep the full development audit warning visible until upstream publishes a safe fix and the Windows CI test proves it. The production-only audit must pass, RLS and role checks must remain tested, and Supabase leaked-password protection remains an owner-controlled Auth configuration item.
+
 
 ## Historical investigation — 13 November 2026
 

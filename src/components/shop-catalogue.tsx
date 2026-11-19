@@ -19,13 +19,12 @@ const availabilityLabels: Record<string, string> = {
   unknown: "Availability to confirm",
 };
 
-export function ShopCatalogue({ categories, initialQuery, initialCategory, initialPage, initialProducts, initialHasMore, initialTotalCount, initialConfigured }: {
+export function ShopCatalogue({ categories, initialQuery, initialCategory, initialPage, initialProducts, initialTotalCount, initialConfigured }: {
   categories: readonly Category[];
   initialPage: number;
   initialQuery: string;
   initialCategory: string;
   initialProducts: Product[];
-  initialHasMore: boolean;
   initialTotalCount: number;
   initialConfigured: boolean;
 }) {
@@ -38,7 +37,6 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
   const hasInitialResults = initialQuery === "" && initialCategory === "" && initialProducts.length > 0;
   const skipInitialRequest = useRef(hasInitialResults);
   const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [hasMore, setHasMore] = useState(initialHasMore);
   const [totalCount, setTotalCount] = useState(initialTotalCount);
   const [configured, setConfigured] = useState(initialConfigured);
   const [loading, setLoading] = useState(!hasInitialResults);
@@ -62,16 +60,14 @@ export function ShopCatalogue({ categories, initialQuery, initialCategory, initi
       try {
         const response = await fetch(`/api/catalog/products?${params.toString()}`, { signal: controller.signal, cache: "no-store" });
         if (!response.ok) throw new Error("catalogue request failed");
-        const payload = await response.json() as { products?: Product[]; hasMore?: boolean; totalCount?: number; configured?: boolean };
+        const payload = await response.json() as { products?: Product[]; totalCount?: number; configured?: boolean };
         setProducts(Array.isArray(payload.products) ? payload.products : []);
-        setHasMore(payload.hasMore === true);
         if (typeof payload.totalCount === "number" && Number.isSafeInteger(payload.totalCount) && payload.totalCount >= 0) setTotalCount(payload.totalCount);
         setConfigured(payload.configured !== false);
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") return;
         setFailed(true);
         setProducts([]);
-        setHasMore(false);
         setTotalCount(0);
       } finally {
         if (!controller.signal.aborted) setLoading(false);

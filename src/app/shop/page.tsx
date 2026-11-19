@@ -22,7 +22,6 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
       initialCategory={initialCategory}
       initialPage={initialPage}
       initialProducts={canUseServerProducts ? catalogue.products : []}
-      initialHasMore={canUseServerProducts && initialPage * 24 < catalogue.totalCount}
       initialTotalCount={canUseServerProducts ? catalogue.totalCount : 0}
       initialConfigured={catalogue.connected}
     />

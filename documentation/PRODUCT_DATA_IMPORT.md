@@ -1,33 +1,40 @@
 # Product and inventory data intake
 
-## Current import status — 18 November 2026
+## Current live catalogue — verified 19 November 2026
 
-The live Supabase catalogue now contains the complete **211-SKU product set (P001–P211)** from the owner's inventory workbook:
+The live Supabase database contains **220 product rows**:
 
-- **211 published products**
-- **17 published categories**
-- **211 inventory records**
-- The public catalogue count function returns exactly **211**.
+- **208 published products** across **18 published categories**.
+- **199 published original inventory SKUs** from the P001–P211 range.
+- **Nine published build-to-order robot kits**: LFR-T1–T3, SB-T1–T3 and RC-T1–T3.
+- **12 original resistor-named rows are archived**, not deleted. P091 remains published.
+- The catalogue count API returns the published rows, not the number of original source SKUs.
 
-All 211 product image files supplied in the image archive are used. The owner explicitly confirmed permission/licensing for the complete image set. The optimized static sprite at `public/product-previews/kundu-catalogue-sprite.webp` maps one photo tile to each SKU P001–P211. The image credits page lists the 16 owner-supplied photographs and attributes the 19 Creative Commons source photographs.
+Published customer-facing state:
 
-The workbook's missing customer-facing data was kept missing rather than inferred:
-
-| Inventory field | Current count |
+| Field | Live count |
 | --- | ---: |
-| Selling price not supplied | 49 |
-| Stock quantity not recorded | 6 |
-| In stock | 129 |
+| Published products with no confirmed selling price | 49 |
+| In stock | 117 |
 | Low stock | 34 |
 | Out of stock | 42 |
+| Build to order | 9 |
+| Availability unknown | 6 |
 
-Products with no selling price show **“Price on request”**. Products without recorded stock show **“Availability to confirm”**. Out-of-stock products remain listed with their out-of-stock status. Customer-facing quantities are not shown.
+The 49 missing prices remain null and must appear as “Price on request”. The six unknown availability values must stay unknown. No prices or stock values have been invented.
+
+## Original product images
+
+- The repository retains original SKU photo assets for P001–P211.
+- The owner confirmed permission/licensing for the supplied image set on 18 November 2026.
+- The static mapping is in `src/lib/product-image-paths.ts`; the optimized catalogue sprite is `public/product-previews/kundu-catalogue-sprite.webp`.
+- The image credits page lists the owner-provided and open-licensed source images.
+- Project showcase collages use those matching approved component photos, not unrelated third-party images of other people's builds.
+- Bee Biped uses owner project photographs from its case study. Drone uses a clearly labelled concept illustration because there is no verified drone BOM or owner-approved build photo.
 
 ## Data privacy and import boundaries
 
-The workbook is a private business source and is not committed to this repository. Only customer-facing fields are imported into public catalogue records.
-
-Never publish or commit:
+Only customer-facing information may be stored in public catalogue fields. Never publish or commit:
 - Purchase/buying prices, profit margins or markup calculations.
 - Supplier identities, supplier contacts or private sourcing notes.
 - Private stock notes, reorder details, stock valuation or cash-flow data.
@@ -35,30 +42,22 @@ Never publish or commit:
 
 ## Required owner follow-up
 
-- Confirm the 49 missing customer selling prices before advertising a fixed price for those products.
-- Recount the six products whose stock quantity was not recorded.
-- Reconfirm in-stock and low-stock states against physical inventory before promising availability.
-- Add customer-facing product descriptions and technical specifications only when supported by a reliable product source or owner confirmation.
-- Keep variants and price overrides separate; do not combine different models or versions into one listing if their details differ.
+- Confirm the 49 missing customer selling prices before advertising fixed prices.
+- Physically recount the six products with unknown stock quantity/state.
+- Reconfirm in-stock and low-stock status before promising availability.
+- Supply verified bKash/Nagad receiving details and instructions only if online manual payment is to be enabled.
+- Approve any new business claims, delivery terms, warranty details, descriptions or project photos before publication.
 
 ## Price and availability rules
 
-- Selling price is the public customer price in BDT, never the purchase cost.
-- A missing selling price remains null and is shown as “Price on request”, not ৳0.
-- A missing stock quantity remains unknown and is shown as “Availability to confirm”.
-- Out-of-stock products are labelled out of stock; they are not silently represented as available.
-- Do not infer a selling price from buying cost, markup or a neighbouring product.
-- Do not infer stock from old rows, image files or assumptions.
-- Do not invent descriptions, specifications, compatibility, warranties, reviews, delivery costs or service promises.
-
-## Image rights and matching
-
-- The owner confirmed permission/licensing for the full supplied 211-image package on 18 November 2026.
-- SKU-to-image mapping follows P001–P211 and is implemented by `src/components/product-photo.tsx`.
-- The optimized sprite is `public/product-previews/kundu-catalogue-sprite.webp`.
-- Attribution and links for the Creative Commons source set are maintained at `/image-credits`.
-- If a product image is replaced later, confirm the new file maps to the correct SKU and retain its source/permission information.
+- Selling price is the public customer price in BDT, never purchase cost.
+- Missing selling price remains null and shows “Price on request”, never ৳0.
+- Unknown stock remains unknown and shows “Availability to confirm”.
+- Out-of-stock items remain listed with an explicit out-of-stock label.
+- Do not infer a price from purchase cost, markup or neighbouring SKUs.
+- Do not infer stock from older rows, image files or assumptions.
+- Do not invent compatibility, technical specifications, warranties, reviews, delivery costs or service promises.
 
 ## Sales activation
 
-The site currently runs in **enquiry-only mode**. Checkout is disabled in Supabase because payment receiving details/instructions and delivery zones/charges are not enabled. Do not enable checkout until the owner approves those values, server-only secrets are configured, and order creation/payment verification have passed end-to-end tests.
+Website order requests are currently enabled in the live Supabase settings. Orders are unpaid requests, not proof of accepted stock or payment. Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50) delivery options are configured; the shop confirms actual destination and feasibility. bKash/Nagad remain disabled because their receiving numbers and instructions are unset. Do not enable payments until owner-approved details, server-only secrets and end-to-end verification are in place.

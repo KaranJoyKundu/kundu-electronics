@@ -19,7 +19,10 @@ const supabaseImagePattern = (() => {
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  images: { remotePatterns: supabaseImagePattern },
+  images: { remotePatterns: [
+    ...supabaseImagePattern,
+    { protocol: "https", hostname: "raw.githubusercontent.com", pathname: "/KaranJoyKundu/portfolio/main/public/images/bee/**" },
+  ] },
   experimental: {
     serverActions: { bodySizeLimit: "9mb" },
     // Next 16.4.x's CLI checker can load incompatible stale .next/dev route
@@ -27,6 +30,18 @@ const nextConfig: NextConfig = {
     // the development type directory; the standalone typecheck uses a dedicated
     // tsconfig that excludes it explicitly.
     useTypeScriptCli: false,
+  },
+  async headers() {
+    return [{
+      source: "/:path*",
+      headers: [
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "X-Frame-Options", value: "DENY" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+      ],
+    }];
   },
   turbopack: {
     root: projectRoot,

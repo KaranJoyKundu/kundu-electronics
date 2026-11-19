@@ -71,3 +71,24 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 | KE-037 | P1 | Verify CI and Vercel preview | Completed | Windows CI passed typecheck, lint, tests and production build; Vercel preview deployment READY. Follow-up PR #4 merged into feat/launch-prep on 18 November 2026. |
 | KE-038 | P1 | Label robot-kit prices as estimates | Completed | Source Markdown states “Total estimated cost”; product pages, order confirmation and WhatsApp handoff now say estimates and defer final amount confirmation until before payment. |
 
+
+
+## Production-readiness hardening — 19 November 2026
+
+| ID | Priority | Task | Status | Evidence / acceptance criteria |
+|---|---|---|---|---|
+| KE-050 | P1 | Reconcile published products, archived source SKUs and kit rows | Completed | Live Supabase read: 208 published, 18 categories, 199 original published SKUs + 9 project kits, 12 archived rows. |
+| KE-051 | P1 | Remove unverified remote project photography | Completed on hardening branch | LFR/Soccer/RC use approved local catalogue component photos with explicit “not a build photo” label; Drone uses a concept illustration; Bee retains owner case-study photos. |
+| KE-052 | P1 | Improve one-character B autocomplete | Completed on hardening branch | Added a Breadboard-related query expansion for `b`, keyboard navigation, active-option semantics and tests for query expansion. |
+| KE-053 | P1 | Add baseline security response headers | Completed on hardening branch; deployment verification pending | Next.js headers add nosniff, frame denial, Referrer-Policy, Permissions-Policy and HSTS. |
+| KE-054 | P1 | Reduce anon access to role helper functions | Completed in live Supabase migration | `has_store_role` no longer callable by anon/authenticated; anon execution revoked from admin/staff wrapper functions; authenticated RLS role checks remain. |
+| KE-055 | P2 | Add missing foreign-key indexes | Completed in live Supabase migration | Added all 11 indexes reported by the pre-change performance advisor. Re-run advisors after real workload. |
+| KE-056 | P1 | Pin GitHub Actions to Node 24 immutable revisions and run production audit | In progress | Pinned checkout v5, setup-node v5, upload-artifact v6 by SHA; added production-only npm audit job; verify CI on hardening PR. |
+| KE-057 | P1 | Reconcile stale operational documentation | Completed on hardening branch | README, START_HERE, PROJECT_STATE, LAUNCH_STATUS and PRODUCT_DATA_IMPORT now reflect live state. |
+| KE-058 | P0 | Resolve remaining high development-tooling advisory | Blocked upstream | 14 high dev-only findings remain in picomatch 4.0.7; no patched stable release identified on 19 Nov 2026. Do not force incompatible overrides. |
+| KE-059 | P1 | Enable leaked-password protection | Blocked on owner dashboard/plan | Supabase Auth advisor says disabled; current Supabase documentation requires Pro or above. Owner must enable in Auth settings if eligible. |
+| KE-060 | P1 | Confirm owner admin sign-in | Blocked on owner | The magic-link inbox/session requires owner access; do not impersonate or bypass Auth. |
+| KE-061 | P1 | Resolve 49 missing prices and six unknown stock records | Blocked on owner data | Do not guess prices or physical inventory. |
+| KE-062 | P1 | Configure mobile payment details | Blocked on owner | bKash/Nagad remain disabled until exact receiving numbers and approved instructions are supplied. |
+| KE-063 | P1 | Complete desktop/mobile interactive browser QA | Needs verification | HTTP/SSR checks are not equivalent to Playwright/Lighthouse or manual responsive interaction. |
+
