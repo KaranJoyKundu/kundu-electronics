@@ -1,5 +1,6 @@
 /** Generated from the verified original product-image files in public/product-images/originals. */
-export const PRODUCT_IMAGE_PATHS: Record<string, string> = {  "P001": "/product-images/originals/P001/P001--65mm-standard-plastic-wheel--01.png",
+export const PRODUCT_IMAGE_PATHS: Record<string, string> = {
+  "P001": "/product-images/originals/P001/P001--65mm-standard-plastic-wheel--01.png",
   "P002": "/product-images/originals/P002/P002--mini-metal-ball-caster-wheel--01.webp",
   "P003": "/product-images/originals/P003/P003--large-metal-ball-caster-wheel--01.jpg",
   "P004": "/product-images/originals/P004/P004--bo-motor-6v-100rpm-geared-dc-motor--01.webp",
