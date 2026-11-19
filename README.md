@@ -24,16 +24,16 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 ## Website orders, WhatsApp and delivery
 
 - Website order requests are enabled. The checkout procedure uses server-authoritative current prices, delivery charges, quantity limits, stock locks and idempotency protection.
-- Orders containing untracked/build-to-order items start at `pending_stock_confirmation`. The shop confirms stock and the delivery address before arranging payment.
+- Project kits and other configured build-to-order items can be pre-ordered now. Their next stock drop is expected in **7–14 days**; the order reserves a kit from that drop. Online payment opens when the stock arrives.
 - Checkout offers **Cash on delivery** and **Online payment**. bKash and Nagad are configured to the owner-provided receiving number **01735530174**.
 - For online payment, customers select bKash or Nagad, send the exact server-calculated order total, cover any applicable wallet/provider charge shown in their app (without deducting it from the order amount), and submit their sender number plus transaction ID (TrxID).
-- Orders containing untracked/build-to-order items remain at `pending_stock_confirmation`; customers must wait for the shop to confirm stock and the final amount before transferring money. The payment form becomes available only when the order is `awaiting_payment`.
+- Project-kit pre-orders remain saved while waiting for the next stock drop (expected in **7–14 days**). Customers do not need a separate stock or final-price confirmation to place the pre-order. Online payment becomes available when the stock arrives and the order is moved to `awaiting_payment`. In-stock-only orders can proceed to payment immediately.
 - Cash-on-delivery preference, referral/reference and customer suggestions are saved with the order note. COD does not ask for a transaction ID.
 - A submitted transaction reference creates a `pending_verification` payment submission. It is never treated as proof of payment; only an authorized shop administrator can verify it and mark the payment as verified.
 - Delivery choices: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop confirms the address and whether the requested window can be met.
 - WhatsApp order messages include one line per cart item in the form: product code - product name - unit price x quantity - line total, followed by delivery and the final Total: line. A click-to-call action is also available.
 - P091 (1kΩ Resistor Box 5000pcs) is the only published resistor product and remains at its existing ৳1 price. The other 12 resistor-named records are archived, not deleted, preserving order history.
-- Nine complete robot-kit bundles are published from the uploaded BOM sheet. The source calls their totals estimated costs, so the site labels them as estimates and confirms final scope/amount before payment. Bundles: LFR (৳4,999 / ৳7,499 / ৳9,999), Soccer Bot (৳3,999 / ৳9,999 / ৳14,999), RC Speed Battle (৳3,999 / ৳9,999 / ৳16,999). Their full BOMs are on each kit’s product page.
+- Nine complete robot-kit bundles are published from the uploaded BOM sheet and can be pre-ordered at the listed website prices. The next stock drop is expected in **7–14 days**. Bundles: LFR (৳4,999 / ৳7,499 / ৳9,999), Soccer Bot (৳3,999 / ৳9,999 / ৳14,999), RC Speed Battle (৳3,999 / ৳9,999 / ৳16,999). Their full BOMs are on each kit’s product page.
 - Drone remains a custom project enquiry because the uploaded robot-kit list contains no drone BOM or price.
 - One owner admin profile exists with the admin role and is linked to an email-confirmed Supabase Auth user. A successful sign-in and protected-page session still need owner verification.
 
@@ -51,7 +51,7 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 - The live Supabase project has 208 published products across 18 categories, 220 total product rows (12 archived), 49 null selling prices, and six unknown availability states.
 - Website checkout offers **Cash on delivery** and **Online payment**. Both bKash and Nagad are enabled with the owner-provided number `01735530174`. Prices, delivery charges and stock checks remain server-authoritative.
 - Online payments are manual transfers: customers select bKash/Nagad, send the exact order total, cover any provider charge shown in their app separately, and submit sender number plus TrxID. Submissions remain `pending_verification` until an authorized admin verifies them.
-- Orders needing manual stock confirmation must wait for staff confirmation and the final amount before online payment is submitted. COD orders do not request a transaction ID; referral/reference and suggestions are saved with the order note.
+- Project-kit pre-orders can be placed now; the next stock drop is expected in 7–14 days. Online payment opens when stock arrives; in-stock-only orders can be paid immediately. COD orders do not request a transaction ID; referral/reference and suggestions are saved with the order note.
 - Standard delivery is configured as 12 hours–1 day / ৳0; Urgent is 30–60 minutes / ৳50. The shop confirms the destination and feasibility before promising either window.
 - bKash and Nagad are configured with `01735530174`; no payment gateway/API integration or automatic verification is enabled.
 - Live database counts: zero orders and zero payment submissions.
