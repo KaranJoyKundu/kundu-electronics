@@ -57,8 +57,11 @@ npm audit --omit=dev
 - Supabase `checkout_enabled=true`: the site accepts unpaid order requests with server-authoritative totals and stock confirmation.
 - Current database count: zero orders, zero payment submissions.
 - Delivery choices configured: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop confirms the address and feasibility.
-- bKash and Nagad are disabled; receiving numbers and customer instructions are unset.
-- A submitted transaction reference is not proof of payment. Never mark an order paid without manual verification.
+- bKash and Nagad are enabled in Supabase and both use the owner-provided receiving number `01735530174`.
+- Checkout offers Cash on delivery and Online payment. Online payment shows the exact order total, asks for sender number and TrxID, and keeps the submission pending until an authorized admin verifies it.
+- Orders requiring manual stock confirmation must not be paid until stock and the final amount are confirmed. The checkout flow only shows the TrxID form when the order is `awaiting_payment`.
+- Reference and suggestions/feedback are saved in the order note. COD preference is retained and does not ask for a transaction ID.
+- Keep sufficient balance for any applicable Send Money/service charge shown by the wallet app; never deduct that fee from the order amount.
 
 ## Security and release status
 
@@ -75,7 +78,7 @@ npm audit --omit=dev
 Do not fabricate or silently enable these:
 - 49 unconfirmed customer-facing selling prices.
 - Six unknown stock quantities and physical stock revalidation.
-- Payment receiving details/instructions for bKash or Nagad.
+- Re-confirm the receiving number before future payment-setting changes; current configured number is `01735530174`.
 - Admin magic-link sign-in confirmation.
 - Supabase Auth leaked-password protection, subject to plan and dashboard permissions.
 - Any delivery/policy/warranty statement not explicitly approved by the owner.
