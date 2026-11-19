@@ -295,8 +295,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
             <p>You can still send the complete cart on WhatsApp or call the shop. Online payment is not collected; the shop confirms stock and delivery before arranging payment.</p>
             {cartEnquiryReady ? <Link className="button button-primary" href={cartEnquiryUrl} target="_blank" rel="noopener noreferrer">Send order on WhatsApp ↗</Link> : <p>Load or remove unavailable cart items before sending a complete enquiry.</p>}
           </div>
-        ) : (
-          {createdOrder ? (
+        ) : createdOrder ? (
             <form className="checkout-form checkout-payment-step" onSubmit={submitOnlinePayment}>
               <div className="payment-ready-panel">
                 <span className="section-kicker">ORDER {createdOrder.orderNumber}</span>
@@ -412,7 +411,6 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
               </button>
               <p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. Online payment references remain pending until the shop verifies the transfer. Orders needing manual stock confirmation must be confirmed before payment is submitted.</p>
             </form>
-          )}
         )}
       </section>
       <section className="order-channel-section">
