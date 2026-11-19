@@ -56,6 +56,18 @@ test("checkout rejects an empty cart and more than forty lines", () => {
   })) }), null);
 });
 
+test("checkout accepts structured reference/suggestion notes within the expanded bound", () => {
+  const withinLimit = parseCheckoutBody({
+    ...validCheckout,
+    customer: { ...validCheckout.customer, note: "Reference: KUET\nSuggestions: " + "x".repeat(1_350) },
+  });
+  assert.ok(withinLimit);
+  assert.equal(parseCheckoutBody({
+    ...validCheckout,
+    customer: { ...validCheckout.customer, note: "x".repeat(1_401) },
+  }), null);
+});
+
 test("payment validation accepts only bKash/Nagad and bounded sender/reference fields", () => {
   const valid = parsePaymentSubmissionBody({
     idempotencyKey: ids.idempotencyKey, method: "bkash", senderPhone: "+8801700000000", transactionReference: "TXN-123456",
