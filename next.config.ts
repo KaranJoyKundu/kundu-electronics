@@ -19,7 +19,10 @@ const supabaseImagePattern = (() => {
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  images: { remotePatterns: supabaseImagePattern },
+  images: { remotePatterns: [
+    ...supabaseImagePattern,
+    { protocol: "https", hostname: "raw.githubusercontent.com", pathname: "/KaranJoyKundu/portfolio/main/public/images/bee/**" },
+  ] },
   experimental: {
     serverActions: { bodySizeLimit: "9mb" },
     // Next 16.4.x's CLI checker can load incompatible stale .next/dev route
