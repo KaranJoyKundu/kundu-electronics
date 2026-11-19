@@ -8,8 +8,9 @@
 - GitHub: https://github.com/KaranJoyKundu/kundu-electronics (private).
 - Default and production branch: `main`.
 - Production URL: https://kundu-electronics.vercel.app
-- Latest verified production baseline before the current hardening PR: `528844c918aaa5a75fdfc83550ac8cd68922b8ba`.
-- Active hardening branch: `chore/production-readiness-hardening`. Do not force-push or bypass its checks.
+- Latest verified production commit: `655030e3900823c8f2ceaf2ce3083c19ceea058b`.
+- Latest Vercel production deployment: `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb` (READY).
+- Production-readiness PR #11 is merged: https://github.com/KaranJoyKundu/kundu-electronics/pull/11.
 
 ## Read first
 
@@ -65,7 +66,8 @@ npm audit --omit=dev
 - Security-definer staff/admin operations are directly callable by authenticated users only where needed and enforce staff/admin role checks inside each function.
 - Anonymous execution of direct role-introspection helpers was revoked; public read-only catalogue/config RPCs remain available by design.
 - Supabase Auth leaked-password protection is disabled. The project owner must enable it in Auth settings if the plan supports it (Supabase docs say Pro and above).
-- Full `npm audit` last reported 14 high development-tooling advisories, zero moderate/low/critical. Do not describe the full dependency tree as clean. The Windows workflow runs a distinct production-only audit.
+- Windows CI run #188 passed typecheck, lint, 44 tests and production build. Both full `npm audit` and production-only `npm audit --omit=dev` report zero known vulnerabilities. The Windows workflow now fails on any future advisory.
+- The earlier picomatch GHSA-fc5q-39xc-vjpf advisory was withdrawn by GitHub on 18 November 2026: https://github.com/advisories/GHSA-fc5q-39xc-vjpf.
 - Never expose `SUPABASE_SECRET_KEY` or `APP_HMAC_SECRET`; keep them server-only in Vercel.
 
 ## Owner-controlled blockers
