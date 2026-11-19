@@ -128,7 +128,16 @@
 - **Date:** 2026-11-20
 - **Context:** Owner supplied the same receiving number (01735530174) for bKash and Nagad, and asked for Cash on delivery or Online payment at checkout, with a sender number, TrxID, reference and customer suggestions.
 - **Decision:** Expose both payment choices; configure bKash and Nagad with the owner-provided number; capture reference/suggestions as part of the order note. COD orders never request a TrxID. Online transfer uses the existing authenticated manual-payment RPC.
-- **Stock rule:** Orders containing untracked/build-to-order items remain pending stock confirmation. Customers must not send money until the shop confirms availability and the final amount; only then is the order eligible for the online payment submission.
+- **Stock rule (superseded by D-017):** Build-to-order project kits are customer-facing pre-orders for the next stock drop, expected in 7–14 days. Customers can place the order at the listed price now; online payment is unlocked when stock arrives. In-stock-only orders are payable immediately.
 - **Verification rule:** A submitted TrxID remains pending verification. Only an authorized administrator may verify/reject it; no payment gateway or automatic verification is claimed.
 - **Fee wording:** Explain that customers must cover any applicable wallet/provider charge displayed by the provider and must not deduct it from the order amount. Do not invent a fixed charge.
 - **Consequences:** Existing payment tables/RPCs are reused; no payment-schema migration or new gateway is introduced. Browser-level checkout testing with a real order/payment remains outstanding.
+
+
+## D-017 — Treat build-to-order project kits as 7–14 day pre-orders
+
+- **Date:** 2026-11-20
+- **Context:** The owner clarified that customers should not be asked to wait for a separate stock/final-price confirmation before placing a project-kit order. The next restock/drop is expected in 7–14 days.
+- **Decision:** Show the published kit price and allow the customer to place a pre-order now. Describe the next stock drop as expected in 7–14 days. In-stock-only orders can proceed directly to online payment; orders containing a project-kit pre-order stay unpaid until the stock arrives, then the existing stock-arrival action moves the order to awaiting_payment and exposes the bKash/Nagad payment form. COD remains pay-on-delivery.
+- **Reason:** Customers can reserve a kit from the next shipment without a separate confirmation step, while the shop does not collect online payment for stock that has not arrived.
+- **Consequences:** No database schema or payment RPC change. Existing order status and stock-arrival action remain the payment gate. The 7–14 day window is an estimate, not a guaranteed arrival date.
