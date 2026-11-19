@@ -884,3 +884,10 @@ button { cursor: pointer; }
 .project-showcase-art-link{position:relative;z-index:3}
 .project-detail-copy h2 a{position:relative;z-index:3}
 @media(max-width:760px){.project-detail-hero{grid-template-columns:1fr}.project-detail-hero>.project-artwork{min-height:250px}.project-detail-footer{flex-wrap:wrap}}
+
+
+/* Catalogue kit cards use actual component photos rather than a generic kit illustration. */
+.project-kit-photo-collage { width:100%; height:100%; min-height:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:8px; background:#fff; overflow:hidden; }
+.project-kit-photo-collage-grid { width:100%; flex:1; min-height:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; align-items:center; justify-items:center; }
+.project-kit-photo-collage-grid img { width:100%; height:100%; min-height:90px; max-height:190px; object-fit:contain; display:block; }
+.project-kit-photo-collage .product-artwork-caption { flex:0 0 auto; font-size:7px; }
