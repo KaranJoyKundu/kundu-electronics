@@ -53,6 +53,10 @@ export default function ImageCreditsPage() {
       <h1>Product image credits</h1>
       <p className="simple-lead">This page identifies the source and reuse terms for the product photographs used in the catalogue and photo gallery.</p>
       <div className="notice-panel">
+        <strong>Project artwork</strong>
+        <p>Bee Biped uses project-owner photographs from the linked case study. Line Follower, Soccer Bot and RC Speed Battle showcase collages use the shop's approved component photographs and are labelled as component imagery, not completed robot builds. The Drone page uses an original concept illustration because no owner-approved drone build photograph or verified kit BOM is available.</p>
+      </div>
+      <div className="notice-panel">
         <strong>Image processing</strong>
         <p>All 211 matching product photographs are used in the catalogue. The owner confirmed on 18 November 2026 that Kundu Electronics has permission/licence to use the complete supplied image set. The 19 Creative Commons source images are credited individually below; CC BY-SA adaptations retain the same licence version.</p>
       </div>
