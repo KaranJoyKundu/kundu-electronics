@@ -41,7 +41,7 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 - PR #13 merge commit: `132216da28623405bd8411d381a88cf4fc968988`.
 - PR #13 preview deployment for commit `00ee82e6a9841b3965d1a7537181c99ecdb42f06` reached **READY**: [Vercel preview](https://kundu-electronics-cb0n8o2uv-kundu2409056-5098.vercel.app).
 - Windows CI run #203 passed typecheck, lint, tests, production build, full dependency audit and production dependency audit: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44630198818
-- The last production deployment verified before PR #13 merged was commit `645f7c863bc2e488460ea51c0c26ae1c564b4977`, deployment `dpl_Fobzfe3YTVx7KEwdZ9A1wMJn7R8R`, state **READY**. Confirm the new `main` deployment in Vercel after merge before treating it as live.
+- The first production rollout after PR #13 merged and the README was updated was Vercel deployment `dpl_6QdSoimwkqdi5syMFzMzgEGMA4Mk` for commit `0b5708c024f45b666226d8ab3ad6b20f5fb58ab2`; it reached **READY** and the canonical `https://kundu-electronics.vercel.app` alias was verified.
 - Supabase project: `tcapxmiroikbsozvucmt`, region `ap-northeast-1`.
 - The live Supabase project has 208 published products across 18 categories, 220 total product rows (12 archived), 49 null selling prices, and six unknown availability states.
 - Website order requests are enabled. Totals, prices, delivery charges and stock checks remain server-authoritative. Orders remain unpaid until the shop confirms stock/address and arranges payment.
