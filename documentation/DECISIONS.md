@@ -122,3 +122,13 @@
 - **Reason:** This separates editor/dev typegen conventions from the standalone/production check without editing generated output, disabling strict TypeScript or ignoring errors. The upstream Next issue documents the CLI-path stale-dev-types problem: https://github.com/vercel/next.js/issues/96620.
 - **Alternatives considered:** Permanently removing `.next/dev/types` from the main tsconfig (Next may re-add it); editing generated validator files (non-reproducible); disabling strict checking (rejected).
 - **Consequences:** Verify the typecheck and build using the owner's Next 16.4.6 install and actual `.next/dev` output. If the mismatch persists, inspect both generated route maps and update this decision with direct evidence.
+
+## D-011 — Separate cash-on-delivery from manual online transfer
+
+- **Date:** 2026-11-20
+- **Context:** Owner supplied the same receiving number (01735530174) for bKash and Nagad, and asked for Cash on delivery or Online payment at checkout, with a sender number, TrxID, reference and customer suggestions.
+- **Decision:** Expose both payment choices; configure bKash and Nagad with the owner-provided number; capture reference/suggestions as part of the order note. COD orders never request a TrxID. Online transfer uses the existing authenticated manual-payment RPC.
+- **Stock rule:** Orders containing untracked/build-to-order items remain pending stock confirmation. Customers must not send money until the shop confirms availability and the final amount; only then is the order eligible for the online payment submission.
+- **Verification rule:** A submitted TrxID remains pending verification. Only an authorized administrator may verify/reject it; no payment gateway or automatic verification is claimed.
+- **Fee wording:** Explain that customers must cover any applicable wallet/provider charge displayed by the provider and must not deduct it from the order amount. Do not invent a fixed charge.
+- **Consequences:** Existing payment tables/RPCs are reused; no payment-schema migration or new gateway is introduced. Browser-level checkout testing with a real order/payment remains outstanding.
