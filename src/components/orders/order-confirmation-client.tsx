@@ -27,7 +27,11 @@ async function requestOrderSummary(orderId: string, signal?: AbortSignal): Promi
   return order;
 }
 
-export function OrderConfirmationClient({ orderId, checkout }: { orderId: string; checkout: PublicCheckoutConfig }) {
+export function OrderConfirmationClient({ orderId, checkout, paymentPreference }: {
+  orderId: string;
+  checkout: PublicCheckoutConfig;
+  paymentPreference?: "cash_on_delivery" | "online_payment" | null;
+}) {
   const [orderLoad, setOrderLoad] = useState<OrderLoadState | null>(null);
   const requestSequence = useRef(0);
   const activeRequest = useRef<AbortController | null>(null);
@@ -135,7 +139,9 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
   if (loadError || !order) return <section className="notice-panel"><strong>Order unavailable</strong><p>{loadError || "Order not found."}</p></section>;
 
   const selectedMethod = checkout.paymentMethods.find((item) => item.method === method);
-  const canSubmitPayment = order.orderStatus === "awaiting_payment"
+  const isCashOnDelivery = paymentPreference === "cash_on_delivery";
+  const canSubmitPayment = !isCashOnDelivery
+    && order.orderStatus === "awaiting_payment"
     && !["pending_verification", "verified", "refunded"].includes(order.paymentStatus);
 
   return (
@@ -164,6 +170,13 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
 
       {order.orderStatus === "pending_stock_confirmation" ? (
         <section className="notice-panel"><strong>Stock confirmation is pending</strong><p>The shop will confirm kit/component availability, the final amount for estimated-cost robot kits, and delivery timing. Please do not send a bKash/Nagad payment yet. Once stock is confirmed, this order will move to Awaiting payment and the transaction form will become available here.</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
+      ) : null}
+
+      {isCashOnDelivery ? (
+        <section className="notice-panel payment-cod">
+          <strong>Cash on delivery selected</strong>
+          <p>Please pay the delivery person when your order arrives. You do not need to send money to bKash or Nagad for this order. The shop will confirm stock and delivery arrangements first.</p>
+        </section>
       ) : null}
 
       {order.paymentStatus === "pending_verification" ? (
