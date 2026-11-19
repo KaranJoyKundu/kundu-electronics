@@ -163,7 +163,7 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
       </section>
 
       {order.orderStatus === "pending_stock_confirmation" ? (
-        <section className="notice-panel"><strong>Stock confirmation is pending</strong><p>The shop will confirm kit/component availability, the final amount for estimated-cost robot kits, and delivery timing. No payment has been taken.</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
+        <section className="notice-panel"><strong>Stock confirmation is pending</strong><p>The shop will confirm kit/component availability, the final amount for estimated-cost robot kits, and delivery timing. Please do not send a bKash/Nagad payment yet. Once stock is confirmed, this order will move to Awaiting payment and the transaction form will become available here.</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
       ) : null}
 
       {order.paymentStatus === "pending_verification" ? (
@@ -182,10 +182,19 @@ export function OrderConfirmationClient({ orderId, checkout }: { orderId: string
           <h2>Pay {formatPriceBdt(order.totalBdt)}</h2>
           {checkout.paymentMethods.length === 0 ? <div className="notice-panel"><p>No online payment method is enabled. Please do not transfer money yet. The shop will contact you after confirming your order and arrange payment directly.</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, I am following up on order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Continue on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></div> : (
             <form className="checkout-form" onSubmit={submitPayment}>
-              <label>Payment method<select value={method} onChange={(event) => { setMethod(event.target.value as "bkash" | "nagad"); idempotency.current = null; }}>
-                {checkout.paymentMethods.map((item) => <option key={item.method} value={item.method}>{item.method === "bkash" ? "bKash" : "Nagad"}</option>)}
-              </select></label>
-              {selectedMethod ? <div className="payment-instructions"><strong>Send Money to {selectedMethod.method === "bkash" ? "bKash" : "Nagad"}</strong><p className="receiving-number">{selectedMethod.receivingNumber}</p><p>{selectedMethod.instructions}</p><p>Exact amount: <strong>{formatPriceBdt(order.totalBdt)}</strong></p></div> : null}
+              <fieldset className="payment-method-picker">
+                <legend>Choose payment method</legend>
+                <div className="checkout-payment-provider-grid" role="radiogroup" aria-label="Choose bKash or Nagad">
+                  {checkout.paymentMethods.map((item) => (
+                    <label className={`checkout-payment-provider ${method === item.method ? "is-selected" : ""}`} key={item.method}>
+                      <input type="radio" name="orderPaymentProvider" value={item.method} checked={method === item.method}
+                        onChange={() => { setMethod(item.method); idempotency.current = null; }} />
+                      <span><strong>{item.method === "bkash" ? "bKash" : "Nagad"}</strong><small>{item.receivingNumber}</small></span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+              {selectedMethod ? <div className="payment-instructions"><strong>Send Money to {selectedMethod.method === "bkash" ? "bKash" : "Nagad"}</strong><p className="receiving-number">{selectedMethod.receivingNumber}</p><p>{selectedMethod.instructions}</p><p>Exact order amount: <strong>{formatPriceBdt(order.totalBdt)}</strong></p><p>Keep enough wallet balance for the full order amount and any applicable service/transfer charge shown in your app. Do not subtract the fee from the amount sent to us.</p></div> : null}
               <label>Sender phone number<input required type="tel" maxLength={32} value={senderPhone} onChange={(event) => { setSenderPhone(event.target.value); idempotency.current = null; }} /></label>
               <label>Transaction reference / TrxID<input required minLength={4} maxLength={100} value={transactionReference} onChange={(event) => { setTransactionReference(event.target.value); idempotency.current = null; }} /></label>
               {error ? <p role="alert" className="form-error">{error}</p> : null}
