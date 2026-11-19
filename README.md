@@ -27,24 +27,47 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 
 ## Hosting and deployment
 
-The production site is live at **https://kundu-electronics.vercel.app**. The latest Vercel production deployment is READY at `https://kundu-electronics.vercel.app` from `feat/launch-prep` merge commit `e8fe75e445b84f802a470d4ef373d3d33e232a89` (deployment `dpl_FBM9DvHwx7u1KJ981EcqrsDSSKXa`). `main` remains unchanged.
+- Production storefront: **https://kundu-electronics.vercel.app**
+- Production branch: `main`.
+- Latest verified production baseline before this hardening release: commit `528844c918aaa5a75fdfc83550ac8cd68922b8ba`, Vercel deployment `dpl_6Pg7wz4c3NFqSUvZhfri7jv9kVJ7` (READY).
+- Supabase project: `tcapxmiroikbsozvucmt`, region `ap-northeast-1`.
+- The active production-readiness work is isolated on `chore/production-readiness-hardening`; merge only after the Windows verification workflow passes and the production deployment is checked.
+- Website order requests are enabled. The database has `checkout_enabled=true`; checkout uses server-authoritative prices, delivery charges, stock checks and idempotency. Orders are unpaid requests and require shop confirmation before payment.
+- Standard delivery is configured as 12 hours–1 day / ৳0; Urgent is 30–60 minutes / ৳50. The shop confirms the destination and feasibility before promising either window.
+- bKash and Nagad remain disabled. Their receiving numbers and instructions are unset, and no online payment is collected.
+- The live database currently has zero orders and zero payment submissions.
 
-PR #4 was merged into `feat/launch-prep` on 18 November 2026. The ready preview before promotion was `https://kundu-electronics-elepd16xd-kundu2409056-5098.vercel.app`. Draft PR #3 to `main` remains open and unmerged. Website order requests are available without online payment; bKash/Nagad remain disabled pending verified receiving details.
-
-The Vercel project has the public Supabase URL/key and sensitive server-only entries. The values for `SUPABASE_SECRET_KEY` and `APP_HMAC_SECRET` are not included in this repository or this documentation.
-
-Required hosting environment variables for local/other environments:
+Required hosting environment variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY` (server-only)
 - `APP_HMAC_SECRET` (server-only, 32 cryptographically random bytes encoded as 64 hex characters)
-- `NEXT_PUBLIC_SITE_URL` (the final canonical origin)
+- `NEXT_PUBLIC_SITE_URL` (canonical production origin)
 
-Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or chat. Keep online payment disabled until verified bKash/Nagad receiving details and instructions are supplied. Website order creation remains separate from payment verification.
+Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or chat. Keep bKash/Nagad disabled until verified owner-approved receiving details and instructions exist.
 
-## Current CI security status
+## Local setup
 
-The latest Windows candidate passed clean installation, typecheck, lint, tests and production build. Stable TypeScript-ESLint `8.73.0` and `minimatch@11.0.9` are committed on `feat/launch-prep`. The previous six moderate findings are cleared; 14 high findings remain in development-only lint tooling, including the unresolved `picomatch <=4.0.7` advisory. The normal audit lane remains red until that upstream issue is fixed. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
+Run `npm ci`, copy `.env.example` to `.env.local`, configure the public Supabase environment values and start with `npm run dev`.
+
+Run `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` and `npm audit` before merging.
+
+## Project continuity
+
+Read `START_HERE.md`, `documentation/PROJECT_STATE.md`, `documentation/LAUNCH_STATUS.md`, `documentation/PRODUCT_DATA_IMPORT.md` and `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`. Research notes are preserved in `documentation/research/`.
+
+## Data protection
+
+- Public records must contain customer-facing selling prices only.
+- Never add purchase prices, margins, supplier identities, private stock notes, raw workbooks or credentials to public tables or the repository.
+- Do not publish images whose reuse permission is unknown.
+- Do not invent opening hours, delivery promises, policies, warranties or reviews.## Current CI security status
+
+The Windows workflow on the previous release passed clean installation, typecheck, lint, 42 unit tests and production build. The complete npm audit at that point reported 14 high-severity advisories, zero moderate, zero low and zero critical; the vulnerable package nodes were classified as development-only. The outstanding advisory is in `picomatch <=4.0.7` (through build/lint tooling). No safe patched release was available in the checked registry at the time of this audit. Do not suppress the findings or claim the full dependency tree is vulnerability-free.
+
+The hardening workflow now runs a separate `npm audit --omit=dev` check for the shipped dependency graph. A passing runtime-only audit does not erase development-tooling advisories; both results must remain visible. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
+
+Supabase Auth currently reports leaked-password protection disabled. Supabase documents that this HaveIBeenPwned-backed feature is available on Pro and above; it must be enabled in the project Auth settings by an owner with the required plan and permissions. The database role helper grants and missing foreign-key indexes were hardened in the current release branch. The `rate_limit_windows` table intentionally has no direct client policies or grants and is only accessed by a service-role RPC.
 
 ## Local setup
 
