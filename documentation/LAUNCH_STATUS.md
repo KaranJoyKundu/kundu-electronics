@@ -1,13 +1,14 @@
-# Launch status — 19 November 2026
+# Launch status — 20 November 2026
 
 ## Production deployment
 
 - Storefront: **https://kundu-electronics.vercel.app**
 - Production branch: `main`.
-- Latest production commit: `655030e3900823c8f2ceaf2ce3083c19ceea058b`.
-- Vercel deployment: `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb`, state **READY**, alias includes the canonical domain.
-- Production-readiness PR #11: https://github.com/KaranJoyKundu/kundu-electronics/pull/11 (merged).
-- Windows CI run #188: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44500366096 (all required jobs succeeded).
+- Latest production commit: `cf45e25cc1fcd0a956a57e412806bf80674677e2`.
+- Vercel deployment: `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi`, state **READY**, canonical alias verified.
+- PR #11 hardening, PR #13 photo restoration and PR #14 checkout/payment are merged: https://github.com/KaranJoyKundu/kundu-electronics/pull/14.
+- Windows CI run #207 passed typecheck, lint, tests, production build, full dependency audit and production dependency audit: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525.
+- Production `/cart`, `/shop` and `/projects` returned HTTP 200 after the payment release.
 
 ## Live catalogue facts from Supabase
 
@@ -26,7 +27,7 @@
 - Server/database calculates item pricing, delivery, stock status and totals; idempotency and stock reservation logic remain server-side.
 - Standard delivery: 12 hours–1 day / ৳0. Urgent: 30–60 minutes / ৳50. The shop confirms destination and feasibility before promising a window.
 - bKash and Nagad are enabled in `payment_method_settings`; both use the owner-provided receiving number **01735530174** and shared customer instructions retrieved through `get_public_checkout_config()`.
-- Checkout UI changes in `feat/checkout-payment-options` add Cash on delivery vs Online payment, bKash/Nagad selection, TrxID submission, referral/reference and suggestions. They remain pending CI/preview verification and are not yet on production.
+- Checkout UI changes from PR #14 are merged and deployed: Cash on delivery vs Online payment, bKash/Nagad selection, sender number and TrxID submission, plus referral/reference and suggestions.
 - Online payment is manual transfer only. A submitted TrxID remains `pending_verification`; only an authorized administrator can verify it. No gateway or automatic payment verification is enabled.
 - Orders with untracked/build-to-order items remain `pending_stock_confirmation`; customers must wait for stock and final amount confirmation before paying.
 - Live database count: **0 orders, 0 payment submissions**.
