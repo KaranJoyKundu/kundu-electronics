@@ -1,12 +1,12 @@
 # PROJECT_STATE — Kundu Electronics
 
-**Last verified:** 19 November 2026 (Asia/Dhaka)  
+**Last verified:** 20 November 2026 (Asia/Dhaka)  
 **Repository:** `KaranJoyKundu/kundu-electronics` (private)  
 **Production branch:** `main`  
 **Production URL:** https://kundu-electronics.vercel.app  
-**Production commit:** `655030e3900823c8f2ceaf2ce3083c19ceea058b`  
-**Vercel deployment:** `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb` (**READY**)  
-**Production-readiness PR:** #11 merged 19 November 2026  
+**Production commit:** `cf45e25cc1fcd0a956a57e412806bf80674677e2`  
+**Vercel deployment:** `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi` (**READY**)  
+**Merged release PRs:** #11 (hardening), #13 (photo restoration), #14 (checkout/payment)  
 **Supabase project:** `tcapxmiroikbsozvucmt` (ap-northeast-1)
 
 ## Objective
