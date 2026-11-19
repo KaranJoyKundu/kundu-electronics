@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
 import { SearchIcon, ArrowRightIcon } from "@/components/icons";
 import { parseSearchSuggestions, type SearchSuggestion } from "@/lib/catalog/response";
@@ -56,7 +56,7 @@ export function SearchBox() {
     };
   }, [query]);
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Escape") {
       setOpen(false);
       setActiveIndex(-1);
