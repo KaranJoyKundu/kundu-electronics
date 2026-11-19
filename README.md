@@ -29,13 +29,16 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 
 - Production storefront: **https://kundu-electronics.vercel.app**
 - Production branch: `main`.
-- Latest verified production baseline before this hardening release: commit `528844c918aaa5a75fdfc83550ac8cd68922b8ba`, Vercel deployment `dpl_6Pg7wz4c3NFqSUvZhfri7jv9kVJ7` (READY).
+- Latest verified production commit: `655030e3900823c8f2ceaf2ce3083c19ceea058b`.
+- Vercel production deployment: `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb`, state **READY**, canonical alias verified.
+- PR #11 merged on 19 November 2026: https://github.com/KaranJoyKundu/kundu-electronics/pull/11
+- Windows CI run #188: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44500366096
 - Supabase project: `tcapxmiroikbsozvucmt`, region `ap-northeast-1`.
-- The active production-readiness work is isolated on `chore/production-readiness-hardening`; merge only after the Windows verification workflow passes and the production deployment is checked.
-- Website order requests are enabled. The database has `checkout_enabled=true`; checkout uses server-authoritative prices, delivery charges, stock checks and idempotency. Orders are unpaid requests and require shop confirmation before payment.
+- The live Supabase project has 208 published products across 18 categories, 220 total product rows (12 archived), 49 null selling prices, and six unknown availability states.
+- Website order requests are enabled. Totals, prices, delivery charges and stock checks remain server-authoritative. Orders remain unpaid until the shop confirms stock/address and arranges payment.
 - Standard delivery is configured as 12 hours–1 day / ৳0; Urgent is 30–60 minutes / ৳50. The shop confirms the destination and feasibility before promising either window.
 - bKash and Nagad remain disabled. Their receiving numbers and instructions are unset, and no online payment is collected.
-- The live database currently has zero orders and zero payment submissions.
+- Live database counts: zero orders and zero payment submissions.
 
 Required hosting environment variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
@@ -63,11 +66,13 @@ Read `START_HERE.md`, `documentation/PROJECT_STATE.md`, `documentation/LAUNCH_ST
 - Do not publish images whose reuse permission is unknown.
 - Do not invent opening hours, delivery promises, policies, warranties or reviews.## Current CI security status
 
-The Windows workflow on the previous release passed clean installation, typecheck, lint, 42 unit tests and production build. The complete npm audit at that point reported 14 high-severity advisories, zero moderate, zero low and zero critical; the vulnerable package nodes were classified as development-only. The outstanding advisory is in `picomatch <=4.0.7` (through build/lint tooling). No safe patched release was available in the checked registry at the time of this audit. Do not suppress the findings or claim the full dependency tree is vulnerability-free.
+Windows CI run #188 on the production-readiness release passed clean install, TypeScript typecheck, lint, all 44 unit tests and the production build. The full `npm audit --json` check returned **0 critical, 0 high, 0 moderate and 0 low**; the separate `npm audit --omit=dev --json` check also returned **0 vulnerabilities**. The full audit job now fails on any future advisory, regardless of whether it is a development dependency.
 
-The hardening workflow now runs a separate `npm audit --omit=dev` check for the shipped dependency graph. A passing runtime-only audit does not erase development-tooling advisories; both results must remain visible. See `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
+The earlier GHSA-fc5q-39xc-vjpf / CVE-2026-112366 picomatch advisory was withdrawn by GitHub on 18 November 2026. See the [GitHub advisory record](https://github.com/advisories/GHSA-fc5q-39xc-vjpf). Do not retain the previous 14-high warning as current status; the current clean audit result is from the checked-in lockfile on CI run #188.
 
-Supabase Auth currently reports leaked-password protection disabled. Supabase documents that this HaveIBeenPwned-backed feature is available on Pro and above; it must be enabled in the project Auth settings by an owner with the required plan and permissions. The database role helper grants and missing foreign-key indexes were hardened in the current release branch. The `rate_limit_windows` table intentionally has no direct client policies or grants and is only accessed by a service-role RPC.
+Supabase Auth leaked-password protection remains disabled. This is a dashboard-level owner setting and must be enabled by the owner if the project's plan includes the feature. Supabase's current documentation says the HaveIBeenPwned-backed password protection is available on Pro and above.
+
+The Supabase database hardening migration added 11 foreign-key indexes and narrowed anonymous execution of internal role-introspection functions. RLS is enabled on all 21 public tables. The private rate-limit table intentionally has no client policies/grants and is only accessed through a service-role RPC.
 
 ## Local setup
 
