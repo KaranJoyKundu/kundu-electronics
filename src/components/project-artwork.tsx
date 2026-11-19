@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ProductPhoto } from "@/components/product-photo";
 
 export type ProjectKind = "bee" | "lfr" | "soccerbot" | "rc" | "drone";
@@ -86,7 +87,7 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
   if (kind === "bee") {
     return (
       <div className="project-artwork project-artwork-real-photo bee-project-hero-photo">
-        <img src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/photo1.jpg" alt="Bee biped robot, completed working prototype" loading="lazy" />
+        <Image src="https://raw.githubusercontent.com/KaranJoyKundu/portfolio/main/public/images/bee/photo1.jpg" alt="Bee biped robot, completed working prototype" width={1200} height={900} sizes="(max-width: 768px) 100vw, 50vw" loading="lazy" />
         <span className="project-artwork-caption">BEE BIPED ROBOT · COMPLETED BUILD</span>
         <a className="project-artwork-source" href="https://karanjoykundu.github.io/portfolio/projects/bee-biped-robot" target="_blank" rel="noreferrer">Project case study & photo source ↗</a>
       </div>
