@@ -33,7 +33,7 @@ export function parseCheckoutBody(value: unknown): ParsedCheckoutBody | null {
   const area = optionalText(customerInput.area, 120);
   const city = boundedText(customerInput.city, 1, 120);
   const postalCode = optionalText(customerInput.postalCode, 24);
-  const note = optionalText(customerInput.note, 500);
+  const note = optionalText(customerInput.note, 1_400);
 
   if (!name || !phone || !addressLine1 || !city || email === undefined || addressLine2 === undefined || area === undefined || postalCode === undefined || note === undefined) return null;
   if (!/^[+0-9() .-]{7,32}$/.test(phone)) return null;

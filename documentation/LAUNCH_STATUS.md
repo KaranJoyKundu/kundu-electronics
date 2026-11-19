@@ -25,7 +25,10 @@
 - Website order requests are enabled and remain unpaid until the shop confirms stock/address and arranges payment.
 - Server/database calculates item pricing, delivery, stock status and totals; idempotency and stock reservation logic remain server-side.
 - Standard delivery: 12 hours–1 day / ৳0. Urgent: 30–60 minutes / ৳50. The shop confirms destination and feasibility before promising a window.
-- bKash and Nagad are disabled. Receiving number/instructions are unset.
+- bKash and Nagad are enabled in `payment_method_settings`; both use the owner-provided receiving number **01735530174** and shared customer instructions retrieved through `get_public_checkout_config()`.
+- Checkout UI changes in `feat/checkout-payment-options` add Cash on delivery vs Online payment, bKash/Nagad selection, TrxID submission, referral/reference and suggestions. They remain pending CI/preview verification and are not yet on production.
+- Online payment is manual transfer only. A submitted TrxID remains `pending_verification`; only an authorized administrator can verify it. No gateway or automatic payment verification is enabled.
+- Orders with untracked/build-to-order items remain `pending_stock_confirmation`; customers must wait for stock and final amount confirmation before paying.
 - Live database count: **0 orders, 0 payment submissions**.
 
 ## Security and dependency verification
@@ -71,7 +74,7 @@ This is HTTP/SSR/network smoke verification, not a full interactive Playwright o
 1. Open `/admin/login` with the owner's email magic link and verify all protected admin pages in a browser.
 2. Physically verify six unknown stock records and reconfirm current in-stock/low-stock states.
 3. Confirm the 49 missing customer selling prices.
-4. Enable bKash/Nagad only after exact receiving numbers and approved instructions are supplied.
+4. Re-confirm that 01735530174 is still the correct business receiving number before accepting real customer transfers; do not ask customers to pay for untracked kits until stock is confirmed.
 5. Confirm delivery feasibility for each address before promising a delivery window.
 6. Enable Supabase leaked-password protection in Auth settings if the plan includes it.
 7. Complete interactive desktop/tablet/mobile browser QA, accessibility audit and Lighthouse measurements. The current checks do not prove every interactive state at each requested viewport.

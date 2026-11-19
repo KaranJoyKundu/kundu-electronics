@@ -89,7 +89,7 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 | KE-059 | P1 | Enable leaked-password protection | Blocked on owner dashboard/plan | Supabase Auth advisor says disabled; current Supabase documentation requires Pro or above. Owner must enable in Auth settings if eligible. |
 | KE-060 | P1 | Confirm owner admin sign-in | Blocked on owner | The magic-link inbox/session requires owner access; do not impersonate or bypass Auth. |
 | KE-061 | P1 | Resolve 49 missing prices and six unknown stock records | Blocked on owner data | Do not guess prices or physical inventory. |
-| KE-062 | P1 | Configure mobile payment details | Blocked on owner | bKash/Nagad remain disabled until exact receiving numbers and approved instructions are supplied. |
+| KE-062 | P1 | Configure mobile payment details | Completed | Both bKash and Nagad are enabled in Supabase with the owner-provided number 01735530174 and fee/TrxID instructions. |
 | KE-063 | P1 | Complete desktop/mobile interactive browser QA | Needs verification | Production route/image/header smoke checks pass; full Playwright/Lighthouse at all five requested viewports and manual WCAG checks remain outstanding. |
 
 
@@ -104,4 +104,6 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 | KE-068 | P1 | Enable Supabase leaked-password protection | Blocked on owner | Auth setting remains disabled; owner must enable in dashboard if plan supports it. |
 | KE-069 | P1 | Confirm 49 missing prices and six unknown stock states | Blocked on owner | Do not invent selling prices or physical stock. |
 | KE-070 | P1 | Verify owner admin sign-in and protected session | Blocked on owner | Requires owner email inbox/browser session. |
-| KE-071 | P1 | Configure bKash/Nagad with verified receiving details | Blocked on owner | Both methods remain disabled until exact approved receiving info/instructions exist. |
+| KE-071 | P1 | Configure bKash/Nagad with verified receiving details | Completed | Supabase rows verified enabled for bKash and Nagad; both use 01735530174 and public config RPC returns both methods. |
+
+| KE-072 | P1 | Add checkout payment choice, TrxID and customer feedback fields | Needs verification | Feature branch `feat/checkout-payment-options` adds COD/online choices, provider selection, post-order TrxID submission, reference/suggestions, stock-confirmation guard and COD-specific order view. Requires CI and preview verification before merge. |

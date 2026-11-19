@@ -25,7 +25,11 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 
 - Website order requests are enabled. The checkout procedure uses server-authoritative current prices, delivery charges, quantity limits, stock locks and idempotency protection.
 - Orders containing untracked/build-to-order items start at `pending_stock_confirmation`. The shop confirms stock and the delivery address before arranging payment.
-- No online payment is collected. bKash and Nagad remain disabled because no verified receiving number or customer payment instructions have been supplied. Payment status starts as `not_submitted`; the site never marks an order paid automatically.
+- Checkout offers **Cash on delivery** and **Online payment**. bKash and Nagad are configured to the owner-provided receiving number **01735530174**.
+- For online payment, customers select bKash or Nagad, send the exact server-calculated order total, cover any applicable wallet/provider charge shown in their app (without deducting it from the order amount), and submit their sender number plus transaction ID (TrxID).
+- Orders containing untracked/build-to-order items remain at `pending_stock_confirmation`; customers must wait for the shop to confirm stock and the final amount before transferring money. The payment form becomes available only when the order is `awaiting_payment`.
+- Cash-on-delivery preference, referral/reference and customer suggestions are saved with the order note. COD does not ask for a transaction ID.
+- A submitted transaction reference creates a `pending_verification` payment submission. It is never treated as proof of payment; only an authorized shop administrator can verify it and mark the payment as verified.
 - Delivery choices: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop confirms the address and whether the requested window can be met.
 - WhatsApp order messages include one line per cart item in the form: product code - product name - unit price x quantity - line total, followed by delivery and the final Total: line. A click-to-call action is also available.
 - P091 (1kΩ Resistor Box 5000pcs) is the only published resistor product and remains at its existing ৳1 price. The other 12 resistor-named records are archived, not deleted, preserving order history.

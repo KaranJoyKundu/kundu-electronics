@@ -17,11 +17,17 @@ interface ProductRequest {
 
 interface CheckoutFormState {
   name: string; phone: string; email: string; addressLine1: string; addressLine2: string;
-  area: string; city: string; postalCode: string; note: string;
+  area: string; city: string; postalCode: string; note: string; reference: string; suggestions: string;
+}
+type CheckoutPaymentChoice = "cash_on_delivery" | "online_payment";
+type PaymentMethod = "bkash" | "nagad";
+interface CreatedOrder {
+  orderId: string; orderNumber: string; orderStatus: string; stockStatus: string;
+  subtotalBdt: number; deliveryChargeBdt: number; totalBdt: number;
 }
 
 const emptyForm: CheckoutFormState = {
-  name: "", phone: "", email: "", addressLine1: "", addressLine2: "", area: "", city: "Khulna", postalCode: "", note: "",
+  name: "", phone: "", email: "", addressLine1: "", addressLine2: "", area: "", city: "Khulna", postalCode: "", note: "", reference: "", suggestions: "",
 };
 
 function rowVariantLabel(product: Product | null, variantId: string | null): string | null {
@@ -36,6 +42,14 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
   const [zoneId, setZoneId] = useState(checkout.deliveryZones[0]?.id ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [paymentChoice, setPaymentChoice] = useState<CheckoutPaymentChoice>("cash_on_delivery");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(checkout.paymentMethods[0]?.method ?? "bkash");
+  const [createdOrder, setCreatedOrder] = useState<CreatedOrder | null>(null);
+  const [senderPhone, setSenderPhone] = useState("");
+  const [transactionReference, setTransactionReference] = useState("");
+  const [paymentSubmitting, setPaymentSubmitting] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
+  const paymentIdempotency = useRef<{ signature: string; key: string } | null>(null);
   const [productLoad, setProductLoad] = useState<{
     request: ProductRequest;
     status: "success" | "error";
@@ -83,6 +97,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
   const validRows = cartRows.filter((row) => !!row.product && row.product.published && row.product.orderable && row.price?.valid);
   const subtotal = validRows.reduce((sum, row) => sum + row.price!.priceBdt * row.line.quantity, 0);
   const selectedZone = checkout.deliveryZones.find((zone) => zone.id === zoneId);
+  const selectedPaymentMethod = checkout.paymentMethods.find((item) => item.method === paymentMethod) ?? checkout.paymentMethods[0] ?? null;
   const estimatedTotal = subtotal + (selectedZone?.deliveryChargeBdt ?? 0);
   const everyItemOrderable = !productsLoading && !productsFailed && cartRows.length > 0
     && cartRows.every((row) => row.product?.orderable === true && row.product.published && row.price?.valid === true);
@@ -119,11 +134,17 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
       return;
     }
 
+    const customerNote = [
+      form.note.trim() ? `Order note: ${form.note.trim()}` : "",
+      form.reference.trim() ? `Reference: ${form.reference.trim()}` : "",
+      form.suggestions.trim() ? `Suggestions: ${form.suggestions.trim()}` : "",
+      `Payment preference: ${paymentChoice === "cash_on_delivery" ? "Cash on delivery" : "Online payment"}`,
+    ].filter(Boolean).join("\n");
     const payload = {
       customer: {
         name: form.name, phone: form.phone, email: form.email || null,
         addressLine1: form.addressLine1, addressLine2: form.addressLine2 || null,
-        area: form.area || null, city: form.city, postalCode: form.postalCode || null, note: form.note || null,
+        area: form.area || null, city: form.city, postalCode: form.postalCode || null, note: customerNote,
       },
       items: validRows.map(({ line }) => ({ productId: line.productId, variantId: line.variantId, quantity: line.quantity })),
       deliveryZoneId: zoneId,
@@ -150,18 +171,82 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ ...payload, idempotencyKey: idempotency.current.key }),
       });
-      const result = await response.json() as { orderId?: string; error?: string };
-      if (!response.ok || !result.orderId) {
+      const result = await response.json() as Partial<CreatedOrder> & { error?: string };
+      if (!response.ok || !result.orderId || !result.orderNumber || !result.orderStatus
+        || !Number.isSafeInteger(result.totalBdt) || !Number.isSafeInteger(result.subtotalBdt)
+        || !Number.isSafeInteger(result.deliveryChargeBdt)) {
         setError(result.error ?? "Your order could not be created. Please try again.");
+        return;
+      }
+      const order: CreatedOrder = {
+        orderId: result.orderId,
+        orderNumber: result.orderNumber,
+        orderStatus: result.orderStatus,
+        stockStatus: result.stockStatus ?? "pending_confirmation",
+        subtotalBdt: result.subtotalBdt as number,
+        deliveryChargeBdt: result.deliveryChargeBdt as number,
+        totalBdt: result.totalBdt as number,
+      };
+      if (paymentChoice === "online_payment" && order.orderStatus === "awaiting_payment") {
+        setCreatedOrder(order);
+        setSenderPhone(form.phone);
+        setTransactionReference("");
+        setPaymentError("");
         return;
       }
       clearCart();
       try { sessionStorage.removeItem("ke-checkout-idempotency-v1"); } catch { /* Ignore unavailable browser storage. */ }
-      router.push(`/orders/${result.orderId}`);
+      router.push(`/orders/${order.orderId}?payment=${paymentChoice}`);
     } catch {
       setError("A network error occurred. Your order may not have been submitted. Retry this same checkout to safely reuse its idempotency key.");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function submitOnlinePayment(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!createdOrder || createdOrder.orderStatus !== "awaiting_payment" || !selectedPaymentMethod) return;
+    setPaymentError("");
+    const payload = { method: paymentMethod, senderPhone: senderPhone.trim(), transactionReference: transactionReference.trim() };
+    const signature = JSON.stringify(payload);
+    const digestBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(signature));
+    const signatureDigest = Array.from(new Uint8Array(digestBuffer), (byte) => byte.toString(16).padStart(2, "0")).join("");
+    const storageKey = `ke-payment-idempotency-v1:${createdOrder.orderId}`;
+    let stored: { signature: string; key: string } | null = null;
+    try {
+      const raw = sessionStorage.getItem(storageKey);
+      stored = raw ? JSON.parse(raw) as { signature: string; key: string } : null;
+    } catch { stored = null; }
+    if (stored?.signature === signatureDigest && /^[0-9a-f-]{36}$/i.test(stored.key)) {
+      paymentIdempotency.current = stored;
+    } else if (!paymentIdempotency.current || paymentIdempotency.current.signature !== signatureDigest) {
+      paymentIdempotency.current = { signature: signatureDigest, key: crypto.randomUUID() };
+    }
+    try { sessionStorage.setItem(storageKey, JSON.stringify(paymentIdempotency.current)); } catch { /* The request still has in-memory retry protection. */ }
+
+    setPaymentSubmitting(true);
+    try {
+      const response = await fetch(`/api/orders/${createdOrder.orderId}/payment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ ...payload, idempotencyKey: paymentIdempotency.current.key }),
+      });
+      const result = await response.json() as { message?: string; error?: string };
+      if (!response.ok) {
+        setPaymentError(result.error ?? "The transaction reference could not be submitted. Please check it and try again.");
+        return;
+      }
+      clearCart();
+      try {
+        sessionStorage.removeItem("ke-checkout-idempotency-v1");
+        sessionStorage.removeItem(storageKey);
+      } catch { /* Ignore unavailable browser storage. */ }
+      router.push(`/orders/${createdOrder.orderId}`);
+    } catch {
+      setPaymentError("A network error occurred. Retry the same transaction reference to safely reuse its submission key.");
+    } finally {
+      setPaymentSubmitting(false);
     }
   }
 
@@ -210,45 +295,122 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
             <p>You can still send the complete cart on WhatsApp or call the shop. Online payment is not collected; the shop confirms stock and delivery before arranging payment.</p>
             {cartEnquiryReady ? <Link className="button button-primary" href={cartEnquiryUrl} target="_blank" rel="noopener noreferrer">Send order on WhatsApp ↗</Link> : <p>Load or remove unavailable cart items before sending a complete enquiry.</p>}
           </div>
-        ) : (
-          <form className="checkout-form" onSubmit={placeOrder}>
-            <div className="checkout-fields">
-              <label>Recipient name<input required maxLength={160} value={form.name} onChange={(e) => updateField("name", e.target.value)} /></label>
-              <label>Phone number<input required type="tel" maxLength={32} value={form.phone} onChange={(e) => updateField("phone", e.target.value)} /></label>
-              <label>Email (optional)<input type="email" maxLength={254} value={form.email} onChange={(e) => updateField("email", e.target.value)} /></label>
-              <label>Address line 1<input required maxLength={220} value={form.addressLine1} onChange={(e) => updateField("addressLine1", e.target.value)} /></label>
-              <label>Address line 2 (optional)<input maxLength={220} value={form.addressLine2} onChange={(e) => updateField("addressLine2", e.target.value)} /></label>
-              <label>Area (optional)<input maxLength={120} value={form.area} onChange={(e) => updateField("area", e.target.value)} /></label>
-              <label>City<input required maxLength={120} value={form.city} onChange={(e) => updateField("city", e.target.value)} /></label>
-              <label>Postal code (optional)<input maxLength={24} value={form.postalCode} onChange={(e) => updateField("postalCode", e.target.value)} /></label>
-              <div className="delivery-speed-field">
-                <span className="delivery-speed-label">Choose delivery speed</span>
-                <div className="delivery-speed-choices" role="group" aria-label="Delivery speed">
-                  {checkout.deliveryZones.map((zone) => {
-                    const urgent = zone.code === "urgent-30m-1h";
-                    return (
-                      <button
-                        className={`delivery-speed-choice ${urgent ? "delivery-speed-urgent" : "delivery-speed-standard"} ${zoneId === zone.id ? "is-selected" : ""}`}
-                        type="button"
-                        key={zone.id}
-                        aria-pressed={zoneId === zone.id}
-                        onClick={() => { setZoneId(zone.id); idempotency.current = null; }}
-                      >
-                        <span className="delivery-speed-choice-heading"><strong>{urgent ? "Urgent" : "Standard"}</strong><b>{formatPriceBdt(zone.deliveryChargeBdt)}</b></span>
-                        <span>{urgent ? "30–60 minutes" : "12 hours–1 day"}</span>
-                        {urgent ? <small>Priority handling · subject to address confirmation</small> : <small>Regular delivery</small>}
-                      </button>
-                    );
-                  })}
-                </div>
+        ) : createdOrder ? (
+            <form className="checkout-form checkout-payment-step" onSubmit={submitOnlinePayment}>
+              <div className="payment-ready-panel">
+                <span className="section-kicker">ORDER {createdOrder.orderNumber}</span>
+                <h3>Your order is ready for payment</h3>
+                <div className="cart-summary-total"><span>Confirmed order total</span><strong>{formatPriceBdt(createdOrder.totalBdt)}</strong></div>
+                <p>Send the exact amount shown above to the selected wallet number. Keep enough balance to cover any applicable bKash/Nagad service or transfer charge shown in your app. Do not subtract the fee from the order amount.</p>
               </div>
-              <label className="checkout-note">Order note (optional)<textarea maxLength={500} value={form.note} onChange={(e) => updateField("note", e.target.value)} rows={3} /></label>
-            </div>
-            {!everyItemOrderable ? <p className="form-error">One or more cart items are unpublished or not currently orderable. Remove them before checkout.</p> : null}
-            {error ? <p className="form-error" role="alert">{error}</p> : null}
-            <button className="button button-primary" type="submit" disabled={submitting || productsLoading || productsFailed || !everyItemOrderable || !selectedZone}>{submitting ? "Saving your order…" : "Place order on website"}</button>
-            <div className="checkout-payment-note"><strong>No online payment is taken at checkout.</strong><p>Your order request is recorded first. The shop confirms stock, exact kit contents and final amount where relevant, plus the delivery address, then contacts you to arrange payment.</p></div><p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. An order is not marked paid until the shop verifies payment separately.</p>
-          </form>
+              {selectedPaymentMethod ? (
+                <div className="payment-instructions">
+                  <strong>Send money using {selectedPaymentMethod.method === "bkash" ? "bKash" : "Nagad"}</strong>
+                  <span className="receiving-number">{selectedPaymentMethod.receivingNumber}</span>
+                  <p>{selectedPaymentMethod.instructions}</p>
+                  <p>Order amount: <strong>{formatPriceBdt(createdOrder.totalBdt)}</strong></p>
+                </div>
+              ) : null}
+              <div className="checkout-payment-provider-grid" role="radiogroup" aria-label="Choose online payment provider">
+                {checkout.paymentMethods.map((item) => (
+                  <label className={`checkout-payment-provider ${paymentMethod === item.method ? "is-selected" : ""}`} key={item.method}>
+                    <input type="radio" name="paymentProviderAfterOrder" value={item.method} checked={paymentMethod === item.method}
+                      onChange={() => { setPaymentMethod(item.method); paymentIdempotency.current = null; }} />
+                    <span><strong>{item.method === "bkash" ? "bKash" : "Nagad"}</strong><small>{item.receivingNumber}</small></span>
+                  </label>
+                ))}
+              </div>
+              <div className="checkout-fields">
+                <label>Sender mobile number
+                  <input required type="tel" maxLength={32} value={senderPhone} onChange={(event) => { setSenderPhone(event.target.value); paymentIdempotency.current = null; }} />
+                </label>
+                <label>Transaction ID / TrxID
+                  <input required minLength={4} maxLength={100} value={transactionReference}
+                    onChange={(event) => { setTransactionReference(event.target.value); paymentIdempotency.current = null; }}
+                    placeholder="Enter the transaction ID from your app" />
+                </label>
+              </div>
+              {paymentError ? <p className="form-error" role="alert">{paymentError}</p> : null}
+              <button className="button button-primary" type="submit" disabled={paymentSubmitting || !selectedPaymentMethod || !senderPhone.trim() || transactionReference.trim().length < 4}>
+                {paymentSubmitting ? "Submitting payment details…" : "Submit transaction ID"}
+              </button>
+              <p className="checkout-disclaimer">Your reference will be recorded as pending verification. The order is not marked as paid until the shop checks the transaction.</p>
+            </form>
+          ) : (
+            <form className="checkout-form" onSubmit={placeOrder}>
+              <div className="checkout-fields">
+                <label>Recipient name<input required maxLength={160} value={form.name} onChange={(e) => updateField("name", e.target.value)} /></label>
+                <label>Phone number<input required type="tel" maxLength={32} value={form.phone} onChange={(e) => updateField("phone", e.target.value)} /></label>
+                <label>Email (optional)<input type="email" maxLength={254} value={form.email} onChange={(e) => updateField("email", e.target.value)} /></label>
+                <label>Address line 1<input required maxLength={220} value={form.addressLine1} onChange={(e) => updateField("addressLine1", e.target.value)} /></label>
+                <label>Address line 2 (optional)<input maxLength={220} value={form.addressLine2} onChange={(e) => updateField("addressLine2", e.target.value)} /></label>
+                <label>Area (optional)<input maxLength={120} value={form.area} onChange={(e) => updateField("area", e.target.value)} /></label>
+                <label>City<input required maxLength={120} value={form.city} onChange={(e) => updateField("city", e.target.value)} /></label>
+                <label>Postal code (optional)<input maxLength={24} value={form.postalCode} onChange={(e) => updateField("postalCode", e.target.value)} /></label>
+                <div className="delivery-speed-field">
+                  <span className="delivery-speed-label">Choose delivery speed</span>
+                  <div className="delivery-speed-choices" role="group" aria-label="Delivery speed">
+                    {checkout.deliveryZones.map((zone) => {
+                      const urgent = zone.code === "urgent-30m-1h";
+                      return (
+                        <button
+                          className={`delivery-speed-choice ${urgent ? "delivery-speed-urgent" : "delivery-speed-standard"} ${zoneId === zone.id ? "is-selected" : ""}`}
+                          type="button"
+                          key={zone.id}
+                          aria-pressed={zoneId === zone.id}
+                          onClick={() => { setZoneId(zone.id); idempotency.current = null; }}
+                        >
+                          <span className="delivery-speed-choice-heading"><strong>{urgent ? "Urgent" : "Standard"}</strong><b>{formatPriceBdt(zone.deliveryChargeBdt)}</b></span>
+                          <span>{urgent ? "30–60 minutes" : "12 hours–1 day"}</span>
+                          {urgent ? <small>Priority handling · subject to address confirmation</small> : <small>Regular delivery</small>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <fieldset className="checkout-payment-mode">
+                  <legend>Payment method</legend>
+                  <label className={paymentChoice === "cash_on_delivery" ? "checkout-payment-choice is-selected" : "checkout-payment-choice"}>
+                    <input type="radio" name="checkoutPaymentChoice" value="cash_on_delivery"
+                      checked={paymentChoice === "cash_on_delivery"}
+                      onChange={() => { setPaymentChoice("cash_on_delivery"); idempotency.current = null; }} />
+                    <span><strong>Cash on delivery</strong><small>Pay when your order arrives.</small></span>
+                  </label>
+                  <label className={paymentChoice === "online_payment" ? "checkout-payment-choice is-selected" : "checkout-payment-choice"}>
+                    <input type="radio" name="checkoutPaymentChoice" value="online_payment"
+                      checked={paymentChoice === "online_payment"} disabled={checkout.paymentMethods.length === 0}
+                      onChange={() => { setPaymentChoice("online_payment"); idempotency.current = null; }} />
+                    <span><strong>Online payment</strong><small>{checkout.paymentMethods.length ? "Pay by bKash or Nagad and submit your TrxID." : "Online payment is not currently configured."}</small></span>
+                  </label>
+                </fieldset>
+                {paymentChoice === "online_payment" && checkout.paymentMethods.length > 0 ? (
+                  <div className="checkout-payment-preview">
+                    <strong>Online payment details</strong>
+                    <p>Choose bKash or Nagad below. After you place the order, we will show the final server-calculated amount and the transaction ID field. Some items may need stock confirmation first; in that case, please wait until the order page says “Awaiting payment” before sending money.</p>
+                    <div className="checkout-payment-provider-grid" role="radiogroup" aria-label="Choose bKash or Nagad">
+                      {checkout.paymentMethods.map((item) => (
+                        <label className={`checkout-payment-provider ${paymentMethod === item.method ? "is-selected" : ""}`} key={item.method}>
+                          <input type="radio" name="paymentProvider" value={item.method} checked={paymentMethod === item.method}
+                            onChange={() => { setPaymentMethod(item.method); idempotency.current = null; }} />
+                          <span><strong>{item.method === "bkash" ? "bKash" : "Nagad"}</strong><small>{item.receivingNumber}</small></span>
+                        </label>
+                      ))}
+                    </div>
+                    {selectedPaymentMethod ? <p className="checkout-payment-instruction-copy">{selectedPaymentMethod.instructions}</p> : null}
+                    <p className="checkout-disclaimer">Keep enough wallet balance for the exact order total and any applicable service/transfer charge shown in your app. Do not deduct the charge from the amount sent to us.</p>
+                  </div>
+                ) : null}
+                <label>Order note (optional)<textarea maxLength={500} value={form.note} onChange={(e) => updateField("note", e.target.value)} rows={3} /></label>
+                <label>Reference (optional)<input maxLength={160} value={form.reference} onChange={(e) => updateField("reference", e.target.value)} placeholder="Who referred you or where did you find us?" /></label>
+                <label className="checkout-note">Suggestions / feedback (optional)<textarea maxLength={500} value={form.suggestions} onChange={(e) => updateField("suggestions", e.target.value)} rows={3} placeholder="What could we have done better?" /></label>
+              </div>
+              {!everyItemOrderable ? <p className="form-error">One or more cart items are unpublished or not currently orderable. Remove them before checkout.</p> : null}
+              {error ? <p className="form-error" role="alert">{error}</p> : null}
+              <button className="button button-primary" type="submit" disabled={submitting || productsLoading || productsFailed || !everyItemOrderable || !selectedZone || (paymentChoice === "online_payment" && !selectedPaymentMethod)}>
+                {submitting ? "Saving your order…" : paymentChoice === "online_payment" ? "Continue to online payment" : "Place order · Cash on delivery"}
+              </button>
+              <p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. Online payment references remain pending until the shop verifies the transfer. Orders needing manual stock confirmation must be confirmed before payment is submitted.</p>
+            </form>
         )}
       </section>
       <section className="order-channel-section">
