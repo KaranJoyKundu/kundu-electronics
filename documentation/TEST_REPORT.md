@@ -34,7 +34,7 @@ Important verification limits:
 - No real order or payment submission was created for testing.
 - No bKash/Nagad transfer was performed.
 - No interactive browser test filled and submitted a cart; the preview checks verified the build, route responses and deployed bundle strings only.
-- The online-payment form is intentionally available only after the server confirms an order is `awaiting_payment`. Untracked/build-to-order products stay blocked at `pending_stock_confirmation` until staff confirms stock and amount.
+- The online-payment form is intentionally available only after an order is `awaiting_payment`. Build-to-order project kits are pre-ordered now with a 7–14 day expected stock-drop window; they remain unpaid until stock arrives, when the existing stock-arrival action unlocks payment. In-stock-only orders can be paid immediately.
 - Transaction references remain `pending_verification` until an authorized admin checks them.
 
 **Latest release:** 20 November 2026 (Asia/Dhaka)  
