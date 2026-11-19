@@ -41,16 +41,21 @@ Responsive electronics-components storefront for Kundu Electronics, Khulna, Bang
 
 - Production storefront: **https://kundu-electronics.vercel.app**
 - Production branch: `main`.
-- PR #11 (production-readiness hardening) and PR #13 (project reference photo restoration) are merged.
+- PR #11 (production-readiness hardening), PR #13 (project reference photo restoration) and PR #14 (checkout payment choices) are merged.
 - PR #13 merge commit: `132216da28623405bd8411d381a88cf4fc968988`.
-- PR #13 preview deployment for commit `00ee82e6a9841b3965d1a7537181c99ecdb42f06` reached **READY**: [Vercel preview](https://kundu-electronics-cb0n8o2uv-kundu2409056-5098.vercel.app).
+- PR #13 merge commit: `132216da28623405bd8411d381a88cf4fc968988`.
+- PR #14 merge commit: `cf45e25cc1fcd0a956a57e412806bf80674677e2`.
+- PR #14 Windows CI run #207 passed typecheck, lint, tests, production build and both dependency audits: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525.
+- PR #14 preview deployment reached **READY**: [checkout preview](https://kundu-electronics-2s7qx1x0k-kundu2409056-5098.vercel.app).
 - Windows CI run #203 passed typecheck, lint, tests, production build, full dependency audit and production dependency audit: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44630198818
-- The first production rollout after PR #13 merged and the README was updated was Vercel deployment `dpl_6QdSoimwkqdi5syMFzMzgEGMA4Mk` for commit `0b5708c024f45b666226d8ab3ad6b20f5fb58ab2`; it reached **READY** and the canonical `https://kundu-electronics.vercel.app` alias was verified.
+- Latest verified production rollout after PR #14: Vercel deployment `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi`, commit `cf45e25cc1fcd0a956a57e412806bf80674677e2`, state **READY**; canonical alias `https://kundu-electronics.vercel.app` verified. Production `/cart`, `/shop` and `/projects` returned HTTP 200.
 - Supabase project: `tcapxmiroikbsozvucmt`, region `ap-northeast-1`.
 - The live Supabase project has 208 published products across 18 categories, 220 total product rows (12 archived), 49 null selling prices, and six unknown availability states.
-- Website order requests are enabled. Totals, prices, delivery charges and stock checks remain server-authoritative. Orders remain unpaid until the shop confirms stock/address and arranges payment.
+- Website checkout offers **Cash on delivery** and **Online payment**. Both bKash and Nagad are enabled with the owner-provided number `01735530174`. Prices, delivery charges and stock checks remain server-authoritative.
+- Online payments are manual transfers: customers select bKash/Nagad, send the exact order total, cover any provider charge shown in their app separately, and submit sender number plus TrxID. Submissions remain `pending_verification` until an authorized admin verifies them.
+- Orders needing manual stock confirmation must wait for staff confirmation and the final amount before online payment is submitted. COD orders do not request a transaction ID; referral/reference and suggestions are saved with the order note.
 - Standard delivery is configured as 12 hours–1 day / ৳0; Urgent is 30–60 minutes / ৳50. The shop confirms the destination and feasibility before promising either window.
-- bKash and Nagad remain disabled. Their receiving numbers and instructions are unset, and no online payment is collected.
+- bKash and Nagad are configured with `01735530174`; no payment gateway/API integration or automatic verification is enabled.
 - Live database counts: zero orders and zero payment submissions.
 
 Required hosting environment variables:
@@ -61,7 +66,7 @@ Required hosting environment variables:
 - `APP_HMAC_SECRET` (server-only, 32 cryptographically random bytes encoded as 64 hex characters)
 - `NEXT_PUBLIC_SITE_URL` (canonical production origin)
 
-Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or chat. Keep bKash/Nagad disabled until verified owner-approved receiving details and instructions exist.
+Never put server-only keys in client code, `NEXT_PUBLIC_*`, Git, build logs or chat. Treat every customer transaction reference as unverified until an authorized admin confirms it.
 
 ## Current CI security status
 
