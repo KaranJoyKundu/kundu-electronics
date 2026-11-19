@@ -8,9 +8,9 @@
 - GitHub: https://github.com/KaranJoyKundu/kundu-electronics (private).
 - Default and production branch: `main`.
 - Production URL: https://kundu-electronics.vercel.app
-- Latest verified production commit: `655030e3900823c8f2ceaf2ce3083c19ceea058b`.
-- Latest Vercel production deployment: `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb` (READY).
-- Production-readiness PR #11 is merged: https://github.com/KaranJoyKundu/kundu-electronics/pull/11.
+- Latest verified production commit: `cf45e25cc1fcd0a956a57e412806bf80674677e2`.
+- Latest Vercel production deployment: `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi` (READY).
+- Production-readiness PR #11, photo restoration PR #13 and checkout/payment PR #14 are merged: https://github.com/KaranJoyKundu/kundu-electronics/pull/14.
 
 ## Read first
 
