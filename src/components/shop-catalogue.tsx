@@ -14,7 +14,7 @@ const availabilityLabels: Record<string, string> = {
   out_of_stock: "Out of stock",
   availability_on_request: "Ask about availability",
   backorder: "Backorder",
-  build_to_order: "Build to order",
+  build_to_order: "Pre-order · next drop 7–14 days",
   discontinued: "Discontinued",
   unknown: "Availability to confirm",
 };
