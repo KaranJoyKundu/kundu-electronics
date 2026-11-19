@@ -1,62 +1,54 @@
 # Current security status — 19 November 2026
 
-This is the current status for the `main` production baseline and the production-readiness hardening branch. Older investigations remain below as dated history.
+This status is based on the merged production commit `655030e3900823c8f2ceaf2ce3083c19ceea058b` and Windows CI run #188.
 
-## Dependency audit
+## Dependency audit — current result is clear
 
-The latest verified complete Windows audit from the prior release reported:
+The committed lockfile was checked on a clean Windows Node.js 24.22.2 / npm 11.19.1 runner.
 
-| Severity | Findings |
-|---|---:|
-| Critical | 0 |
-| High | 14 |
-| Moderate | 0 |
-| Low | 0 |
-| Total | 14 |
+| Audit | Critical | High | Moderate | Low | Total |
+|---|---:|---:|---:|---:|---:|
+| Full tree (`npm audit --json`) | 0 | 0 | 0 | 0 | **0** |
+| Production-only (`npm audit --omit=dev --json`) | 0 | 0 | 0 | 0 | **0** |
 
-All 14 affected lockfile nodes were classified as development-only tooling. The dependency chain includes `picomatch@4.0.7` via build/lint tooling; the GitHub advisory is [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf). The checked npm registry still reported 4.0.7 as the current version on 19 November 2026; no safe stable patched release was available in the evidence inspected for this update.
+CI evidence: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44500366096
 
-The earlier `npm audit fix --dry-run` exited non-zero and produced no safe resolution. Do not use `npm audit fix --force`, incompatible overrides, arbitrary Git dependencies or a major-version downgrade to make the report green.
+The GitHub advisory GHSA-fc5q-39xc-vjpf / CVE-2026-112366 that previously generated the 14 high development-tooling findings was **withdrawn by GitHub on 18 November 2026**. The advisory record is maintained at https://github.com/advisories/GHSA-fc5q-39xc-vjpf. It is not a current npm audit finding. The previous 14-high warning is historical only and must not be repeated as current status.
 
-The hardening workflow now:
-- Keeps the full `npm audit --json` report visible and verifies remaining findings are development-only.
-- Runs a separate `npm audit --omit=dev --json` job that fails if any production dependency advisory remains.
-- Uploads audit evidence.
-- Uses Node 24-compatible GitHub Actions pinned to immutable commit SHAs.
-
-**Current production-only audit result is pending the hardening PR's CI run.** A clean production-only audit does not mean the full development dependency tree has zero known findings.
+The Windows CI now fails the complete audit job if any finding appears, regardless of whether the package is a development or production dependency. It separately runs the production-only audit so deployment risk can be diagnosed independently. The full audit JSON and audit logs are retained as workflow artifacts.
 
 ## Supabase database security review
 
-Read-only project inspection on 19 November 2026 confirmed RLS enabled on all 21 public tables. The new migration `20261119094342_security_and_fk_index_hardening` was applied to the live project and:
+RLS is enabled on all 21 public tables. The live migration `20261119094342_security_and_fk_index_hardening` was applied on 19 November 2026 and:
 
 - Added indexes for 11 previously unindexed foreign-key columns.
 - Revoked direct anon/authenticated execute on `has_store_role(admin_role[])`.
 - Revoked anon execute on `is_store_admin()` and `is_store_staff()`, while keeping authenticated execute for RLS policies.
-- Documented `rate_limit_windows` as private rate-limit state with no direct anon/authenticated policies or grants; only service_role can reach its rate-limit RPC.
+- Documented `rate_limit_windows` as private rate-limit state with no direct anon/authenticated policies or grants; only the service-role rate-limit RPC accesses it.
 
-Authorization review of live SECURITY DEFINER functions found the stock/order operations check `is_store_staff()`, payment verification checks `is_store_admin()`, and service-role-only functions are not executable by anon/authenticated. Public catalogue/count/config/category helper functions remain executable for their intended public read use and are constrained to published/public information.
+Read-only review of live SECURITY DEFINER functions found that stock/order operations check `is_store_staff()`, payment verification checks `is_store_admin()`, and checkout/guest-order/rate-limit functions are not executable by anon/authenticated. Public search/count/config/category functions expose only their intended public read data.
 
-Supabase still reports generic SECURITY DEFINER advisories for those intentional helpers and role-guarded authenticated RPCs, plus the expected no-policy warning on the private rate-limit table. Do not interpret the advisor count as a confirmed exploit without reviewing the function body and grants.
+Supabase advisors still report generic SECURITY DEFINER notices for these intentional public read helpers and role-guarded authenticated RPCs, an expected no-policy warning for the private rate-limit table, multiple-permissive-policy notices, and unused-index notices. These are not described as zero advisor findings. The policies should be revisited with workload-specific tests before consolidation or dropping indexes.
 
 ## Supabase Auth setting still requiring owner action
 
-The live Auth advisor reports leaked-password protection disabled. Supabase's current [password security documentation](https://supabase.com/docs/guides/auth/password-security) says the HaveIBeenPwned-backed protection is available on Pro and above. This setting is not exposed by the connected Supabase database tools used here, so it was not toggled programmatically. The owner must enable it in Supabase Dashboard → Authentication → Settings / Password security, if the current plan includes it.
+The live Auth advisor reports leaked-password protection disabled. Supabase's [password security documentation](https://supabase.com/docs/guides/auth/password-security) says the HaveIBeenPwned-backed option is available on Pro and above. This setting is not exposed by the database tools used in this workflow, so it was not toggled. The owner must enable it in Supabase Dashboard → Authentication → Settings / Password security if the current project plan includes it.
 
 ## HTTP hardening
 
-The hardening branch adds:
+Production response headers were verified after deployment:
+
 - `X-Content-Type-Options: nosniff`
 - `X-Frame-Options: DENY`
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
-- HSTS with a two-year max-age and subdomains
+- `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
 
-Verify the actual response headers after the production deployment. A restrictive CSP is deliberately not added until Next.js scripts and inline framework behavior have been validated under a nonce/hash CSP in a real browser.
+A restrictive Content Security Policy was deliberately deferred until Next.js inline scripts/nonces can be validated in a real browser.
 
 ## Release decision
 
-Do not describe this project as vulnerability-free. Keep the full development audit warning visible until upstream publishes a safe fix and the Windows CI test proves it. The production-only audit must pass, RLS and role checks must remain tested, and Supabase leaked-password protection remains an owner-controlled Auth configuration item.
+Current automated npm dependency checks are clear. This is not a proof that the application has no possible unknown vulnerabilities. The remaining security/operational work includes the Supabase Auth setting, continued RLS/SECURITY DEFINER review, a full interactive browser/accessibility audit, and owner-only sign-in verification. Keep all payment methods disabled until verified receiving details and instructions are supplied.
 
 
 ## Historical investigation — 13 November 2026
