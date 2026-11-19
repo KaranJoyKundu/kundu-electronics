@@ -79,16 +79,29 @@ Statuses: Not started · In progress · Blocked · Completed · Needs verificati
 |---|---|---|---|---|
 | KE-050 | P1 | Reconcile published products, archived source SKUs and kit rows | Completed | Live Supabase read: 208 published, 18 categories, 199 original published SKUs + 9 project kits, 12 archived rows. |
 | KE-051 | P1 | Remove unverified remote project photography | Completed on hardening branch | LFR/Soccer/RC use approved local catalogue component photos with explicit “not a build photo” label; Drone uses a concept illustration; Bee retains owner case-study photos. |
-| KE-052 | P1 | Improve one-character B autocomplete | Completed on hardening branch | Added a Breadboard-related query expansion for `b`, keyboard navigation, active-option semantics and tests for query expansion. |
-| KE-053 | P1 | Add baseline security response headers | Completed on hardening branch; deployment verification pending | Next.js headers add nosniff, frame denial, Referrer-Policy, Permissions-Policy and HSTS. |
+| KE-052 | P1 | Improve one-character B autocomplete | Completed and deployed | Production API returns P079 and P080 first for `b`; keyboard navigation, active-option semantics and tests are included. |
+| KE-053 | P1 | Add baseline security response headers | Completed and deployed | Production headers verified: nosniff, frame denial, Referrer-Policy, Permissions-Policy and HSTS. |
 | KE-054 | P1 | Reduce anon access to role helper functions | Completed in live Supabase migration | `has_store_role` no longer callable by anon/authenticated; anon execution revoked from admin/staff wrapper functions; authenticated RLS role checks remain. |
 | KE-055 | P2 | Add missing foreign-key indexes | Completed in live Supabase migration | Added all 11 indexes reported by the pre-change performance advisor. Re-run advisors after real workload. |
-| KE-056 | P1 | Pin GitHub Actions to Node 24 immutable revisions and run production audit | In progress | Pinned checkout v5, setup-node v5, upload-artifact v6 by SHA; added production-only npm audit job; verify CI on hardening PR. |
-| KE-057 | P1 | Reconcile stale operational documentation | Completed on hardening branch | README, START_HERE, PROJECT_STATE, LAUNCH_STATUS and PRODUCT_DATA_IMPORT now reflect live state. |
-| KE-058 | P0 | Resolve remaining high development-tooling advisory | Blocked upstream | 14 high dev-only findings remain in picomatch 4.0.7; no patched stable release identified on 19 Nov 2026. Do not force incompatible overrides. |
+| KE-056 | P1 | Pin GitHub Actions to Node 24 immutable revisions and run strict full + production audits | Completed and deployed | Pinned checkout v5, setup-node v5, upload-artifact v6 by SHA; both full and production npm audits are required to return zero findings. Windows CI #188 passed. |
+| KE-057 | P1 | Reconcile stale operational documentation | Completed and deployed | README, START_HERE, PROJECT_STATE, LAUNCH_STATUS and PRODUCT_DATA_IMPORT now reflect live state. |
+| KE-058 | P1 | Reconcile the withdrawn picomatch advisory and make full audit strict | Completed | GHSA-fc5q-39xc-vjpf was withdrawn by GitHub on 18 Nov 2026; run #188 reports 0 full-tree findings. CI now fails on any future full-tree advisory. |
 | KE-059 | P1 | Enable leaked-password protection | Blocked on owner dashboard/plan | Supabase Auth advisor says disabled; current Supabase documentation requires Pro or above. Owner must enable in Auth settings if eligible. |
 | KE-060 | P1 | Confirm owner admin sign-in | Blocked on owner | The magic-link inbox/session requires owner access; do not impersonate or bypass Auth. |
 | KE-061 | P1 | Resolve 49 missing prices and six unknown stock records | Blocked on owner data | Do not guess prices or physical inventory. |
 | KE-062 | P1 | Configure mobile payment details | Blocked on owner | bKash/Nagad remain disabled until exact receiving numbers and approved instructions are supplied. |
-| KE-063 | P1 | Complete desktop/mobile interactive browser QA | Needs verification | HTTP/SSR checks are not equivalent to Playwright/Lighthouse or manual responsive interaction. |
+| KE-063 | P1 | Complete desktop/mobile interactive browser QA | Needs verification | Production route/image/header smoke checks pass; full Playwright/Lighthouse at all five requested viewports and manual WCAG checks remain outstanding. |
 
+
+## Final release verification — 19 November 2026
+
+| ID | Priority | Task | Status | Evidence / acceptance criteria |
+|---|---|---|---|---|
+| KE-064 | P1 | Merge production-readiness fixes into main and deploy | Completed | PR #11 merged as `655030e3900823c8f2ceaf2ce3083c19ceea058b`; Vercel deployment `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb` READY. |
+| KE-065 | P1 | Verify full npm dependency tree | Completed | Windows CI #188 full `npm audit --json`: 0 critical/high/moderate/low. |
+| KE-066 | P1 | Verify production dependency tree | Completed | Windows CI #188 `npm audit --omit=dev --json`: 0 findings. |
+| KE-067 | P1 | Verify production smoke and headers | Completed | Canonical pages/API/images return HTTP 200; security headers verified. |
+| KE-068 | P1 | Enable Supabase leaked-password protection | Blocked on owner | Auth setting remains disabled; owner must enable in dashboard if plan supports it. |
+| KE-069 | P1 | Confirm 49 missing prices and six unknown stock states | Blocked on owner | Do not invent selling prices or physical stock. |
+| KE-070 | P1 | Verify owner admin sign-in and protected session | Blocked on owner | Requires owner email inbox/browser session. |
+| KE-071 | P1 | Configure bKash/Nagad with verified receiving details | Blocked on owner | Both methods remain disabled until exact approved receiving info/instructions exist. |
