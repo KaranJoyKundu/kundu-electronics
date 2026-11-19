@@ -56,7 +56,7 @@ The 199 published original products plus 12 archived source SKUs reconcile to th
 - Product and Bee imagery use Next image optimization; only the explicit Bee case-study image host was added to the image allowlist.
 - Cart persists locally; server-side product/order data remains authoritative.
 - Website creates unpaid order requests. Server/database calculates price, delivery charge, stock state and total; idempotency and stock reservation logic remain server-side.
-- Manual payment submission and verification are distinct. bKash/Nagad are not enabled.
+- Checkout offers Cash on delivery or Online payment. Online payment uses the existing authenticated order-payment submission endpoint; transaction references remain unverified until staff review.
 - Protected admin sections exist for products, categories, images, variants, stock, orders, payments and settings.
 
 ## Current live checkout configuration
@@ -64,8 +64,12 @@ The 199 published original products plus 12 archived source SKUs reconcile to th
 - Supabase `checkout_enabled=true`; website order requests are active.
 - Standard delivery: 12 hours–1 day, ৳0. Urgent: 30–60 minutes, ৳50.
 - The shop confirms the exact address and whether a delivery window can be met.
-- bKash and Nagad are disabled; receiving number and customer instructions are unset.
-- No orders or payment submissions currently exist.
+- bKash and Nagad are enabled in `payment_method_settings`, both using the owner-provided receiving number `01735530174`. Public checkout configuration exposes these settings through the existing `get_public_checkout_config()` RPC.
+- Checkout offers Cash on delivery and Online payment. Online customers select bKash or Nagad, send the exact server-calculated order total, cover any applicable wallet/service charge displayed by the provider, and submit sender number plus TrxID.
+- Nine untracked/build-to-order kits still require staff stock confirmation. They remain at `pending_stock_confirmation`; customers must not send money until the order changes to `awaiting_payment` and the final amount is confirmed.
+- Cash-on-delivery preference, referral/reference and suggestions are recorded in the order's customer note. COD orders do not submit transaction references.
+- The order-payment endpoint creates a `pending_verification` submission only. An authorized admin must verify it before payment status can become `verified`.
+- No orders or payment submissions currently exist (last read-only check before rollout).
 - Never treat a submitted transaction reference as proof of payment.
 
 ## Security and dependency status
@@ -98,7 +102,7 @@ The 199 published original products plus 12 archived source SKUs reconcile to th
 2. Physically verify six unknown stock records and re-confirm current in-stock/low-stock values.
 3. Verify the owner's magic-link sign-in and protected admin browser session.
 4. Enable leaked-password protection in Supabase Auth if the plan includes it; the project owner must change this dashboard setting.
-5. Supply exact receiving numbers and approved instructions before enabling bKash/Nagad.
+5. Keep the bKash/Nagad receiving number and wallet instructions current; re-confirm the receiving number with the owner before any future change.
 6. Approve any changed delivery, policy, warranty or terms statements.
 7. Supply/approve actual project build photos and rights for any new external photography.
 8. Complete full interactive browser QA, screenshots and Lighthouse at 1440×900, 1366×768, 768×1024, 390×844 and 360×800.
