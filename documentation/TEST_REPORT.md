@@ -4,11 +4,12 @@
 
 **Feature branch:** `feat/checkout-payment-options`  
 **Code commit verified by CI:** `76b3e482846aec844ee3a526154d7ad62a8e60ce`  
-**Latest documentation commit:** `5c5907e360a4c227238d0f867edb62b1864b574d`  
+**Merged PR #14 code commit:** `cf45e25cc1fcd0a956a57e412806bf80674677e2`  
 **PR:** https://github.com/KaranJoyKundu/kundu-electronics/pull/14  
 **Windows CI run #207:** https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525  
 **Vercel preview:** https://kundu-electronics-k18sma375-kundu2409056-5098.vercel.app  
 **Vercel preview deployment:** `dpl_4Jz42UiBM2k8mgH1QLZTYMhyepuF` (**READY**, feature branch code commit).
+**PR #14 production deployment:** `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi` (**READY**, canonical alias verified).
 
 Windows CI #207 completed successfully:
 - Typecheck: passed.
@@ -23,6 +24,12 @@ Vercel preview compiled successfully, completed TypeScript checks, generated all
 
 Supabase configuration was updated (without a schema change): both `bkash` and `nagad` payment-method rows are enabled with the owner-provided receiving number `01735530174`. `get_public_checkout_config()` returns both methods.
 
+Production canonical smoke check after PR #14:
+- `https://kundu-electronics.vercel.app/cart`: HTTP 200.
+- `/shop` and `/projects`: HTTP 200.
+- Live cart SSR includes the configured bKash/Nagad methods and receiving number.
+- Deployed cart JavaScript asset includes COD, Nagad, TrxID, Reference and Suggestions UI strings.
+
 Important verification limits:
 - No real order or payment submission was created for testing.
 - No bKash/Nagad transfer was performed.
@@ -30,12 +37,12 @@ Important verification limits:
 - The online-payment form is intentionally available only after the server confirms an order is `awaiting_payment`. Untracked/build-to-order products stay blocked at `pending_stock_confirmation` until staff confirms stock and amount.
 - Transaction references remain `pending_verification` until an authorized admin checks them.
 
-**Latest release:** 19 November 2026 (Asia/Dhaka)  
+**Latest release:** 20 November 2026 (Asia/Dhaka)  
 **Production branch:** `main`  
-**Production commit:** `655030e3900823c8f2ceaf2ce3083c19ceea058b`  
-**Vercel production deployment:** `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb` (**READY**)  
-**PR:** #11 merged  
-**Windows CI:** run #188 — https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44500366096
+**Production commit:** `cf45e25cc1fcd0a956a57e412806bf80674677e2`  
+**Vercel production deployment:** `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi` (**READY**)  
+**Merged PRs:** #11, #13, #14  
+**Windows CI:** run #207 — https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525
 
 ## Windows CI results
 
