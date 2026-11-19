@@ -54,7 +54,7 @@ export default function ImageCreditsPage() {
       <p className="simple-lead">This page identifies the source and reuse terms for the product photographs used in the catalogue and photo gallery.</p>
       <div className="notice-panel">
         <strong>Project artwork</strong>
-        <p>Bee Biped uses project-owner photographs from the linked case study. Line Follower, Soccer Bot and RC Speed Battle showcase collages use the shop's approved component photographs and are labelled as component imagery, not completed robot builds. The Drone page uses an original concept illustration because no owner-approved drone build photograph or verified kit BOM is available.</p>
+        <p>Bee Biped uses project-owner photographs from the linked case study. Line Follower, Soccer Bot and RC Speed Battle showcase collages use the shop&apos;s approved component photographs and are labelled as component imagery, not completed robot builds. The Drone page uses an original concept illustration because no owner-approved drone build photograph or verified kit BOM is available.</p>
       </div>
       <div className="notice-panel">
         <strong>Image processing</strong>
