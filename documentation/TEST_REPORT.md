@@ -1,5 +1,35 @@
 # TEST_REPORT — Kundu Electronics
 
+## Checkout payment options update — PR #14
+
+**Feature branch:** `feat/checkout-payment-options`  
+**Code commit verified by CI:** `76b3e482846aec844ee3a526154d7ad62a8e60ce`  
+**Latest documentation commit:** `5c5907e360a4c227238d0f867edb62b1864b574d`  
+**PR:** https://github.com/KaranJoyKundu/kundu-electronics/pull/14  
+**Windows CI run #207:** https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525  
+**Vercel preview:** https://kundu-electronics-k18sma375-kundu2409056-5098.vercel.app  
+**Vercel preview deployment:** `dpl_4Jz42UiBM2k8mgH1QLZTYMhyepuF` (**READY**, feature branch code commit).
+
+Windows CI #207 completed successfully:
+- Typecheck: passed.
+- Lint: passed.
+- Tests: passed.
+- Production build: passed.
+- Full dependency audit: passed.
+- Production-only dependency audit: passed.
+- Read-only npm audit fix investigation: passed.
+
+Vercel preview compiled successfully, completed TypeScript checks, generated all 28 static pages/routes and reached **READY**. The preview `/cart` and `/shop` routes returned HTTP 200. The `/cart` response exposed the configured receiving number through the public checkout configuration. The deployed cart JavaScript bundle contains the Cash on delivery, bKash/Nagad, TrxID, Reference and Suggestions labels.
+
+Supabase configuration was updated (without a schema change): both `bkash` and `nagad` payment-method rows are enabled with the owner-provided receiving number `01735530174`. `get_public_checkout_config()` returns both methods.
+
+Important verification limits:
+- No real order or payment submission was created for testing.
+- No bKash/Nagad transfer was performed.
+- No interactive browser test filled and submitted a cart; the preview checks verified the build, route responses and deployed bundle strings only.
+- The online-payment form is intentionally available only after the server confirms an order is `awaiting_payment`. Untracked/build-to-order products stay blocked at `pending_stock_confirmation` until staff confirms stock and amount.
+- Transaction references remain `pending_verification` until an authorized admin checks them.
+
 **Latest release:** 19 November 2026 (Asia/Dhaka)  
 **Production branch:** `main`  
 **Production commit:** `655030e3900823c8f2ceaf2ce3083c19ceea058b`  
