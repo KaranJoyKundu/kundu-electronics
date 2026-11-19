@@ -55,6 +55,47 @@ const components: Record<ProjectKind, ComponentPhoto[]> = {
   ],
 };
 
+function ComponentCollage({ kind }: { kind: ProjectKind }) {
+  return (
+    <div className={"project-artwork project-artwork-" + kind} role="img"
+      aria-label={labels[kind] + " — catalogue component illustrations, not a photograph of an assembled robot"}>
+      <div className="project-artwork-photo-grid">
+        {components[kind].map((part) => (
+          <figure className="project-artwork-photo" key={part.sku}>
+            <ProductPhoto name={part.name} sku={part.sku} category={part.category} />
+            <figcaption>{part.name}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <span className="project-artwork-caption">CATALOGUE COMPONENT PHOTOS · NOT A BUILD PHOTO</span>
+      <span className="project-artwork-index">{labels[kind]}</span>
+    </div>
+  );
+}
+
+function DroneConceptArtwork() {
+  return (
+    <div className="project-artwork project-artwork-concept" role="img"
+      aria-label="Concept illustration of a quadcopter drone; not a completed build or confirmed kit">
+      <svg className="project-artwork-concept-svg" viewBox="0 0 640 320" aria-hidden="true" focusable="false">
+        <g fill="none" stroke="#456653" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M320 160 150 70M320 160 490 70M320 160 150 250M320 160 490 250" />
+          <path d="M110 70h80M450 70h80M110 250h80M450 250h80" strokeWidth="7" />
+          <rect x="265" y="112" width="110" height="96" rx="22" fill="#dce9df" />
+          <path d="M290 160h60M320 132v56" strokeWidth="7" />
+        </g>
+        <g fill="#8aa993" stroke="#456653" strokeWidth="7">
+          <circle cx="150" cy="70" r="42"/><circle cx="490" cy="70" r="42"/>
+          <circle cx="150" cy="250" r="42"/><circle cx="490" cy="250" r="42"/>
+          <circle cx="150" cy="70" r="9" fill="#f7faf7"/><circle cx="490" cy="70" r="9" fill="#f7faf7"/>
+          <circle cx="150" cy="250" r="9" fill="#f7faf7"/><circle cx="490" cy="250" r="9" fill="#f7faf7"/>
+        </g>
+      </svg>
+      <span className="project-artwork-caption">DRONE PROJECT CONCEPT · NO VERIFIED BOM OR BUILD PHOTO</span>
+    </div>
+  );
+}
+
 export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
   if (kind === "bee") {
     return (
@@ -65,41 +106,11 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
       </div>
     );
   }
-  if (kind === "lfr") {
-    return (
-      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Photograph of a line follower robot">
-        <img src="https://makerworkslab.in/projects/projectimages/line_follower_robot.webp" alt="Line follower robot on a marked track" loading="lazy" />
-        <span className="project-artwork-caption">LINE-FOLLOWER ROBOT · REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://makerworkslab.in/projects/projectimages/line_follower_robot.webp" target="_blank" rel="noreferrer">Photo reference: MakerWorks Lab ↗</a>
-      </div>
-    );
-  }
-  if (kind === "soccerbot") {
-    return (
-      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Reference photograph of an Arduino soccer robot">
-        <img src="https://static-01.daraz.com.bd/p/cd19eaa8b5d313b4bfe772c83a433ca9.png" alt="Four-wheel Arduino soccer robot beside a football on artificial turf" loading="lazy" />
-        <span className="project-artwork-caption">SOCCER BOT · REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://www.daraz.com.bd/products/soccer-bot-diy-arduino-based-robotic-soccer-robot-robobox-4-i323729310.html" target="_blank" rel="noreferrer">Photo reference: RoboBox-4 product listing ↗</a>
-      </div>
-    );
-  }
-  if (kind === "rc") {
-    return (
-      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Reference photograph of an Arduino remote-control car">
-        <img src="https://hackster.imgix.net/uploads/attachments/1499405/_k2dhbHE8PH.blob?auto=compress&fit=min&fm=jpg&h=1200&w=1600" alt="Arduino remote-control hobby car with its handheld transmitter" loading="lazy" />
-        <span className="project-artwork-caption">RC SPEED CAR · REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://www.hackster.io/enriquelopezprojects/arduino-rc-car-with-flysky-fs-i6x-controller-and-receiver-994675" target="_blank" rel="noreferrer">Photo reference: Hackster.io Arduino RC car project ↗</a>
-      </div>
-    );
+  if (kind === "lfr" || kind === "soccerbot" || kind === "rc") {
+    return <ComponentCollage kind={kind} />;
   }
   if (kind === "drone") {
-    return (
-      <div className="project-artwork project-artwork-real-photo" role="img" aria-label="Reference photograph of a DIY quadcopter drone">
-        <img src="https://content.instructables.com/FMP/EKWZ/L9ZO4HJ4/FMPEKWZL9ZO4HJ4.jpg?auto=webp&fit=bounds&frame=1&height=1024&width=1024" alt="DIY quadcopter frame with four propellers and exposed flight-control electronics" loading="lazy" />
-        <span className="project-artwork-caption">QUADCOPTER · REFERENCE PHOTO</span>
-        <a className="project-artwork-source" href="https://www.instructables.com/Fusion360-Laser-Cut-Plywood-UAV/" target="_blank" rel="noreferrer">Photo reference: Instructables DIY quadcopter build ↗</a>
-      </div>
-    );
+    return <DroneConceptArtwork />;
   }
 
   return (
@@ -107,7 +118,7 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
       <div className="project-artwork-photo-grid">
         {components[kind as ProjectKind].map((part) => (
           <figure className="project-artwork-photo" key={part.sku}>
-            {part.sku === "P021" ? <img className="project-artwork-nano-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Arduino_Nano.jpg" alt="Arduino Nano board photographed on a plain background" loading="lazy" /> : <ProductPhoto name={part.name} sku={part.sku} category={part.category} />}
+            <ProductPhoto name={part.name} sku={part.sku} category={part.category} />
             <figcaption>{part.name}</figcaption>
           </figure>
         ))}
