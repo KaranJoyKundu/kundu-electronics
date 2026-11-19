@@ -45,7 +45,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const productDescription = product.categorySlug === "project-kits" && product.description
     ? product.description.replace(/\n\nESTIMATED PACKAGE COST:.*$/i, "").trimEnd()
     : product.description;
-  const isProjectKitPreorder = product.categorySlug === "project-kits" && product.availability === "build_to_order";
+  const isPreorder = product.orderable === true && (product.availability === "out_of_stock" || product.availability === "build_to_order");
 
   return (
     <section className="container simple-page product-page">
@@ -59,8 +59,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <h1>{product.name}</h1>
           {product.sku ? <p className="product-sku">SKU: {product.sku}</p> : null}
           <p className={product.categorySlug === "project-kits" ? "product-price project-preorder-price" : "product-price"}>{formatPriceBdt(product.priceBdt)}</p>
-          {isProjectKitPreorder ? <p className="project-preorder-note">You can pre-order this kit now. The next stock drop is expected in 7–14 days, and your order reserves a kit from that drop. Online payment becomes available when the stock arrives.</p> : null}
-          <p className="product-availability">{availabilityLabels[product.availability] ?? availabilityLabels.unknown}</p>
+          {isPreorder ? <p className="project-preorder-note">You can pre-order this {product.categorySlug === "project-kits" ? "kit" : "item"} now. The next stock drop is expected in 7–14 days, and your order reserves it from that drop. Online payment becomes available when the stock arrives.</p> : null}
+          <p className="product-availability">{isPreorder ? "Pre-order · next stock drop in 7–14 days" : availabilityLabels[product.availability] ?? availabilityLabels.unknown}</p>
           {product.summary ? <p className="simple-lead">{product.summary}</p> : null}
           {productDescription ? <p className={product.categorySlug === "project-kits" ? "project-kit-description" : undefined}>{productDescription}</p> : null}
           {!product.summary && !product.description && details.specifications.length === 0 ? (
@@ -69,9 +69,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <p>Only the basic catalogue information is currently available online. Contact the shop to confirm the exact version, specifications, compatibility and current availability before purchasing.</p>
             </div>
           ) : null}
-          <ProductPurchaseControl productId={product.id} basePriceBdt={product.priceBdt} orderable={product.orderable === true} enquiryOnly={!checkout.checkoutEnabled} preorder={isProjectKitPreorder} variants={details.variants} />
+          <ProductPurchaseControl productId={product.id} basePriceBdt={product.priceBdt} orderable={product.orderable === true} enquiryOnly={!checkout.checkoutEnabled} preorder={isPreorder} variants={details.variants} />
           <Link className="button button-outline" href={whatsappUrl} target="_blank" rel="noopener noreferrer">Ask about this product on WhatsApp ↗</Link>
-          <p className="product-order-note">{isProjectKitPreorder ? "This kit is available to pre-order now. The next stock drop is expected in 7–14 days; online payment opens when the stock arrives." : "Stock status comes from the shop inventory workbook and can change. Please reconfirm availability with the shop before travelling. Inventory counts are not displayed publicly."}</p>
+          <p className="product-order-note">{isPreorder ? "This item is available to pre-order now. The next stock drop is expected in 7–14 days; online payment opens when the stock arrives." : "Stock status comes from the shop inventory workbook and can change. Please reconfirm availability with the shop before travelling. Inventory counts are not displayed publicly."}</p>
           {details.specifications.length > 0 ? <section className="product-detail-section"><h2>Specifications</h2><dl>{details.specifications.map((item) => <div key={item.id}><dt>{item.label}</dt><dd>{item.value}{item.unit ? ` ${item.unit}` : ""}</dd></div>)}</dl></section> : null}
         </div>
       </div>
