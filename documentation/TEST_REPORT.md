@@ -1,5 +1,93 @@
 # TEST_REPORT — Kundu Electronics
 
+**Latest release:** 19 November 2026 (Asia/Dhaka)  
+**Production branch:** `main`  
+**Production commit:** `655030e3900823c8f2ceaf2ce3083c19ceea058b`  
+**Vercel production deployment:** `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb` (**READY**)  
+**PR:** #11 merged  
+**Windows CI:** run #188 — https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44500366096
+
+## Windows CI results
+
+Runner: Windows Server 2025, Node.js 24.22.2, npm 11.19.1.
+
+| Check | Result | Evidence |
+|---|---|---|
+| `npm ci` | **PASS** | Clean install; 374 packages added. |
+| `npm run typecheck` | **PASS** | Completed successfully. |
+| `npm run lint` | **PASS** | Completed successfully after clearing apostrophe, effect-state, navigation, image-element and unused-state warnings. |
+| `npm test` | **PASS — 44 passed, 0 failed** | All existing tests plus search-expansion coverage. |
+| `npm run build` | **PASS** | Next.js production build compiled, typechecked and generated all 28 static pages/routes successfully. |
+| Full `npm audit --json` | **PASS — 0 findings** | 0 critical, 0 high, 0 moderate, 0 low. |
+| `npm audit --omit=dev --json` | **PASS — 0 findings** | Production dependency graph clear. |
+| `npm audit fix --dry-run` investigation | **PASS** | Existing read-only dependency investigation completed. |
+
+The complete audit CI job now fails on any known finding in development or production dependencies. The production-only lane remains separate to identify deploy-time risk. The prior picomatch GHSA-fc5q-39xc-vjpf / CVE-2026-112366 notice was withdrawn by GitHub on 18 November 2026: https://github.com/advisories/GHSA-fc5q-39xc-vjpf. It is no longer a current npm audit finding.
+
+## Production deployment and smoke tests
+
+The merged commit `655030e3900823c8f2ceaf2ce3083c19ceea058b` is deployed to the canonical `https://kundu-electronics.vercel.app` domain. Vercel reports deployment `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb` as **READY**.
+
+The following production pages returned HTTP 200:
+- Homepage, shop, projects.
+- LFR, Soccer Bot, RC Speed Battle and Drone project pages.
+- Image credits.
+- `/robots.txt` and `/sitemap.xml`.
+
+API checks:
+- `/api/catalog/search?query=b` returned P079 and P080 Breadboard first.
+- `/api/catalog/search?query=breadboard` returned both Breadboard products.
+- `/api/catalog/products?min=0&max=200&page=1` returned matching filtered products.
+- LFR, Soccer Bot and RC kit product detail routes returned HTTP 200.
+
+Image checks:
+- Optimized P021 Arduino Nano and Bee case-study image URLs returned HTTP 200 with image/jpeg content type.
+- Logo returned HTTP 200 with image/png.
+- The new project showcase contains approved local component image collages for LFR/Soccer/RC and an original Drone concept illustration; no third-party robot build photos are presented as Kundu builds.
+
+Security-header checks on the canonical production response:
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+- `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+
+## Supabase migration and live database
+
+Migration `20261119094342_security_and_fk_index_hardening` was applied to project `tcapxmiroikbsozvucmt`:
+- Added 11 FK indexes.
+- Revoked anon/authenticated direct execute on `has_store_role`.
+- Revoked anon execute on `is_store_admin` and `is_store_staff`, keeping authenticated execute for RLS policies.
+- Kept `rate_limit_windows` without client grants/policies; only service-role RPC access.
+
+Read-only live data:
+- 220 product rows total; 208 published and 12 archived.
+- 18 published categories.
+- 199 published original SKUs plus nine kits.
+- 49 products with no verified selling price.
+- Availability: 117 in stock, 34 low stock, 42 out of stock, nine build-to-order, six unknown.
+- Orders: zero; payment submissions: zero.
+- Checkout enabled for unpaid order requests; bKash/Nagad disabled.
+
+## Not covered by this verification
+
+- Full interactive Playwright/manual visual and responsive tests at 1440×900, 1366×768, 768×1024, 390×844 and 360×800 were not executed in this tool session.
+- Full WCAG 2.2 AA manual/automated browser audit and Lighthouse desktop/mobile performance report remain outstanding.
+- Owner magic-link sign-in and protected admin browser session were not verified.
+- Supabase Auth leaked-password protection remains disabled; owner dashboard action required if plan supports it.
+- The 49 null selling prices and six unknown availability values require owner confirmation; none were guessed.
+- bKash/Nagad receiving details and customer instructions are missing; methods remain disabled.
+
+Do not interpret HTTP 200, green CI or npm audit zero findings as proof of perfect security or a substitute for the manual/browser/owner checks above.
+
+---
+
+## Historical verification notes
+
+The following sections are retained as historical project notes from earlier November test runs. They are superseded by the 19 November release results above.
+
+# TEST_REPORT — Kundu Electronics
+
 **Last updated:** 13 November 2026 (Asia/Dhaka)
 **Branch:** `feat/storefront-foundation`
 **Base commit for this follow-up:** `5949f4cd3152aa595dd6433aaac27a7b85f3a87a`

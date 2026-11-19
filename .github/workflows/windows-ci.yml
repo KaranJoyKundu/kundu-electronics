@@ -49,7 +49,7 @@ jobs:
         run: npm run build
 
   dependency-audit:
-    name: Windows full dependency audit (development advisories remain visible)
+    name: Windows full dependency audit
     runs-on: windows-latest
     timeout-minutes: 15
     steps:
@@ -65,7 +65,7 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Audit complete dependency tree and classify every finding
+      - name: Run full npm audit and fail on any known vulnerability
         shell: pwsh
         run: |
           npm audit --json 1> npm-audit.json 2> npm-audit-stderr.txt
@@ -74,23 +74,12 @@ jobs:
           $report = Get-Content npm-audit.json -Raw | ConvertFrom-Json -AsHashtable
           $lock = Get-Content package-lock.json -Raw | ConvertFrom-Json -AsHashtable
           $counts = $report.metadata.vulnerabilities
-          "Audit summary: $($counts.high) high, $($counts.moderate) moderate, $($counts.low) low, $($counts.critical) critical." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          if ($counts.critical -ne 0 -or $counts.moderate -ne 0) {
-            Write-Error "Critical or moderate dependency advisories remain."
+          "Audit summary: $($counts.total) total ($($counts.critical) critical, $($counts.high) high, $($counts.moderate) moderate, $($counts.low) low)." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          if ($counts.total -ne 0 -or $auditExitCode -ne 0) {
+            Write-Error "Known vulnerabilities remain in the complete dependency tree."
             exit 1
           }
-          foreach ($entry in $report.vulnerabilities.GetEnumerator()) {
-            foreach ($node in $entry.Value.nodes) {
-              $package = $lock.packages[$node]
-              if ($null -eq $package -or $package.dev -ne $true) {
-                Write-Error "A remaining vulnerable package is not confirmed as development-only: $node"
-                exit 1
-              }
-            }
-          }
-          if ($counts.high -gt 0) {
-            "High advisories remain only in development tooling; they are reported in the uploaded audit artifact and are not shipped in the production dependency graph." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          }
+          "Full dependency audit is clear: no known npm advisories in production or development dependencies." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
           exit 0
 
       - name: Upload complete audit report

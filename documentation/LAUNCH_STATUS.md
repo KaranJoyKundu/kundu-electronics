@@ -1,57 +1,80 @@
 # Launch status — 19 November 2026
 
-## Production
+## Production deployment
 
 - Storefront: **https://kundu-electronics.vercel.app**
 - Production branch: `main`.
-- Last verified production baseline before the current hardening PR: commit `528844c918aaa5a75fdfc83550ac8cd68922b8ba`.
-- Vercel deployment `dpl_6Pg7wz4c3NFqSUvZhfri7jv9kVJ7` was **READY** and aliased to the canonical domain.
-- Current hardening work is on `chore/production-readiness-hardening`; do not call it production until the PR is merged and the matching Vercel deployment is READY.
+- Latest production commit: `655030e3900823c8f2ceaf2ce3083c19ceea058b`.
+- Vercel deployment: `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb`, state **READY**, alias includes the canonical domain.
+- Production-readiness PR #11: https://github.com/KaranJoyKundu/kundu-electronics/pull/11 (merged).
+- Windows CI run #188: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44500366096 (all required jobs succeeded).
 
 ## Live catalogue facts from Supabase
 
 - 208 published products across 18 published categories.
 - 199 published original SKU rows plus nine project-kit rows.
 - 12 original resistor-named rows are archived and retained.
-- 220 total product rows (208 published + 12 archived).
-- Published price state: 49 items have no verified selling price.
-- Published availability: 117 in stock, 34 low stock, 42 out of stock, nine build-to-order, six unknown.
+- 220 product rows total.
+- 49 published products have no confirmed selling price.
+- Availability: 117 in stock, 34 low stock, 42 out of stock, nine build-to-order and six unknown.
 - No stock counts are shown publicly. No missing selling prices are inferred.
-- The full original P001–P211 photo set remains in the repository. The approved 211-SKU static photo sprite is used for catalogue imagery where a local product image exists.
 
 ## Orders, delivery and payment
 
 - Supabase `store_settings.checkout_enabled=true`.
 - Website order requests are enabled and remain unpaid until the shop confirms stock/address and arranges payment.
-- Server code calculates product prices, delivery amounts and order totals; idempotency and stock reservation logic remain in the existing database RPC.
-- Delivery options in Supabase: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop still confirms destination and feasibility.
-- bKash and Nagad are both disabled. Their receiving numbers and customer instructions are null.
-- Live database count at audit time: **0 orders, 0 payment submissions**.
+- Server/database calculates item pricing, delivery, stock status and totals; idempotency and stock reservation logic remain server-side.
+- Standard delivery: 12 hours–1 day / ৳0. Urgent: 30–60 minutes / ৳50. The shop confirms destination and feasibility before promising a window.
+- bKash and Nagad are disabled. Receiving number/instructions are unset.
+- Live database count: **0 orders, 0 payment submissions**.
 
-## Security status
+## Security and dependency verification
 
-- RLS is enabled on all 21 public tables.
-- `rate_limit_windows` deliberately has no anon/authenticated policy or grants; it is accessed only through the service-role `consume_rate_limit` function.
-- A new migration added indexes for 11 previously unindexed foreign keys and removed anonymous EXECUTE from role introspection helpers. Authenticated execute remains only where RLS or protected server operations require it; those SECURITY DEFINER functions contain role checks.
-- Supabase advisors still report expected SECURITY DEFINER exposure for safe public catalogue/config functions and authenticated role-guarded operational RPCs. These warnings are documented; do not call them zero findings.
-- Supabase Auth leaked-password protection remains disabled. This is an owner/dashboard action and requires a Supabase plan that includes the feature (current Supabase docs state Pro and above).
-- The complete npm audit on the previous workflow run reported 14 high, 0 moderate, 0 low and 0 critical findings. The affected `picomatch <=4.0.7` chain was classified as development-only; no patched stable release was available in the checked npm registry. The hardening workflow now distinguishes a production-only `npm audit --omit=dev` from the full dependency audit. Only the new workflow result can establish the current graph status.
-- Security headers were added in Next.js configuration; verify them from the deployed response after release.
+Windows CI run #188 on 19 November 2026:
+- Clean `npm ci`: success.
+- TypeScript typecheck: success.
+- ESLint: success.
+- Node test suite: **44 passed, 0 failed**.
+- Production build: success.
+- Full `npm audit --json`: **0 total** (0 critical, 0 high, 0 moderate, 0 low).
+- Production-only `npm audit --omit=dev --json`: **0 total** (0 critical, 0 high, 0 moderate, 0 low).
 
-## Verified routes and limits of this audit
+The former picomatch GHSA-fc5q-39xc-vjpf / CVE-2026-112366 advisory was withdrawn by GitHub on 18 November 2026: https://github.com/advisories/GHSA-fc5q-39xc-vjpf. The current lockfile audit is clean; the workflow now fails on any future finding in either development or production dependencies.
 
-The preceding production check received HTTP 200 for the homepage, shop, projects, cart, about, contact, support, gallery, image credits, shipping/returns, admin sign-in, product detail, project detail pages, `/robots.txt` and `/sitemap.xml`. This was an HTTP/SSR smoke test, not a full interactive Playwright or desktop/mobile visual test.
+Live Supabase hardening applied by migration `20261119094342_security_and_fk_index_hardening`:
+- 11 foreign-key indexes added.
+- Anonymous execution removed from internal role-helper functions.
+- Direct helper execution grants retained only for authenticated users where RLS policies require them.
+- `rate_limit_windows` remains intentionally private with no direct client policies/grants.
 
-Search for “breadboard” returned both breadboard products; a one-character “b” search needed a related Breadboard suggestion and the code change is included in the hardening branch. The ৳0–৳200 price-filter API returned matching products.
+Supabase Auth leaked-password protection is still disabled. The owner must enable it in Auth settings if their plan includes the feature; the current Supabase docs say this HaveIBeenPwned-backed option is Pro and above.
+
+Supabase advisors still surface generic notices for intended SECURITY DEFINER public read helpers, role-protected authenticated functions, the private rate-limit table and multiple permissive policies. The function grants and role checks were reviewed, but these advisor notices are not represented as all cleared. Review them with workload-specific context before any policy consolidation.
+
+## Production smoke verification
+
+The canonical production domain returned HTTP 200 for the homepage, shop, projects, LFR, Soccer Bot, RC Speed Battle, Drone, image credits, `/robots.txt`, and `/sitemap.xml`.
+
+Verified:
+- Security response headers: nosniff, frame denial, strict-origin Referrer-Policy, restrictive Permissions-Policy and HSTS.
+- Search `b` returns P079 and P080 Breadboard suggestions first.
+- Search `breadboard` returns the two Breadboard products.
+- Price-filter API `min=0&max=200` returns matching products.
+- Product and Bee optimized image URLs return image/jpeg or image/png responses.
+- Individual LFR, Soccer and RC kit product detail routes return HTTP 200.
+- Drone artwork contains an original concept illustration and does not claim a verified BOM/build photograph.
+
+This is HTTP/SSR/network smoke verification, not a full interactive Playwright or manual mobile visual review.
 
 ## Owner verification still required
 
-1. Sign in through `/admin/login` using the owner's email link and verify protected admin pages.
-2. Physically verify stock and resolve the six unknown availability records.
-3. Supply approved customer-facing selling prices for the 49 unpriced records.
-4. Enable bKash/Nagad only after exact receiving numbers and instructions are supplied and the owner explicitly approves activation.
-5. Confirm delivery feasibility per address before promising a window.
-6. Enable Supabase leaked-password protection in Auth settings if the project's plan includes it.
-7. Complete real-browser desktop/mobile interaction and accessibility testing. HTTP status checks alone do not establish visual or interactive correctness.
+1. Open `/admin/login` with the owner's email magic link and verify all protected admin pages in a browser.
+2. Physically verify six unknown stock records and reconfirm current in-stock/low-stock states.
+3. Confirm the 49 missing customer selling prices.
+4. Enable bKash/Nagad only after exact receiving numbers and approved instructions are supplied.
+5. Confirm delivery feasibility for each address before promising a delivery window.
+6. Enable Supabase leaked-password protection in Auth settings if the plan includes it.
+7. Complete interactive desktop/tablet/mobile browser QA, accessibility audit and Lighthouse measurements. The current checks do not prove every interactive state at each requested viewport.
+8. Review the remaining Supabase advisor notices around overlapping policies and real index usage.
 
-Do not claim zero vulnerabilities or full production readiness while any security advisories, owner blockers or untested release criteria remain.
+Do not claim absolute zero possible vulnerabilities. The current npm audit has no known findings; Auth hardening and the owner/browser tasks above remain outstanding.

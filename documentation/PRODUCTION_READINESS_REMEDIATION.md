@@ -1,55 +1,63 @@
 # Production readiness remediation — 19 November 2026
 
-This report records changes made from the autonomous audit backlog. It distinguishes changes already applied to live Supabase from source changes awaiting CI/merge/deployment.
+## Release result
 
-## Implemented in the hardening branch
+The repository-controlled production-readiness backlog was implemented in PR #11 and merged into `main`.
+
+- Production commit: `655030e3900823c8f2ceaf2ce3083c19ceea058b`.
+- Production Vercel deployment: `dpl_5yK3qWcQfNqLB3LqbMa93Ju1UaQb`, **READY**.
+- Windows CI run: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44500366096
+- Full npm audit: 0 critical / 0 high / 0 moderate / 0 low.
+- Production-only npm audit: 0 critical / 0 high / 0 moderate / 0 low.
+- Windows application verification: clean install, typecheck, lint, 44 tests passed, production build.
+- Production readiness PR: https://github.com/KaranJoyKundu/kundu-electronics/pull/11
+
+## Implemented and live
 
 | Area | Change | Verification |
 |---|---|---|
-| Project image integrity | Removed unverified Daraz/Hackster/Instructables/MakerWorks hotlinks for LFR, Soccer Bot, RC and Drone project art. LFR/Soccer/RC now use the shop's approved local component photos with explicit “not a build photo” captions. Drone uses an original concept SVG and states that no verified BOM/build photo is available. Bee keeps owner case-study photos. | Source inspection; production visual verification still pending. |
-| Kit catalogue cards | Removed remote project-kit image URLs from the SKU map. Kits now use the existing local component artwork fallback until an owner-approved kit photo exists. | Source inspection; branch CI pending. |
-| Search | Added one-character "b" related expansion to "breadboard", returning real Breadboard product rows before broad matches. Added tests for the expansion helper. | Unit tests included in npm test; CI pending. |
-| Search accessibility | Added ArrowUp/ArrowDown navigation, Enter selection, Escape handling, aria-activedescendant, aria-selected and a visible active option state. | Build/lint and manual browser test pending. |
-| HTTP security | Added nosniff, frame denial, Referrer-Policy, Permissions-Policy and HSTS headers in Next.js config. | Must confirm deployed response headers after release. A restrictive CSP is intentionally deferred until real-browser nonce/script compatibility is tested. |
-| GitHub Actions | Updated checkout/setup-node/upload-artifact to immutable Node 24 action revisions; added main push verification; added a production-only npm audit --omit=dev gate; prevented the write-enabled dependency-remediation job from running on untrusted pull_request events. | CI pending on the hardening PR. |
-| Documentation | Updated README, START_HERE, PROJECT_STATE, LAUNCH_STATUS and PRODUCT_DATA_IMPORT to match live Supabase counts and current branch/deployment state. | Source review. |
-| Supabase permissions | Removed anon/authenticated execute on has_store_role; removed anon execute on is_store_admin and is_store_staff, retaining authenticated access needed by RLS. | Applied and verified on live database. |
-| Supabase indexing | Added 11 missing FK indexes identified by the live performance advisor. | Applied; unindexed-FK advisor findings no longer appear. |
+| Project image integrity | Removed unverified remote robot photo hotlinks. LFR/Soccer/RC use approved local component photos with explicit “not a build photo” captions. Drone uses an original concept SVG labelled as concept art, not a completed build or verified kit. Bee retains owner case-study photos. | Production project pages return HTTP 200; no unverified third-party project-photo URLs remain. |
+| Kit image fallback | Removed six remote kit photo URLs from the product image map. Project kit products use local artwork fallback until actual owner-approved kit photography exists. | Three kit detail product pages HTTP 200; original P001–P211 mapping preserved. |
+| Search | Added a related Breadboard match for the single-letter `b` autocomplete search. | Live API returns P079 and P080 first for `b`; `breadboard` returns both products. |
+| Search accessibility | Added keyboard navigation, Escape, Enter, active option semantics and visible active state. | Windows lint, typecheck and 44 tests pass. |
+| Image optimization | Converted raw product/Bee images to Next Image; only the specific Bee case-study host/path was added to the remote allowlist. | Production optimized product and Bee image endpoints return HTTP 200 with image MIME types. |
+| HTTP security | Added nosniff, frame denial, Referrer-Policy, Permissions-Policy and HSTS headers. | Canonical production response headers verified. |
+| GitHub Actions | Pinned checkout/setup-node/upload-artifact actions by immutable SHA, added main push verification, a strict full dependency audit (fail on any finding), and a separate production-only audit. The write-enabled dependency-remediation workflow is restricted to trusted pushes on `feat/launch-prep`. | Windows CI run #188: all required jobs success. |
+| Supabase permissions | Removed anon/authenticated execute from `has_store_role`; removed anon execute on role wrappers while retaining authenticated wrapper access needed by RLS. | Live permission query verified. |
+| Supabase indexes | Added 11 missing FK indexes. | Live migration applied; unindexed FK advisor findings cleared. |
+| Documentation | Reconciled product counts, checkout, branch, deployment and security status; added this implementation record. | Repository source review. |
 
-## Live database facts verified
+## Verified live business/data state
 
-- 220 product rows total: 208 published and 12 archived.
-- 18 published categories.
-- 199 published original SKU rows plus nine published kit rows.
-- 49 published products without confirmed selling prices.
-- Availability: 117 in stock, 34 low stock, 42 out of stock, nine build-to-order and six unknown.
-- Orders: 0. Payment submissions: 0.
-- Checkout enabled for unpaid order requests.
-- Standard delivery: 12 hours–1 day / ৳0. Urgent: 30–60 minutes / ৳50.
-- bKash/Nagad disabled; no receiving numbers or instructions configured.
+- 220 product rows total: 208 published, 12 archived.
+- 18 published categories: 199 published original SKU products plus nine published project kits.
+- 49 published products have no confirmed selling price.
+- Availability: 117 in stock, 34 low stock, 42 out of stock, nine build-to-order, six unknown.
+- Orders: 0; payment submissions: 0.
+- Checkout is enabled for unpaid order requests.
+- Standard delivery: 12 hours–1 day / ৳0. Urgent: 30–60 minutes / ৳50. Address/feasibility is confirmed by the shop.
+- bKash and Nagad remain disabled; receiving numbers and instructions are unset.
 
-## Supabase security-advisor interpretation
+## Current security posture
 
-The live advisor still reports:
+- RLS is enabled on all 21 public tables.
+- `rate_limit_windows` intentionally has no anon/authenticated policies or grants; the service-role RPC alone accesses it.
+- Role helper execute grants were narrowed; operational SECURITY DEFINER RPCs retain server-side staff/admin checks.
+- Supabase Auth leaked-password protection remains disabled and requires an owner dashboard change if their plan supports it.
+- Supabase advisors still report some generic SECURITY DEFINER notices for deliberate public/role-guarded helpers, multiple-permissive-policy notices and unused-index notices. No claim is made that every generic advisor notice is cleared.
+- Current full and production npm audits report zero known advisories. The previous picomatch advisory GHSA-fc5q-39xc-vjpf was withdrawn by GitHub on 18 November 2026: https://github.com/advisories/GHSA-fc5q-39xc-vjpf.
 
-- Four anon-executable SECURITY DEFINER functions: public product search/count, public checkout configuration and published-category checks. These functions intentionally provide public read-only results; grants were checked and role introspection is no longer anon-callable.
-- Fourteen authenticated-executable SECURITY DEFINER functions. Stock/order functions check staff, payment verification checks admin, and the public helper functions expose only safe read data. Service-role-only checkout/guest-order/rate-limit functions remain inaccessible to anon/authenticated.
-- rate_limit_windows has RLS enabled and no policies. This is intentional: it has no direct client grants and is accessed by a service-role-only RPC.
-- Multiple permissive policy and unused-index advisories remain. The 11 new FK indexes may be reported as unused until workloads exercise them; do not delete them solely because a fresh advisor snapshot sees no reads.
-- Leaked-password protection remains disabled in Supabase Auth.
+## Remaining owner or browser tasks
 
-This is not a zero-advisory state and is not described as such.
+1. Confirm the 49 missing customer-facing selling prices; no amounts were guessed.
+2. Physically verify six unknown stock records and reconfirm stock status.
+3. Owner must complete magic-link sign-in and verify protected admin pages in an actual browser.
+4. Enable Supabase Auth leaked-password protection if the project's plan includes it.
+5. Supply exact bKash/Nagad receiving information and approved instructions before enabling payments.
+6. Approve any new delivery, warranty, policy or service claims.
+7. Approve actual project build photos and image rights if adding them later.
+8. Complete full interactive Playwright/manual visual testing at 1440×900, 1366×768, 768×1024, 390×844 and 360×800; run Lighthouse and WCAG 2.2 AA checks. The HTTP/SSR smoke tests recorded here do not substitute for those checks.
 
-## Work still blocked or not safely inferable
+## Production smoke verification
 
-1. **Dependency advisory:** previous complete audit reported 14 high development-tooling findings, all dev-only, through picomatch 4.0.7. No safe patched stable release was found in the checked registry. The full audit must remain visible; do not force an incompatible override. The production-only CI audit must still pass.
-2. **Supabase leaked-password protection:** the Auth advisor says disabled. Supabase's current documentation says this HaveIBeenPwned-backed option is Pro and above. An owner with the appropriate plan must enable it in Supabase Dashboard → Authentication → Settings / Password security. This connector can inspect the database but cannot change that Auth setting.
-3. **Business data:** 49 selling prices and six availability states need owner confirmation. No values were guessed.
-4. **Payment activation:** bKash/Nagad remain disabled until verified receiving numbers and owner-approved instructions exist.
-5. **Admin sign-in:** an owner must open the email magic link and confirm the protected admin session. No authentication bypass was attempted.
-6. **Visual testing:** HTTP/SSR smoke checks are not a full browser audit. Real Playwright/Lighthouse desktop, tablet and mobile testing still needs to run in an environment with browser automation.
-7. **Image rights:** future external project photos must have documented permission/licence. Existing project collages use the owner-approved local component-photo set; the drone illustration is not a photograph.
-
-## Release acceptance
-
-Do not merge/deploy until Windows CI passes typecheck, lint, tests, production build and the production-only dependency audit. After deployment, verify the exact Vercel source SHA, READY status, headers, all major pages, images, search (b and breadboard), pagination, ৳0–৳200 filtering and responsive customer journeys. Do not create real production orders or payments for testing.
+The canonical site returned HTTP 200 for home, shop, projects, LFR, Soccer, RC, Drone, image credits, robots and sitemap. Search, price-filter, security-header and optimized image endpoints were tested on production. This is not a full interactive browser audit.
