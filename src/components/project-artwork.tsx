@@ -1,7 +1,7 @@
 import { ProductPhoto } from "@/components/product-photo";
 
 export type ProjectKind = "bee" | "lfr" | "soccerbot" | "rc" | "drone";
-
+type CollageKind = "lfr" | "soccerbot" | "rc";
 type ComponentPhoto = { sku: string; name: string; category: string };
 
 const labels: Record<ProjectKind, string> = {
@@ -12,15 +12,9 @@ const labels: Record<ProjectKind, string> = {
   drone: "DRONE BUILD",
 };
 
-const components: Record<ProjectKind, ComponentPhoto[]> = {
-  bee: [
-    { sku: "P021", name: "Arduino Nano", category: "Microcontrollers & Development Boards" },
-    { sku: "P037", name: "SG90 Servo", category: "Sensors & Modules" },
-    { sku: "P031", name: "MAX7219 LED Matrix", category: "Displays" },
-    { sku: "P175", name: "HC-05 Bluetooth", category: "Sensors & Modules" },
-    { sku: "P036", name: "HC-SR04 Ultrasonic", category: "Sensors & Modules" },
-    { sku: "P181", name: "18650 Battery", category: "Power" },
-  ],
+// These are component-photo selections for showcase collages, not verified
+// as-built BOMs or photographs of the complete kits.
+const components: Record<CollageKind, ComponentPhoto[]> = {
   lfr: [
     { sku: "P021", name: "Arduino Nano", category: "Microcontrollers & Development Boards" },
     { sku: "P064", name: "TB6612FNG Driver", category: "Motor Drivers" },
@@ -45,20 +39,12 @@ const components: Record<ProjectKind, ComponentPhoto[]> = {
     { sku: "P001", name: "65mm Robot Wheel", category: "Robotics Parts & Mechanical" },
     { sku: "P012", name: "GA37 Gear Motor", category: "Robotics Parts & Mechanical" },
   ],
-  drone: [
-    { sku: "P023", name: "ESP32 DevKit", category: "Microcontrollers & Development Boards" },
-    { sku: "P024", name: "ESP32-CAM", category: "Microcontrollers & Development Boards" },
-    { sku: "P025", name: "ESP32-S3", category: "Microcontrollers & Development Boards" },
-    { sku: "P040", name: "MPU6050 IMU", category: "Sensors & Modules" },
-    { sku: "P036", name: "Ultrasonic Sensor", category: "Sensors & Modules" },
-    { sku: "P181", name: "18650 Battery", category: "Power" },
-  ],
 };
 
-function ComponentCollage({ kind }: { kind: ProjectKind }) {
+function ComponentCollage({ kind }: { kind: CollageKind }) {
   return (
     <div className={"project-artwork project-artwork-" + kind} role="img"
-      aria-label={labels[kind] + " — catalogue component illustrations, not a photograph of an assembled robot"}>
+      aria-label={labels[kind] + " — catalogue component imagery, not a photograph of an assembled robot"}>
       <div className="project-artwork-photo-grid">
         {components[kind].map((part) => (
           <figure className="project-artwork-photo" key={part.sku}>
@@ -106,25 +92,6 @@ export function ProjectArtwork({ kind }: { kind: ProjectKind }) {
       </div>
     );
   }
-  if (kind === "lfr" || kind === "soccerbot" || kind === "rc") {
-    return <ComponentCollage kind={kind} />;
-  }
-  if (kind === "drone") {
-    return <DroneConceptArtwork />;
-  }
-
-  return (
-    <div className={"project-artwork project-artwork-" + kind} role="img" aria-label={labels[kind] + " — catalogue component photo collage"}>
-      <div className="project-artwork-photo-grid">
-        {components[kind as ProjectKind].map((part) => (
-          <figure className="project-artwork-photo" key={part.sku}>
-            <ProductPhoto name={part.name} sku={part.sku} category={part.category} />
-            <figcaption>{part.name}</figcaption>
-          </figure>
-        ))}
-      </div>
-      <span className="project-artwork-caption">CATALOGUE COMPONENT PHOTOS · NOT A BUILD PHOTO</span>
-      <span className="project-artwork-index">{labels[kind]}</span>
-    </div>
-  );
+  if (kind === "drone") return <DroneConceptArtwork />;
+  return <ComponentCollage kind={kind} />;
 }
