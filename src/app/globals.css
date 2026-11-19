@@ -685,6 +685,12 @@ button { cursor: pointer; }
 .project-showcase-track { display:flex; width:500%; transition:transform .55s cubic-bezier(.22,.75,.26,1); }
 .project-showcase-slide { flex:0 0 20%; min-width:0; }
 .project-artwork { position:relative; display:flex; min-width:0; min-height:220px; flex-direction:column; justify-content:center; align-items:center; overflow:hidden; padding:12px; background:linear-gradient(145deg,#f7f8f3,#e3ece5); border:1px solid #d0ddd2; border-radius:10px; }
+
+.project-artwork-concept { min-height:220px; gap:10px; padding:20px; background:radial-gradient(circle at 50% 48%,#f8fbf8 0,#e8f0e9 60%,#dfe9e1 100%); }
+.project-artwork-concept-svg { display:block; width:min(100%,620px); max-height:240px; height:auto; }
+.project-kit-photo-fallback { width:100%; min-width:0; }
+.project-kit-photo-fallback .product-artwork { width:100%; min-height:180px; }
+
 .project-artwork-real-photo { min-height:220px; padding:14px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:7px; background:#f5f4ef; border-bottom:1px solid var(--line); }
 .project-artwork-real-photo img { width:100%; height:230px; object-fit:contain; display:block; }
 .project-artwork-source { display:block; margin-top:2px; color:var(--muted); font:9px/1.5 ui-monospace,monospace; text-decoration:underline; text-underline-offset:3px; }
