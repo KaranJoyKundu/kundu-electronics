@@ -1,58 +1,57 @@
-# Launch status — 18 November 2026
+# Launch status — 19 November 2026
 
-## Verified live catalogue
+## Production
 
-- Production storefront: **https://kundu-electronics.vercel.app**
-- Vercel production deployment: `dpl_FBM9DvHwx7u1KJ981EcqrsDSSKXa`, state **READY**.
-- The deployment source is `feat/launch-prep`, merge commit `e8fe75e445b84f802a470d4ef373d3d33e232a89`. The canonical Vercel alias points to this deployment. The `main` branch remains unchanged.
-- Live Supabase project: `tcapxmiroikbsozvucmt`, region `ap-northeast-1`.
-- The exact public catalogue count function returns **208 published products**. There are **18 published categories** and **220 inventory records**.
-- The shop presents all 208 published products using 24 items per page (**9 pages**) with server-side search, category and BDT price filters.
-- The optimized photo sprite retains all 211 original SKU tiles P001–P211 (46,362 bytes, 16 columns × 14 rows). Twelve resistor-named products are archived; the nine project-kit bundles use labelled project artwork where no kit-specific photo was supplied.
-- The owner confirmed on 18 November 2026 that Kundu Electronics has permission/licensing to use all 211 photographs supplied in the image package. The 19 Creative Commons source photographs have author/source/licence details listed at `/image-credits`; the owner-supplied set is also identified there.
-- Product images are static catalogue assets. The Supabase `product_images` table currently has zero rows; the complete static sprite is the image source used by the storefront.
+- Storefront: **https://kundu-electronics.vercel.app**
+- Production branch: `main`.
+- Last verified production baseline before the current hardening PR: commit `528844c918aaa5a75fdfc83550ac8cd68922b8ba`.
+- Vercel deployment `dpl_6Pg7wz4c3NFqSUvZhfri7jv9kVJ7` was **READY** and aliased to the canonical domain.
+- Current hardening work is on `chore/production-readiness-hardening`; do not call it production until the PR is merged and the matching Vercel deployment is READY.
 
-## Price and availability transparency
+## Live catalogue facts from Supabase
 
-The imported inventory is represented as recorded; missing values were not guessed:
+- 208 published products across 18 published categories.
+- 199 published original SKU rows plus nine project-kit rows.
+- 12 original resistor-named rows are archived and retained.
+- 220 total product rows (208 published + 12 archived).
+- Published price state: 49 items have no verified selling price.
+- Published availability: 117 in stock, 34 low stock, 42 out of stock, nine build-to-order, six unknown.
+- No stock counts are shown publicly. No missing selling prices are inferred.
+- The full original P001–P211 photo set remains in the repository. The approved 211-SKU static photo sprite is used for catalogue imagery where a local product image exists.
 
-- **49 products** have no confirmed customer selling price and show **“Price on request”**.
-- Current published-catalogue availability: **117 in stock**, **34 low stock**, **42 out of stock**, **6 unknown/unrecorded** and **9 build-to-order** project kits.
-- **6 products** have no recorded stock quantity and show **“Availability to confirm”**.
-- Customer-facing inventory counts, buying prices, margins, supplier identities and private notes are not exposed.
-- These values should still be physically reconfirmed by the owner before accepting paid orders or advertising availability.
+## Orders, delivery and payment
 
-## Website order requests and payment separation
+- Supabase `store_settings.checkout_enabled=true`.
+- Website order requests are enabled and remain unpaid until the shop confirms stock/address and arranges payment.
+- Server code calculates product prices, delivery amounts and order totals; idempotency and stock reservation logic remain in the existing database RPC.
+- Delivery options in Supabase: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop still confirms destination and feasibility.
+- bKash and Nagad are both disabled. Their receiving numbers and customer instructions are null.
+- Live database count at audit time: **0 orders, 0 payment submissions**.
 
-- Supabase checkout_enabled = true.
-- Two enabled delivery choices: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop confirms address/feasibility.
-- The website order API and database create unpaid order requests using server-authoritative current prices, idempotency, quantity bounds and stock locks.
-- Orders containing untracked build-to-order items begin in pending_stock_confirmation. The shop must confirm stock and delivery before arranging payment.
-- No online payment is collected. There are currently zero enabled payment methods, so bKash/Nagad receiving details and payment instructions are not shown. New orders have payment status not_submitted.
-- WhatsApp handoff includes each product’s SKU, name, price × quantity, line total, delivery charge and final Total: line. Click-to-call is available as an alternative.
-- A single admin profile exists; the owner still needs to sign in and verify protected admin pages in a browser.
-- Vercel has public Supabase URL/publishable-key variables and protected server-only entries for SUPABASE_SECRET_KEY and APP_HMAC_SECRET. Secret values are not present in source control or this document.
+## Security status
 
-## CI and security
+- RLS is enabled on all 21 public tables.
+- `rate_limit_windows` deliberately has no anon/authenticated policy or grants; it is accessed only through the service-role `consume_rate_limit` function.
+- A new migration added indexes for 11 previously unindexed foreign keys and removed anonymous EXECUTE from role introspection helpers. Authenticated execute remains only where RLS or protected server operations require it; those SECURITY DEFINER functions contain role checks.
+- Supabase advisors still report expected SECURITY DEFINER exposure for safe public catalogue/config functions and authenticated role-guarded operational RPCs. These warnings are documented; do not call them zero findings.
+- Supabase Auth leaked-password protection remains disabled. This is an owner/dashboard action and requires a Supabase plan that includes the feature (current Supabase docs state Pro and above).
+- The complete npm audit on the previous workflow run reported 14 high, 0 moderate, 0 low and 0 critical findings. The affected `picomatch <=4.0.7` chain was classified as development-only; no patched stable release was available in the checked npm registry. The hardening workflow now distinguishes a production-only `npm audit --omit=dev` from the full dependency audit. Only the new workflow result can establish the current graph status.
+- Security headers were added in Next.js configuration; verify them from the deployed response after release.
 
-- Windows application verification has passed: clean install, typecheck, lint, tests and production build.
-- The Windows workflow's “Verify or assemble the complete 211-product photo sprite” step passed.
-- Stable TypeScript-ESLint `8.73.0` and nested `minimatch@11.0.9` are committed on the feature branch.
-- The remaining dependency audit reports **14 high, 0 moderate and 0 critical** findings in development-only tooling. The outstanding high advisory is GHSA-fc5q-39xc-vjpf in `picomatch <=4.0.7`. The project is **not described as security-clean**; see `documentation/DEPENDENCY_SECURITY_REMEDIATION.md`.
-- Supabase security-advisor warnings still need review. RLS is enabled on all 21 public tables; two Storage buckets are private.
+## Verified routes and limits of this audit
 
-## GitHub review state
+The preceding production check received HTTP 200 for the homepage, shop, projects, cart, about, contact, support, gallery, image credits, shipping/returns, admin sign-in, product detail, project detail pages, `/robots.txt` and `/sitemap.xml`. This was an HTTP/SSR smoke test, not a full interactive Playwright or desktop/mobile visual test.
 
-- PR #4: https://github.com/KaranJoyKundu/kundu-electronics/pull/4 — merged into `feat/launch-prep` on 18 November 2026; production is deployed from merge commit `e8fe75e445b84f802a470d4ef373d3d33e232a89`.
-- Draft PR #3 to `main` remains unchanged and unmerged; the default branch is still `7f2a448426fb78f4467eaa377af8489f115c427a`.
-- Release preview before promotion: `https://kundu-electronics-elepd16xd-kundu2409056-5098.vercel.app` (READY).
+Search for “breadboard” returned both breadboard products; a one-character “b” search needed a related Breadboard suggestion and the code change is included in the hardening branch. The ৳0–৳200 price-filter API returned matching products.
 
-## Verification still required by the owner
+## Owner verification still required
 
-1. Open https://kundu-electronics.vercel.app on desktop and mobile. Check the home page, all 9 shop pages, search, category/price filters, each product photo, product detail pages and WhatsApp enquiry-cart flow.
-2. Sign in at `/admin/login` and confirm the protected admin pages work.
-3. Reconfirm the selling prices and physical stock. In particular, fill the 49 missing prices and six unrecorded stock quantities if they are now known.
-4. Confirm that Standard and Urgent delivery windows are feasible for each order address before dispatch.
-5. Supply verified bKash/Nagad receiving numbers and payment instructions before enabling online transfer. Until then, arrange payment directly after the shop confirms the order.
+1. Sign in through `/admin/login` using the owner's email link and verify protected admin pages.
+2. Physically verify stock and resolve the six unknown availability records.
+3. Supply approved customer-facing selling prices for the 49 unpriced records.
+4. Enable bKash/Nagad only after exact receiving numbers and instructions are supplied and the owner explicitly approves activation.
+5. Confirm delivery feasibility per address before promising a window.
+6. Enable Supabase leaked-password protection in Auth settings if the project's plan includes it.
+7. Complete real-browser desktop/mobile interaction and accessibility testing. HTTP status checks alone do not establish visual or interactive correctness.
 
-The public catalogue and project kits are published. Website order requests can be recorded without online payment; paid mobile-transfer submissions remain disabled until verified business receiving details and customer instructions are configured.
+Do not claim zero vulnerabilities or full production readiness while any security advisories, owner blockers or untested release criteria remain.
