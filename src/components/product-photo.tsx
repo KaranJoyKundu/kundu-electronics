@@ -51,6 +51,7 @@ export function ProductPhoto({ sku, name, category, imageSrc }: ProductPhotoProp
         loading="lazy"
         decoding="async"
       />
+    );
   }
 
   const projectKey = sku ? projectPhotoByKitSku[sku] : undefined;
