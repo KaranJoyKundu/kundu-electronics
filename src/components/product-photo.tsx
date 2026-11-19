@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ProductArtwork } from "@/components/product-artwork";
 import { PRODUCT_IMAGE_PATHS } from "@/lib/product-image-paths";
 
@@ -11,10 +12,13 @@ export function ProductPhoto({ sku, name, category, imageSrc }: ProductPhotoProp
 
   if (originalImage) {
     return (
-      <img
+      <Image
         className="product-photo-real"
         src={originalImage}
         alt={name}
+        width={800}
+        height={800}
+        sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 220px"
         loading="lazy"
         decoding="async"
       />
