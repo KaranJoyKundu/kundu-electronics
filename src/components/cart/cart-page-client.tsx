@@ -138,7 +138,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
       form.note.trim() ? `Order note: ${form.note.trim()}` : "",
       form.reference.trim() ? `Reference: ${form.reference.trim()}` : "",
       form.suggestions.trim() ? `Suggestions: ${form.suggestions.trim()}` : "",
-      `Payment preference: ${paymentChoice === "cash_on_delivery" ? "Cash on delivery" : "Online payment (" + (paymentMethod === "bkash" ? "bKash" : "Nagad") + ")"}`,
+      `Payment preference: ${paymentChoice === "cash_on_delivery" ? "Cash on delivery" : "Online payment"}`,
     ].filter(Boolean).join("\n");
     const payload = {
       customer: {
@@ -196,7 +196,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
       }
       clearCart();
       try { sessionStorage.removeItem("ke-checkout-idempotency-v1"); } catch { /* Ignore unavailable browser storage. */ }
-      router.push(`/orders/${order.orderId}`);
+      router.push(`/orders/${order.orderId}?payment=${paymentChoice}`);
     } catch {
       setError("A network error occurred. Your order may not have been submitted. Retry this same checkout to safely reuse its idempotency key.");
     } finally {
