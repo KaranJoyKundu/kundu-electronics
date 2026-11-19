@@ -7,6 +7,7 @@ on:
       - feat/launch-prep
   push:
     branches:
+      - main
       - feat/storefront-foundation
       - feat/launch-prep
 
@@ -24,10 +25,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0 (Node 24)
 
       - name: Set up Node.js 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0 (Node 24)
         with:
           node-version: 24
           cache: npm
@@ -48,15 +49,15 @@ jobs:
         run: npm run build
 
   dependency-audit:
-    name: Windows dependency audit (reported separately)
+    name: Windows full dependency audit (development advisories remain visible)
     runs-on: windows-latest
     timeout-minutes: 15
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0 (Node 24)
 
       - name: Set up Node.js 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0 (Node 24)
         with:
           node-version: 24
           cache: npm
@@ -64,7 +65,7 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Run npm audit and fail on non-development vulnerabilities
+      - name: Audit complete dependency tree and classify every finding
         shell: pwsh
         run: |
           npm audit --json 1> npm-audit.json 2> npm-audit-stderr.txt
@@ -94,7 +95,7 @@ jobs:
 
       - name: Upload complete audit report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0 (Node 24)
         with:
           name: npm-audit-report
           path: |
@@ -104,16 +105,51 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+  production-dependency-audit:
+    name: Windows production dependency audit
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0 (Node 24)
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0 (Node 24)
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit production dependency graph
+        shell: pwsh
+        run: |
+          npm audit --omit=dev --json 1> npm-audit-production.json 2> npm-audit-production-stderr.txt
+          $auditExitCode = $LASTEXITCODE
+          $report = Get-Content npm-audit-production.json -Raw | ConvertFrom-Json -AsHashtable
+          if ($null -eq $report.metadata.vulnerabilities) {
+            Write-Error "The production dependency audit did not return a valid vulnerability summary."
+            exit 1
+          }
+          $counts = $report.metadata.vulnerabilities
+          "Production dependency audit: $($counts.total) total ($($counts.critical) critical, $($counts.high) high, $($counts.moderate) moderate, $($counts.low) low)." | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "npm audit --omit=dev exit code: $auditExitCode" | Tee-Object -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          if ($counts.total -ne 0 -or $auditExitCode -ne 0) {
+            Write-Error "Known vulnerabilities remain in the production dependency graph."
+            exit 1
+          }
+
   dependency-fix-dry-run:
     name: Windows npm audit fix dry-run investigation
     runs-on: windows-latest
     timeout-minutes: 20
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0 (Node 24)
 
       - name: Set up Node.js 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0 (Node 24)
         with:
           node-version: 24
           cache: npm
@@ -170,7 +206,7 @@ jobs:
 
       - name: Upload full dry-run evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0 (Node 24)
         with:
           name: npm-audit-fix-dry-run
           path: |
@@ -182,6 +218,7 @@ jobs:
           retention-days: 30
 
   dependency-remediation-preview:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feat/launch-prep'
     name: Windows stable TypeScript-ESLint update preview
     runs-on: windows-latest
     timeout-minutes: 35
@@ -189,12 +226,12 @@ jobs:
       contents: write
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0 (Node 24)
         with:
           fetch-depth: 0
 
       - name: Set up Node.js 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0 (Node 24)
         with:
           node-version: 24
           cache: npm
@@ -274,7 +311,7 @@ jobs:
         run: npm run build
 
       - name: Upload the tested manifest, lockfile and audit report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0 (Node 24)
         with:
           name: typescript-eslint-8.73-candidate
           path: |
