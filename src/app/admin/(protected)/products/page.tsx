@@ -36,7 +36,7 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
       <label>Status<select name="status" defaultValue="draft">{statuses.map((value) => <option key={value}>{value}</option>)}</select></label>
       <label>Availability<select name="availability" defaultValue="unknown">{availability.map((value) => <option key={value} value={value}>{value.replaceAll("_", " ")}</option>)}</select></label>
       <label className="admin-full-field">Description<textarea name="description" rows={3} maxLength={5000} /></label>
-      <label className="admin-check"><input name="orderable" type="checkbox" /> Allow ordering after availability is confirmed</label>
+      <label className="admin-check"><input name="orderable" type="checkbox" /> Allow ordering at the listed price (including pre-orders)</label>
       <div className="admin-full-field"><button className="button button-primary" type="submit">Save product</button></div>
     </form></details>
     <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Product</th><th>Price</th><th>Availability</th><th>Status</th><th>Edit</th></tr></thead><tbody>
