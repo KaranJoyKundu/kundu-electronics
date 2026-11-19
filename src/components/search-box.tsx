@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type KeyboardEvent } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SearchIcon, ArrowRightIcon } from "@/components/icons";
 import { parseSearchSuggestions, type SearchSuggestion } from "@/lib/catalog/response";
@@ -9,6 +10,7 @@ type Suggestion = SearchSuggestion;
 type SearchResult = { query: string; suggestions: Suggestion[] };
 
 export function SearchBox() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [open, setOpen] = useState(false);
@@ -22,11 +24,7 @@ export function SearchBox() {
 
   useEffect(() => {
     const normalized = query.trim();
-    if (!normalized) {
-      setSearchResult(null);
-      setActiveIndex(-1);
-      return;
-    }
+    if (!normalized) return;
 
     const controller = new AbortController();
     const timeout = window.setTimeout(() => {
@@ -73,10 +71,10 @@ export function SearchBox() {
     } else if (event.key === "Enter" && activeIndex >= 0) {
       event.preventDefault();
       if (activeIndex === allResultsIndex) {
-        window.location.assign(`/shop?query=${encodeURIComponent(normalizedQuery)}`);
+        router.push(`/shop?query=${encodeURIComponent(normalizedQuery)}`);
       } else {
         const selected = suggestions[activeIndex];
-        if (selected) window.location.assign(`/products/${selected.slug}`);
+        if (selected) router.push(`/products/${selected.slug}`);
       }
       setOpen(false);
     }
