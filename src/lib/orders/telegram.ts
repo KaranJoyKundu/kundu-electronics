@@ -75,7 +75,7 @@ export function formatTelegramOrderMessage(order: TelegramOrderNotification): st
     `🔗 <a href="${escapeTelegramHtml(safeText(order.adminUrl, 400))}">Open admin orders</a>`,
   ];
 
-  let included = [...itemLines];
+  const included = [...itemLines];
   const build = () => [...head, ...(included.length ? included : ["• (item details unavailable)"]),
     ...(itemLines.length > included.length ? [`… ${itemLines.length - included.length} more item line(s)`] : []), ...totals].join("\n");
   let message = build();
