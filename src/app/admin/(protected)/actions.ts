@@ -117,7 +117,7 @@ export async function createProduct(form: FormData) {
   const { error } = await supabase.from("products").insert({
     name, slug, sku, category_id: categoryId, brand, short_description: shortDescription,
     description, price_bdt: price, status, public_availability: availability,
-    orderable: form.get("orderable") === "on" && availability !== "unknown" && availability !== "out_of_stock" && availability !== "discontinued",
+    orderable: form.get("orderable") === "on" && availability !== "unknown" && availability !== "discontinued",
   });
   if (error) finish("/admin/products", "save-failed");
   finish("/admin/products");
@@ -148,7 +148,7 @@ export async function updateProduct(form: FormData) {
   const { error } = await supabase.from("products").update({
     name, slug, sku, category_id: categoryId, brand, short_description: shortDescription,
     description, price_bdt: price, status, public_availability: availability,
-    orderable: form.get("orderable") === "on" && availability !== "unknown" && availability !== "out_of_stock" && availability !== "discontinued",
+    orderable: form.get("orderable") === "on" && availability !== "unknown" && availability !== "discontinued",
   }).eq("id", id);
   if (error) finish("/admin/products", "save-failed");
   finish("/admin/products");

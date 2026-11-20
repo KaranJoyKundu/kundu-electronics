@@ -6,7 +6,7 @@ The early-stage integration blockers below are historical notes and are supersed
 - The live Supabase project `tcapxmiroikbsozvucmt` is connected and active; the public schema, RLS hardening and checkout RPCs are deployed.
 - Checkout and delivery-zone settings are enabled in the live database.
 - bKash and Nagad are enabled in `payment_method_settings` with the owner-provided receiving number `01735530174` and instructions. The public checkout configuration RPC returns both.
-- PR #14 is merged and deployed. It adds the COD/online-payment selector, bKash/Nagad selection, sender mobile + TrxID submission, Reference and Suggestions fields, COD-specific order display, and the stock-confirmation guard. The production deployment is READY; Windows CI #207 passed typecheck, lint, tests, build and dependency audits.
+- PR #14 is merged and deployed. It adds the COD/online-payment selector, bKash/Nagad selection, sender mobile + TrxID submission, Reference and Suggestions fields, and COD-specific order display. A follow-up branch extends pre-orders to priced out-of-stock products and kits, with a 7–14 day stock-drop estimate; it is not yet released.
 - No real order or payment was created to test checkout. No wallet transfer or manual verification was performed.
 - Online payment is manual transfer only; no bKash/Nagad API or gateway is integrated. Customer submissions remain pending until an authorized admin verifies them.
 - The 49 unconfirmed selling prices, six unknown availability states, owner admin sign-in, Auth leaked-password setting, and interactive desktop/mobile QA remain open.

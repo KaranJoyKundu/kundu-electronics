@@ -6,11 +6,12 @@ import type { ProductVariant } from "@/lib/catalog/types";
 import { resolveCartLinePrice } from "@/lib/catalog/cart-pricing";
 import { formatPriceBdt } from "@/lib/format";
 
-export function ProductPurchaseControl({ productId, basePriceBdt, orderable, enquiryOnly, variants }: {
+export function ProductPurchaseControl({ productId, basePriceBdt, orderable, enquiryOnly, preorder = false, variants }: {
   productId: string;
   basePriceBdt: number | null;
   orderable: boolean;
   enquiryOnly: boolean;
+  preorder?: boolean;
   variants: readonly ProductVariant[];
 }) {
   const { addItem } = useCart();
@@ -52,9 +53,9 @@ export function ProductPurchaseControl({ productId, basePriceBdt, orderable, enq
         addItem(productId, safeQuantity, variantId || null);
         setAdded(true);
       }}>
-        {enquiryOnly ? (added ? "Added to enquiry cart" : "Add to enquiry cart") : !orderable ? "Currently unavailable" : !price.valid ? "Select an option" : !validQuantity ? "Check quantity" : added ? "Added to cart" : "Add to cart"}
+        {enquiryOnly ? (added ? "Added to enquiry cart" : "Add to enquiry cart") : !orderable ? "Currently unavailable" : !price.valid ? "Select an option" : !validQuantity ? "Check quantity" : preorder ? (added ? "Added to pre-order" : "Add pre-order to cart") : added ? "Added to cart" : "Add to cart"}
       </button>
-      {added ? <span role="status" aria-live="polite">Added to your cart.</span> : null}
+      {added ? <span role="status" aria-live="polite">{preorder ? "Added to your pre-order cart." : "Added to your cart."}</span> : null}
     </div>
   );
 }

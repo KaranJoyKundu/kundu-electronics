@@ -7,7 +7,7 @@ import { parseOrderSummary, type OrderSummary } from "@/lib/orders/order-summary
 import { business } from "@/config/business";
 
 const orderStatusLabel: Record<string, string> = {
-  pending_stock_confirmation: "Waiting for stock confirmation",
+  pending_stock_confirmation: "Pre-order · waiting for next stock drop",
   awaiting_payment: "Awaiting payment",
   confirmed: "Confirmed",
   cancelled: "Cancelled",
@@ -154,7 +154,9 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
         <h2>{displayedOrderStatus}</h2>
         <p>Thank you, {order.customerName}. {isCashOnDelivery
           ? "Your order request is saved with cash on delivery selected. Please pay the delivery person when the order arrives; no online transfer is required."
-          : "Your order request has been saved. The shop will confirm stock, delivery and any estimated kit amount with you before payment."}</p>
+          : order.orderStatus === "pending_stock_confirmation"
+            ? "Your pre-order is saved at the listed prices. The next stock drop is expected in 7–14 days, and your order reserves the items from that drop."
+            : "Your order is saved. In-stock items are ready for payment using the form below."}</p>
         <div className="order-status-grid">
           <div><span>Order status</span><strong>{displayedOrderStatus}</strong></div>
           <div><span>Payment status</span><strong>{order.paymentStatus.replaceAll("_", " ")}</strong></div>
@@ -174,13 +176,13 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
       </section>
 
       {order.orderStatus === "pending_stock_confirmation" ? (
-        <section className="notice-panel"><strong>Stock confirmation is pending</strong><p>The shop will confirm kit/component availability, the final amount for estimated-cost robot kits, and delivery timing. Please do not send a bKash/Nagad payment yet. Once stock is confirmed, this order will move to Awaiting payment and the transaction form will become available here.</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
+        <section className="notice-panel"><strong>Pre-order saved for the next stock drop</strong><p>The next stock drop is expected in 7–14 days. Your listed item prices and order total are shown above, so no separate price confirmation is needed to place this pre-order. {isCashOnDelivery ? "This order is set to cash on delivery; pay the delivery person when it arrives." : "Please wait to send an online transfer until the stock arrives. The bKash/Nagad payment form will become available on this order when the stock is ready. In-stock-only orders can be paid immediately."}</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
       ) : null}
 
       {isCashOnDelivery ? (
         <section className="notice-panel payment-cod">
           <strong>Cash on delivery selected</strong>
-          <p>Please pay the delivery person when your order arrives. You do not need to send money to bKash or Nagad for this order. The shop will confirm stock and delivery arrangements first.</p>
+          <p>Please pay the delivery person when your order arrives. You do not need to send money to bKash or Nagad for this order. {order.orderStatus === "pending_stock_confirmation" ? "The next stock drop is expected in 7–14 days; your pre-order is saved." : "The shop will arrange delivery with you."}</p>
         </section>
       ) : null}
 

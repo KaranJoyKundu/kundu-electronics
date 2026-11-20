@@ -29,7 +29,7 @@
 - bKash and Nagad are enabled in `payment_method_settings`; both use the owner-provided receiving number **01735530174** and shared customer instructions retrieved through `get_public_checkout_config()`.
 - Checkout UI changes from PR #14 are merged and deployed: Cash on delivery vs Online payment, bKash/Nagad selection, sender number and TrxID submission, plus referral/reference and suggestions.
 - Online payment is manual transfer only. A submitted TrxID remains `pending_verification`; only an authorized administrator can verify it. No gateway or automatic payment verification is enabled.
-- Orders with untracked/build-to-order items remain `pending_stock_confirmation`; customers must wait for stock and final amount confirmation before paying.
+- Project kits and 26 out-of-stock products with published selling prices can be pre-ordered now. The next stock drop is expected in 7–14 days; online payment unlocks when stock arrives and tracked quantities are reserved. The 16 out-of-stock products with no published price remain unavailable. In-stock-only orders can be paid immediately.
 - Live database count: **0 orders, 0 payment submissions**.
 
 ## Security and dependency verification

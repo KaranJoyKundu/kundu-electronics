@@ -94,6 +94,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
     const price = product ? resolveCartLinePrice(product.priceBdt, product.variants, line.variantId) : null;
     return { line, product, price };
   });
+  const hasPreorderItems = cartRows.some(({ product }) => product?.orderable === true && (product.availability === "out_of_stock" || product.availability === "build_to_order"));
   const validRows = cartRows.filter((row) => !!row.product && row.product.published && row.product.orderable && row.price?.valid);
   const subtotal = validRows.reduce((sum, row) => sum + row.price!.priceBdt * row.line.quantity, 0);
   const selectedZone = checkout.deliveryZones.find((zone) => zone.id === zoneId);
@@ -116,8 +117,8 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
     }),
     "Delivery: " + (selectedZone ? selectedZone.name + " - " + formatPriceBdt(selectedZone.deliveryChargeBdt) : "Please confirm delivery option"),
     "Total: " + (cartRows.length > 0 && cartRows.every((row) => row.price?.valid) && selectedZone ? formatPriceBdt(estimatedTotal) : "To be confirmed by the shop"),
-    ...(cartRows.some((row) => row.product?.categorySlug === "project-kits") ? ["Robot-kit figures are estimates from the supplied BOM; the shop confirms final contents and amount before payment."] : []),
-    "Please confirm stock and delivery before payment. No payment has been made.",
+    ...(hasPreorderItems ? ["Out-of-stock items and project kits can be pre-ordered now. The next stock drop is expected in 7–14 days; online payment becomes available when that stock arrives."] : []),
+    "Please confirm delivery details. No payment has been made.",
   ].join("\n");
   const cartEnquiryUrl = business.contact.whatsappUrl + "?text=" + encodeURIComponent(cartEnquiryMessage);
 
@@ -264,6 +265,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
               <div className="cart-row-copy">
                 <strong>{product?.name ?? (productsLoading ? "Checking product…" : "Product no longer available")}</strong>
                 {product?.sku ? <span>SKU: {product.sku}</span> : null}
+                {product?.orderable === true && (product.availability === "out_of_stock" || product.availability === "build_to_order") ? <span>Pre-order · next stock drop expected in 7–14 days</span> : null}
                 {rowVariantLabel(product, line.variantId) ? <span>Option: {rowVariantLabel(product, line.variantId)}</span> : null}
                 {product && price?.valid ? <span>{formatPriceBdt(price.priceBdt)} each</span> : product?.priceBdt === null ? <span>Price on request — confirm with the shop</span> : <span>{productsFailed ? "Product details could not be loaded. Retry the page." : "This product option is unavailable. Remove it before checkout."}</span>}
               </div>
@@ -282,7 +284,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
           <div><span>{checkoutReady ? "Estimated subtotal" : "Prices"}</span><strong>{checkoutReady ? formatPriceBdt(subtotal) : "To be confirmed"}</strong></div>
           <div><span>Delivery</span><strong>{checkoutReady && selectedZone ? formatPriceBdt(selectedZone.deliveryChargeBdt) : "To be confirmed"}</strong></div>
           <div className="cart-summary-total"><span>{checkoutReady ? "Estimated total" : "Final total"}</span><strong>{checkoutReady ? formatPriceBdt(estimatedTotal) : "After shop confirmation"}</strong></div>
-          <p>{checkoutReady ? "Final prices and delivery charge are recalculated by the server from the live database when you place the order." : "This is an enquiry only. The shop will confirm prices, stock and delivery before any order is accepted."}</p>
+          <p>{checkoutReady ? "Final prices and delivery charge are recalculated by the server from the live database when you place the order." : "This is an enquiry only. The shop will confirm prices, stock and delivery before any order is accepted."}{hasPreorderItems ? " Pre-order items can be ordered now; the next stock drop is expected in 7–14 days. Online payment opens when the stock arrives." : ""}</p>
         </aside>
       </div>
 
@@ -374,19 +376,19 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
                     <input type="radio" name="checkoutPaymentChoice" value="cash_on_delivery"
                       checked={paymentChoice === "cash_on_delivery"}
                       onChange={() => { setPaymentChoice("cash_on_delivery"); idempotency.current = null; }} />
-                    <span><strong>Cash on delivery</strong><small>Pay when your order arrives.</small></span>
+                    <span><strong>Cash on delivery</strong><small>{hasPreorderItems ? "Reserve from the next stock drop; pay when your order arrives." : "Pay when your order arrives."}</small></span>
                   </label>
                   <label className={paymentChoice === "online_payment" ? "checkout-payment-choice is-selected" : "checkout-payment-choice"}>
                     <input type="radio" name="checkoutPaymentChoice" value="online_payment"
                       checked={paymentChoice === "online_payment"} disabled={checkout.paymentMethods.length === 0}
                       onChange={() => { setPaymentChoice("online_payment"); idempotency.current = null; }} />
-                    <span><strong>Online payment</strong><small>{checkout.paymentMethods.length ? "Pay by bKash or Nagad and submit your TrxID." : "Online payment is not currently configured."}</small></span>
+                    <span><strong>Online payment</strong><small>{checkout.paymentMethods.length ? (hasPreorderItems ? "Pre-order now; online payment opens when the next stock drop arrives." : "Pay by bKash or Nagad and submit your TrxID.") : "Online payment is not currently configured."}</small></span>
                   </label>
                 </fieldset>
                 {paymentChoice === "online_payment" && checkout.paymentMethods.length > 0 ? (
                   <div className="checkout-payment-preview">
                     <strong>Online payment details</strong>
-                    <p>Choose bKash or Nagad below. After you place the order, we will show the final server-calculated amount and the transaction ID field. Some items may need stock confirmation first; in that case, please wait until the order page says “Awaiting payment” before sending money.</p>
+                    <p>{hasPreorderItems ? "This cart includes one or more pre-order items. Place the order now to reserve them from the next stock drop, expected in 7–14 days. The online payment form opens when the stock arrives. In-stock-only orders can be paid immediately." : "Choose bKash or Nagad below. After you place the order, we will show the final server-calculated amount and the transaction ID field."}</p>
                     <div className="checkout-payment-provider-grid" role="radiogroup" aria-label="Choose bKash or Nagad">
                       {checkout.paymentMethods.map((item) => (
                         <label className={`checkout-payment-provider ${paymentMethod === item.method ? "is-selected" : ""}`} key={item.method}>
@@ -407,9 +409,9 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
               {!everyItemOrderable ? <p className="form-error">One or more cart items are unpublished or not currently orderable. Remove them before checkout.</p> : null}
               {error ? <p className="form-error" role="alert">{error}</p> : null}
               <button className="button button-primary" type="submit" disabled={submitting || productsLoading || productsFailed || !everyItemOrderable || !selectedZone || (paymentChoice === "online_payment" && !selectedPaymentMethod)}>
-                {submitting ? "Saving your order…" : paymentChoice === "online_payment" ? "Continue to online payment" : "Place order · Cash on delivery"}
+                {submitting ? "Saving your order…" : hasPreorderItems ? (paymentChoice === "online_payment" ? "Place pre-order · pay after restock" : "Place pre-order · cash on delivery") : paymentChoice === "online_payment" ? "Continue to online payment" : "Place order · Cash on delivery"}
               </button>
-              <p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. Online payment references remain pending until the shop verifies the transfer. Orders needing manual stock confirmation must be confirmed before payment is submitted.</p>
+              <p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. Pre-order items can be ordered now; the next stock drop is expected in 7–14 days and online payment opens when it arrives. In-stock-only orders can be paid immediately. Online payment references remain pending until the shop verifies the transfer.</p>
             </form>
         )}
       </section>

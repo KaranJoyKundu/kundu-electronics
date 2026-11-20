@@ -14,7 +14,7 @@ The kit BOM, names, quantities and estimated package totals are based on the own
 
 Database bundle identifiers are LFR-T1–T3, SB-T1–T3 and RC-T1–T3. They are bundle IDs created for the website, not individual component catalogue SKUs. BOM component P-codes appear only when there was an exact match to an existing catalogue item. Similar component variants are not substituted silently. Items without an exact match remain named as specified in the uploaded BOM.
 
-All nine bundle products are published as build-to-order and use untracked inventory. A website order can be recorded, but it begins in the stock-confirmation workflow until the shop verifies availability.
+All nine bundle products are published as build-to-order and use untracked inventory. Customers can pre-order them now at the listed website price. The next stock drop is expected in 7–14 days, so a pre-order reserves a kit from that drop. The same pre-order flow applies to the 26 priced products marked out of stock; the 16 out-of-stock products without a published selling price remain unavailable. The existing stock-arrival action is used internally when items arrive; tracked quantities are reserved before online payment unlocks.
 
 ## Resistor listings
 
@@ -26,8 +26,8 @@ P091 — 1kΩ Resistor Box 5000pcs — remains published at its pre-existing pri
 - Urgent delivery: 30–60 minutes, ৳50.
 - These are speed choices; the customer enters an address, and the shop confirms the delivery window can be achieved.
 - Website checkout creates an order using the existing create_checkout_order RPC. The database recalculates current product prices and delivery charges and maintains idempotency and stock-lock behaviour.
-- Order requests containing untracked/build-to-order items require staff stock confirmation.
-- Website checkout does not collect payment. No bKash/Nagad receiving numbers or customer transfer instructions were supplied, so those methods remain disabled. Payment status stays not_submitted until the shop arranges and verifies payment separately. Robot-kit figures are estimates; the shop confirms final kit contents, availability and payable amount before any payment.
+- Pre-orders for priced out-of-stock products and project kits are accepted immediately at the listed website price. The next stock drop is expected in 7–14 days; no separate customer-facing final-price confirmation is needed to reserve them.
+- Website checkout offers Cash on delivery and Online payment. bKash and Nagad use the configured owner-provided number 01735530174. Online payment for pre-orders becomes available when the stock arrives; in-stock-only items can be paid immediately. A submitted TrxID remains pending until an authorized admin verifies it.
 - The WhatsApp message lists one line per product: product code - product name - unit price x quantity - line total. It includes delivery charge and a final Total: line. Phone ordering is also available.
 
 ## Founder story and project showcases

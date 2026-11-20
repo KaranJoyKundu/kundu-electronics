@@ -54,12 +54,12 @@ npm audit --omit=dev
 
 ## Orders and payments
 
-- Supabase `checkout_enabled=true`: the site accepts unpaid order requests with server-authoritative totals and stock confirmation.
+- Supabase `checkout_enabled=true`: the site accepts orders with server-authoritative totals. Published out-of-stock products with a valid selling price and build-to-order kits can be pre-ordered now; the next stock drop is expected in 7–14 days.
 - Current database count: zero orders, zero payment submissions.
 - Delivery choices configured: Standard (12 hours–1 day, ৳0) and Urgent (30–60 minutes, ৳50). The shop confirms the address and feasibility.
 - bKash and Nagad are enabled in Supabase and both use the owner-provided receiving number `01735530174`.
 - Checkout offers Cash on delivery and Online payment. Online payment shows the exact order total, asks for sender number and TrxID, and keeps the submission pending until an authorized admin verifies it.
-- Orders requiring manual stock confirmation must not be paid until stock and the final amount are confirmed. The checkout flow only shows the TrxID form when the order is `awaiting_payment`.
+- Out-of-stock product and project-kit pre-orders are saved now and wait for the next stock drop, expected in 7–14 days. Customers do not need a separate final-price confirmation. Online payment opens when stock arrives and the order is moved to `awaiting_payment`; in-stock-only orders can be paid immediately.
 - Reference and suggestions/feedback are saved in the order note. COD preference is retained and does not ask for a transaction ID.
 - Keep sufficient balance for any applicable Send Money/service charge shown by the wallet app; never deduct that fee from the order amount.
 
