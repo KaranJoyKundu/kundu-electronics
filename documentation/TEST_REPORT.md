@@ -1,17 +1,17 @@
 # TEST_REPORT — Kundu Electronics
 
-## Checkout payment options and 7–14 day pre-order update — PR #14 + follow-up
+## Checkout payment options and pre-orders — PR #14 + PR #15
 
-**Feature branch:** `feat/checkout-payment-options`  
-**Code commit verified by CI:** `76b3e482846aec844ee3a526154d7ad62a8e60ce`  
-**Merged PR #14 code commit:** `cf45e25cc1fcd0a956a57e412806bf80674677e2`  
-**PR:** https://github.com/KaranJoyKundu/kundu-electronics/pull/14  
-**Windows CI run #207:** https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525  
-**Vercel preview:** https://kundu-electronics-k18sma375-kundu2409056-5098.vercel.app  
-**Vercel preview deployment:** `dpl_4Jz42UiBM2k8mgH1QLZTYMhyepuF` (**READY**, feature branch code commit).
-**PR #14 production deployment:** `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi` (**READY**, canonical alias verified).
+**Feature branch for pre-order work:** `feat/project-kit-preorder-7-14-day-drop`  
+**PR #15 head commit:** `8668ecbb0cbc213212224dece9956c9fac2c2350`  
+**PR #15 merge commit:** `4dc2862d2fe21bcaf89cc0ce9cb7daed5b4653a9`  
+**PR #15:** https://github.com/KaranJoyKundu/kundu-electronics/pull/15  
+**PR #14 Windows CI run #207 (earlier payment release):** https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525  
+**PR #15 Vercel preview:** https://kundu-electronics-pak406o00-kundu2409056-5098.vercel.app  
+**PR #15 preview deployment:** `dpl_3ZPJWiGkL3f96sTfM6YMxVFYyjrF` (**READY**).
+**PR #15 production deployment:** `dpl_7fbo8M32JhQnum6eyuwo2doLGiY5` (**READY**, canonical alias verified).
 
-Windows CI #207 completed successfully:
+Windows CI #207 completed successfully for PR #14 (payment release; these checks do not belong to PR #15):
 - Typecheck: passed.
 - Lint: passed.
 - Tests: passed.
@@ -30,6 +30,13 @@ Production canonical smoke check after PR #14:
 - Live cart SSR includes the configured bKash/Nagad methods and receiving number.
 - Deployed cart JavaScript asset includes COD, Nagad, TrxID, Reference and Suggestions UI strings.
 
+PR #15 production verification (20 November 2026):
+- Vercel preview and production builds both completed. The production build compiled successfully in Next.js 16.4.6, completed TypeScript checks and generated the static pages/routes.
+- Canonical production /cart, /shop, /products/yellow-bo-motor-good-p009 and /products/lfr-competitive-kit all returned HTTP 200.
+- The out-of-stock P009 product page and LFR kit page show the 7–14 day pre-order label, pre-order explanation and Add pre-order to cart action.
+- The deployed cart JavaScript contains Place pre-order · pay after restock, the 7–14 day stock-drop wording and the message that online payment opens when stock arrives.
+- No GitHub Actions workflow run/status checks were returned for PR #15. PR #14's Windows CI run #207 is not a PR #15 CI result.
+
 Pre-order database verification (migration `20261119235416_allow_out_of_stock_preorders` applied to Supabase project `tcapxmiroikbsozvucmt`):
 - A published out-of-stock SKU with a valid price (P009, ৳110) was submitted to `create_checkout_order` inside a transaction. It returned `pending_stock_confirmation` / `pending_confirmation` and created **zero reservations**. The transaction was rolled back; no order was persisted.
 - An in-stock tracked product was submitted inside a separate transaction. It returned `awaiting_payment` / `reserved`; a follow-up SELECT in the same transaction observed an active stock reservation. That transaction was also rolled back.
@@ -45,12 +52,12 @@ Important verification limits:
 - The stock-arrival action was not exercised with a real authenticated staff session; its runtime authorization path still needs browser verification.
 - Transaction references remain `pending_verification` until an authorized admin checks them.
 
-**Latest production release (before this follow-up):** 20 November 2026 (Asia/Dhaka)  
+**Latest production release:** 20 November 2026 (Asia/Dhaka)  
 **Production branch:** `main`  
-**Production commit:** `cf45e25cc1fcd0a956a57e412806bf80674677e2`  
-**Vercel production deployment:** `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi` (**READY**)  
-**Merged PRs:** #11, #13, #14  
-**Windows CI:** run #207 — https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525
+**Production commit:** `4dc2862d2fe21bcaf89cc0ce9cb7daed5b4653a9`  
+**Vercel production deployment:** `dpl_7fbo8M32JhQnum6eyuwo2doLGiY5` (**READY**, canonical alias verified)  
+**Merged PRs:** #11, #13, #14, #15  
+**PR #14 Windows CI:** run #207 — https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525. PR #15 had no GitHub Actions status checks; see the Vercel build and database dry-run evidence above.
 
 ## Windows CI results
 
