@@ -1,6 +1,6 @@
 # TEST_REPORT — Kundu Electronics
 
-## Checkout payment options update — PR #14
+## Checkout payment options and 7–14 day pre-order update — PR #14 + follow-up
 
 **Feature branch:** `feat/checkout-payment-options`  
 **Code commit verified by CI:** `76b3e482846aec844ee3a526154d7ad62a8e60ce`  
@@ -30,14 +30,22 @@ Production canonical smoke check after PR #14:
 - Live cart SSR includes the configured bKash/Nagad methods and receiving number.
 - Deployed cart JavaScript asset includes COD, Nagad, TrxID, Reference and Suggestions UI strings.
 
+Pre-order database verification (migration `20261119235416_allow_out_of_stock_preorders` applied to Supabase project `tcapxmiroikbsozvucmt`):
+- A published out-of-stock SKU with a valid price (P009, ৳110) was submitted to `create_checkout_order` inside a transaction. It returned `pending_stock_confirmation` / `pending_confirmation` and created **zero reservations**. The transaction was rolled back; no order was persisted.
+- An in-stock tracked product was submitted inside a separate transaction. It returned `awaiting_payment` / `reserved`; a follow-up SELECT in the same transaction observed an active stock reservation. That transaction was also rolled back.
+- The two tests confirm the intended split: pre-orders wait for stock without reserving early; fully in-stock orders can go directly to payment with stock reserved.
+- Live catalogue snapshot after migration: 26 priced out-of-stock products are orderable as pre-orders; 16 out-of-stock products with no published selling price remain not orderable; nine build-to-order kits remain orderable.
+- One pre-existing pending LFR-T2 order was left unchanged.
+
 Important verification limits:
-- No real order or payment submission was created for testing.
-- No bKash/Nagad transfer was performed.
-- No interactive browser test filled and submitted a cart; the preview checks verified the build, route responses and deployed bundle strings only.
-- The online-payment form is intentionally available only after an order is `awaiting_payment`. Build-to-order project kits are pre-ordered now with a 7–14 day expected stock-drop window; they remain unpaid until stock arrives, when the existing stock-arrival action unlocks payment. In-stock-only orders can be paid immediately.
+- No new real customer order or payment submission was created for testing. Both SQL checkout tests were rolled back.
+- No bKash/Nagad transfer was performed and no transaction was verified.
+- No interactive browser test filled and submitted a cart; prior checks verified build, route responses and deployed bundle strings only.
+- The online-payment form remains available only after an order is `awaiting_payment`. Pre-order items wait for stock (expected in 7–14 days); the stock-arrival action now checks and reserves tracked quantities before unlocking payment. In-stock-only orders proceed to payment immediately.
+- The stock-arrival action was not exercised with a real authenticated staff session; its runtime authorization path still needs browser verification.
 - Transaction references remain `pending_verification` until an authorized admin checks them.
 
-**Latest release:** 20 November 2026 (Asia/Dhaka)  
+**Latest production release (before this follow-up):** 20 November 2026 (Asia/Dhaka)  
 **Production branch:** `main`  
 **Production commit:** `cf45e25cc1fcd0a956a57e412806bf80674677e2`  
 **Vercel production deployment:** `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi` (**READY**)  
