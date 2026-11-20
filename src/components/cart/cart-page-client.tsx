@@ -387,19 +387,25 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
                 </fieldset>
                 {paymentChoice === "online_payment" && checkout.paymentMethods.length > 0 ? (
                   <div className="checkout-payment-preview">
-                    <strong>Online payment details</strong>
-                    <p>{hasPreorderItems ? "This cart includes one or more pre-order items. Place the order now to reserve them from the next stock drop, expected in 7–14 days. The online payment form opens when the stock arrives. In-stock-only orders can be paid immediately." : "Choose bKash or Nagad below. After you place the order, we will show the final server-calculated amount and the transaction ID field."}</p>
-                    <div className="checkout-payment-provider-grid" role="radiogroup" aria-label="Choose bKash or Nagad">
-                      {checkout.paymentMethods.map((item) => (
-                        <label className={`checkout-payment-provider ${paymentMethod === item.method ? "is-selected" : ""}`} key={item.method}>
-                          <input type="radio" name="paymentProvider" value={item.method} checked={paymentMethod === item.method}
-                            onChange={() => { setPaymentMethod(item.method); idempotency.current = null; }} />
-                          <span><strong>{item.method === "bkash" ? "bKash" : "Nagad"}</strong><small>{item.receivingNumber}</small></span>
-                        </label>
-                      ))}
-                    </div>
-                    {selectedPaymentMethod ? <p className="checkout-payment-instruction-copy">{selectedPaymentMethod.instructions}</p> : null}
-                    <p className="checkout-disclaimer">Keep enough wallet balance for the exact order total and any applicable service/transfer charge shown in your app. Do not deduct the charge from the amount sent to us.</p>
+                    <strong>{hasPreorderItems ? "Payment after the next stock drop" : "Online payment details"}</strong>
+                    <p>{hasPreorderItems
+                      ? "This cart includes one or more pre-order items. Place your order now to reserve them from the next stock drop, expected in 7–14 days. Do not send a bKash/Nagad transfer yet. We will show the payment number, instructions and TrxID form here when the stock arrives. In-stock-only orders can be paid immediately."
+                      : "Choose bKash or Nagad below. After you place the order, we will show the final server-calculated amount and the transaction ID field."}</p>
+                    {!hasPreorderItems ? (
+                      <>
+                        <div className="checkout-payment-provider-grid" role="radiogroup" aria-label="Choose bKash or Nagad">
+                          {checkout.paymentMethods.map((item) => (
+                            <label className={`checkout-payment-provider ${paymentMethod === item.method ? "is-selected" : ""}`} key={item.method}>
+                              <input type="radio" name="paymentProvider" value={item.method} checked={paymentMethod === item.method}
+                                onChange={() => { setPaymentMethod(item.method); idempotency.current = null; }} />
+                              <span><strong>{item.method === "bkash" ? "bKash" : "Nagad"}</strong><small>{item.receivingNumber}</small></span>
+                            </label>
+                          ))}
+                        </div>
+                        {selectedPaymentMethod ? <p className="checkout-payment-instruction-copy">{selectedPaymentMethod.instructions}</p> : null}
+                        <p className="checkout-disclaimer">Keep enough wallet balance for the exact order total and any applicable service/transfer charge shown in your app. Do not deduct the charge from the amount sent to us.</p>
+                      </>
+                    ) : null}
                   </div>
                 ) : null}
                 <label>Order note (optional)<textarea maxLength={500} value={form.note} onChange={(e) => updateField("note", e.target.value)} rows={3} /></label>
