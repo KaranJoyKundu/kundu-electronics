@@ -84,7 +84,7 @@ export function OrderReviewClient({ orderId }: { orderId: string }) {
         <span className="section-kicker">VERIFIED ORDER</span>
         <h2>{order.orderNumber}</h2>
         <p>Delivered order from Kundu Electronics</p>
-        {reviewStatus.reviewStatus === "rejected" ? <div className="notice-panel"><strong>Your earlier review wasn't approved</strong><p>You may edit and submit it again for moderation.</p></div> : null}
+        {reviewStatus.reviewStatus === "rejected" ? <div className="notice-panel"><strong>Your earlier review was not approved</strong><p>You may edit and submit it again for moderation.</p></div> : null}
         <form className="checkout-form review-form" onSubmit={submitReview}>
           <fieldset className="review-rating-fieldset">
             <legend>Your rating</legend>
