@@ -30,45 +30,61 @@ export function escapeTelegramHtml(value: string): string {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 }
 
+function safeText(value: string, max: number): string {
+  return value.length <= max ? value : `${value.slice(0, max - 1)}…`;
+}
+
 function price(value: number): string {
   return Number.isFinite(value) ? `৳${Math.round(value).toLocaleString("en-BD")}` : "N/A";
 }
 
 export function formatTelegramOrderMessage(order: TelegramOrderNotification): string {
-  const items = order.items.map((item) => {
-    const name = escapeTelegramHtml(item.name);
-    const variant = item.variant ? ` · ${escapeTelegramHtml(item.variant)}` : "";
-    const sku = item.sku ? ` [${escapeTelegramHtml(item.sku)}]` : "";
-    return `• ${name}${variant}${sku} × ${item.quantity} — ${price(item.lineTotalBdt)}`;
-  }).join("\n");
   const address = [order.addressLine, order.area, order.city, order.deliveryZone]
-    .filter(Boolean).map((part) => escapeTelegramHtml(part as string)).join(", ");
-  const text = [
+    .filter(Boolean).map((part) => escapeTelegramHtml(safeText(part as string, 120))).join(", ");
+  const itemLines = order.items.map((item) => {
+    const name = escapeTelegramHtml(safeText(item.name, 120));
+    const variant = item.variant ? ` · ${escapeTelegramHtml(safeText(item.variant, 80))}` : "";
+    const sku = item.sku ? ` [${escapeTelegramHtml(safeText(item.sku, 60))}]` : "";
+    return `• ${name}${variant}${sku} × ${Math.max(0, Math.floor(item.quantity))} — ${price(item.lineTotalBdt)}`;
+  });
+
+  const head = [
     "🛒 <b>NEW KUNDU ELECTRONICS ORDER</b>",
     "",
-    `📦 <b>Order:</b> ${escapeTelegramHtml(order.orderNumber)}`,
-    `🕒 ${escapeTelegramHtml(order.createdAt)}`,
+    `📦 <b>Order:</b> ${escapeTelegramHtml(safeText(order.orderNumber, 80))}`,
+    `🕒 ${escapeTelegramHtml(safeText(order.createdAt, 80))}`,
     "",
     "👤 <b>Customer</b>",
-    `Name: ${escapeTelegramHtml(order.customerName)}`,
-    `Phone: ${escapeTelegramHtml(order.customerPhone)}`,
-    ...(order.customerEmail ? [`Email: ${escapeTelegramHtml(order.customerEmail)}`] : []),
+    `Name: ${escapeTelegramHtml(safeText(order.customerName, 120))}`,
+    `Phone: ${escapeTelegramHtml(safeText(order.customerPhone, 80))}`,
+    ...(order.customerEmail ? [`Email: ${escapeTelegramHtml(safeText(order.customerEmail, 120))}`] : []),
     `Address: ${address}`,
     "",
     "🧾 <b>Items</b>",
-    items || "• (item details unavailable)",
+  ];
+  const totals = [
     "",
     `Subtotal: ${price(order.subtotalBdt)}`,
     `Delivery: ${price(order.deliveryBdt)}`,
     `💰 <b>Total: ${price(order.totalBdt)}</b>`,
     "",
-    `Order status: ${escapeTelegramHtml(order.orderStatus.replaceAll("_", " "))}`,
-    `Stock status: ${escapeTelegramHtml(order.stockStatus.replaceAll("_", " "))}`,
-    `Payment status: ${escapeTelegramHtml(order.paymentStatus.replaceAll("_", " "))}`,
+    `Order status: ${escapeTelegramHtml(safeText(order.orderStatus.replaceAll("_", " "), 80))}`,
+    `Stock status: ${escapeTelegramHtml(safeText(order.stockStatus.replaceAll("_", " "), 80))}`,
+    `Payment status: ${escapeTelegramHtml(safeText(order.paymentStatus.replaceAll("_", " "), 80))}`,
     "",
-    `🔗 <a href="${escapeTelegramHtml(order.adminUrl)}">Open admin orders</a>`,
-  ].join("\n");
-  return text.length <= 3900 ? text : `${text.slice(0, 3850)}\n… message shortened`;
+    `🔗 <a href="${escapeTelegramHtml(safeText(order.adminUrl, 400))}">Open admin orders</a>`,
+  ];
+
+  let included = [...itemLines];
+  const build = () => [...head, ...(included.length ? included : ["• (item details unavailable)"]),
+    ...(itemLines.length > included.length ? [`… ${itemLines.length - included.length} more item line(s)`] : []), ...totals].join("\n");
+  let message = build();
+  // Remove full item lines, never cut markup mid-tag; keep order totals/status/admin link.
+  while (message.length > 3900 && included.length) {
+    included.pop();
+    message = build();
+  }
+  return message.length <= 3900 ? message : `${[...head.slice(0, 8), "Address: (omitted: message too long)", "", "🧾 <b>Items</b>", "• (details omitted)", ...totals].join("\n")}`;
 }
 
 export async function sendTelegramMessage(token: string, chatId: string, message: string): Promise<{ ok: boolean; failureCode?: string }> {
