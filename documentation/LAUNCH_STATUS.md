@@ -4,11 +4,11 @@
 
 - Storefront: **https://kundu-electronics.vercel.app**
 - Production branch: `main`.
-- Latest production commit: `cf45e25cc1fcd0a956a57e412806bf80674677e2`.
-- Vercel deployment: `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi`, state **READY**, canonical alias verified.
-- PR #11 hardening, PR #13 photo restoration and PR #14 checkout/payment are merged: https://github.com/KaranJoyKundu/kundu-electronics/pull/14.
-- Windows CI run #207 passed typecheck, lint, tests, production build, full dependency audit and production dependency audit: https://github.com/KaranJoyKundu/kundu-electronics/actions/runs/44638048525.
-- Production `/cart`, `/shop` and `/projects` returned HTTP 200 after the payment release.
+- Latest production commit: `4dc2862d2fe21bcaf89cc0ce9cb7daed5b4653a9`.
+- Vercel deployment: `dpl_7fbo8M32JhQnum6eyuwo2doLGiY5`, state **READY**, canonical alias verified.
+- PR #11 hardening, PR #13 photo restoration, PR #14 checkout/payment and PR #15 pre-orders are merged: https://github.com/KaranJoyKundu/kundu-electronics/pull/15.
+- Windows CI run #207 passed for the PR #14 payment release. PR #15 had no GitHub Actions status checks; its Vercel production build completed successfully, including TypeScript checks.
+- Production `/cart`, `/shop`, `/products/yellow-bo-motor-good-p009` and `/products/lfr-competitive-kit` returned HTTP 200 after the pre-order release.
 
 ## Live catalogue facts from Supabase
 
@@ -23,14 +23,14 @@
 ## Orders, delivery and payment
 
 - Supabase `store_settings.checkout_enabled=true`.
-- Website order requests are enabled and remain unpaid until the shop confirms stock/address and arranges payment.
+- Website checkout is enabled. In-stock-only orders can proceed directly to payment; priced out-of-stock products and project kits can be pre-ordered now for the next stock drop, expected in 7–14 days. Online payment unlocks when the stock arrives and tracked quantities are reserved.
 - Server/database calculates item pricing, delivery, stock status and totals; idempotency and stock reservation logic remain server-side.
 - Standard delivery: 12 hours–1 day / ৳0. Urgent: 30–60 minutes / ৳50. The shop confirms destination and feasibility before promising a window.
 - bKash and Nagad are enabled in `payment_method_settings`; both use the owner-provided receiving number **01735530174** and shared customer instructions retrieved through `get_public_checkout_config()`.
 - Checkout UI changes from PR #14 are merged and deployed: Cash on delivery vs Online payment, bKash/Nagad selection, sender number and TrxID submission, plus referral/reference and suggestions.
 - Online payment is manual transfer only. A submitted TrxID remains `pending_verification`; only an authorized administrator can verify it. No gateway or automatic payment verification is enabled.
 - Project kits and 26 out-of-stock products with published selling prices can be pre-ordered now. The next stock drop is expected in 7–14 days; online payment unlocks when stock arrives and tracked quantities are reserved. The 16 out-of-stock products with no published price remain unavailable. In-stock-only orders can be paid immediately.
-- Live database count: **0 orders, 0 payment submissions**.
+- Live database count: **1 pending LFR-T2 pre-order, 0 payment submissions**.
 
 ## Security and dependency verification
 
