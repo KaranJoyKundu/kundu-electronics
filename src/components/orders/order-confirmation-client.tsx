@@ -182,6 +182,12 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
         <button className="text-button" type="button" onClick={() => void refreshOrder()}>Refresh order status</button>
       </section>
 
+      <section className="notice-panel account-order-claim">
+        <strong>Keep your order in your account</strong>
+        <p>Create or sign in to a customer account to link this order and keep your order history together. Guest checkout stays available.</p>
+        <Link href={"/account/login?next=" + encodeURIComponent("/orders/" + orderId)} className="button button-secondary">Link order to account</Link>
+      </section>
+
       {order.orderStatus === "pending_stock_confirmation" ? (
         <section className="notice-panel"><strong>Pre-order saved for the next stock drop</strong><p>The next stock drop is expected in 7–14 days. Your listed item prices and order total are shown above, so no separate price confirmation is needed to place this pre-order. {isCashOnDelivery ? "This order is set to cash on delivery; pay the delivery person when it arrives." : "Please wait to send an online transfer until the stock arrives. The bKash/Nagad payment form will become available on this order when the stock is ready. In-stock-only orders can be paid immediately."}</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
       ) : null}
