@@ -379,6 +379,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
               <p className="checkout-disclaimer">Your reference will be recorded as pending verification. The order is not marked as paid until the shop checks the transaction.</p>
             </form>
           ) : (
+            <>
             <p className="checkout-account-hint"><Link href="/account/login?next=%2Fcart">Sign in or create an account</Link> to autofill saved details. Guest checkout remains available.</p>
             <form className="checkout-form" onSubmit={placeOrder}>
               <div className="checkout-fields">
@@ -463,6 +464,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
               </button>
               <p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. Pre-order items can be ordered now; the next stock drop is expected in 7–14 days and online payment opens when it arrives. In-stock-only orders can be paid immediately. Online payment references remain pending until the shop verifies the transfer.</p>
             </form>
+            </>
         )}
       </section>
       <section className="order-channel-section">
