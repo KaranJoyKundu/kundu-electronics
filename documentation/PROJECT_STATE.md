@@ -4,9 +4,9 @@
 **Repository:** `KaranJoyKundu/kundu-electronics` (private)  
 **Production branch:** `main`  
 **Production URL:** https://kundu-electronics.vercel.app  
-**Production commit:** `cf45e25cc1fcd0a956a57e412806bf80674677e2`  
-**Vercel deployment:** `dpl_FZLGsPFyPPeSbPgAJ6JizoSr9Kgi` (**READY**)  
-**Merged release PRs:** #11 (hardening), #13 (photo restoration), #14 (checkout/payment)  
+**Production commit:** `4dc2862d2fe21bcaf89cc0ce9cb7daed5b4653a9`  
+**Vercel deployment:** `dpl_7fbo8M32JhQnum6eyuwo2doLGiY5` (**READY**)  
+**Merged release PRs:** #11 (hardening), #13 (photo restoration), #14 (checkout/payment), #15 (7–14 day pre-orders)  
 **Supabase project:** `tcapxmiroikbsozvucmt` (ap-northeast-1)
 
 ## Objective
@@ -69,7 +69,7 @@ The 199 published original products plus 12 archived source SKUs reconcile to th
 - Nine untracked/build-to-order project kits and 26 priced out-of-stock products are available to pre-order now. Their next stock drop is expected in 7–14 days. The remaining 16 out-of-stock products have no published selling price and remain unavailable. Pre-orders remain at `pending_stock_confirmation` until stock arrives; the arrival action then reserves tracked quantities and unlocks online payment through `awaiting_payment`. No separate final-price confirmation is required. In-stock-only orders can be paid immediately.
 - Cash-on-delivery preference, referral/reference and suggestions are recorded in the order's customer note. COD orders do not submit transaction references.
 - The order-payment endpoint creates a `pending_verification` submission only. An authorized admin must verify it before payment status can become `verified`.
-- No orders or payment submissions currently exist (last read-only check before rollout).
+- One pre-existing LFR-T2 pre-order is pending stock arrival; no payment submissions exist. It was preserved unchanged during this rollout.
 - Never treat a submitted transaction reference as proof of payment.
 
 ## Security and dependency status
