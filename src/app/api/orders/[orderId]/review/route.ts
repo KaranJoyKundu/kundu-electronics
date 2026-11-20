@@ -36,7 +36,7 @@ export async function POST(request:NextRequest,context:RouteContext){
  const {data:order,error:orderError}=await admin.from("orders").select("customer_user_id,fulfilment_status").eq("id",orderId).maybeSingle();
  if(orderError||!order)return jsonError(404,"Order not found.");
  if(order.customer_user_id&&order.customer_user_id!==user?.id)return jsonError(403,"This order belongs to another customer account.");
- let customerUserId=user?.id??null;
+ const customerUserId=user?.id??null;
  if(user&&order.customer_user_id===null){
   const {error:claimError}=await admin.rpc("claim_guest_order",{p_order_id:orderId,p_order_access_token_hash:tokenHash,p_user_id:user.id});
   if(claimError)return jsonError(403,"Order could not be linked to your account.");

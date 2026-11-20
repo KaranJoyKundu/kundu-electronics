@@ -21,7 +21,7 @@ export function AccountProfileClient({userId,email}:{userId:string;email:string}
  sb.from("customer_reviews").select("id,rating,review_text,status,created_at").eq("customer_user_id",userId).order("created_at",{ascending:false}).limit(20)]);
  setProfile(p.data as Profile|null);setName(p.data?.full_name||"");setPhone(p.data?.phone||"");setAddresses((a.data||[]) as Address[]);setZones((z.data||[]) as typeof zones);setOrders((o.data||[]) as Order[]);setReviews((r.data||[]) as Review[]);
  }
- useEffect(()=>{void load()},[userId]);
+ useEffect(()=>{void Promise.resolve().then(()=>load())},[userId]);
  if(!sb)return <p>Customer account services are unavailable.</p>;
  async function saveProfile(event:FormEvent){event.preventDefault();if(!sb)return;setError("");setNotice("");if(name.trim().length<2||phone.trim().length<5){setError("Enter your name and a valid phone number.");return}setBusy(true);let avatarPath=profile?.avatar_path||null;
  if(avatar){if(!/^image\/(jpeg|png|webp|avif)$/.test(avatar.type)||avatar.size>2097152){setBusy(false);setError("Photo must be JPG, PNG, WebP or AVIF and under 2 MB.");return}const ext=avatar.type.split("/")[1],path=userId+"/avatar."+ext;const {error:e}=await sb.storage.from("customer-avatars").upload(path,avatar,{upsert:true,contentType:avatar.type});if(e){setBusy(false);setError("Photo upload failed.");return}avatarPath=path}
