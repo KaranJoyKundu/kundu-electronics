@@ -25,8 +25,10 @@ test("order notification truncates oversized Telegram messages", () => {
     orderNumber: "KE-999", customerName: "A".repeat(200), customerPhone: "+880123456789",
     addressLine: "X".repeat(4_000), city: "Khulna", orderStatus: "awaiting_payment",
     stockStatus: "in_stock", paymentStatus: "not_submitted", subtotalBdt: 100, deliveryBdt: 50, totalBdt: 150,
-    createdAt: "now", items: [], adminUrl: "https://shop.example/admin/orders",
+    createdAt: "now", items: Array.from({ length: 100 }, (_, i) => ({ name: `Item ${i} ${"x".repeat(100)}`, quantity: 1, lineTotalBdt: 10 })),
+    adminUrl: "https://shop.example/admin/orders",
   });
   assert.ok(message.length <= 3900);
-  assert.ok(message.endsWith("message shortened"));
+  assert.ok(message.includes("Open admin orders"));
+  assert.ok(message.includes("more item line(s)"));
 });
