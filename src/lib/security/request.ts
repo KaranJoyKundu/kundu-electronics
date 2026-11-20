@@ -41,7 +41,14 @@ export function isAllowedMutationOrigin(request: NextRequest): boolean {
   const requestOrigin = request.headers.get("origin");
   if (!configuredOrigin || !requestOrigin) return false;
   try {
-    return new URL(configuredOrigin).origin === new URL(requestOrigin).origin;
+    const incomingOrigin = new URL(requestOrigin).origin;
+    const allowedOrigins = new Set([new URL(configuredOrigin).origin]);
+    // Preview deployments have a unique, platform-assigned URL. Allow only this
+    // exact origin in preview so preview mutations do not need the production URL.
+    if (process.env.VERCEL_ENV === "preview" && process.env.VERCEL_URL) {
+      allowedOrigins.add(new URL("https://" + process.env.VERCEL_URL).origin);
+    }
+    return allowedOrigins.has(incomingOrigin);
   } catch {
     return false;
   }
