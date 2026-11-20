@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { formatPriceBdt } from "@/lib/format";
 import type { PublicCheckoutConfig } from "@/data/storefront";
 import { parseOrderSummary, type OrderSummary } from "@/lib/orders/order-summary";
@@ -139,9 +140,12 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
   if (loadError || !order) return <section className="notice-panel"><strong>Order unavailable</strong><p>{loadError || "Order not found."}</p></section>;
 
   const selectedMethod = checkout.paymentMethods.find((item) => item.method === method);
-  const isCashOnDelivery = paymentPreference === "cash_on_delivery";
-  const displayedOrderStatus = isCashOnDelivery && order.orderStatus === "awaiting_payment"
-    ? "Order request received · Cash on delivery"
+  const isCashOnDelivery = order.paymentPreference === "cash_on_delivery"
+    || (order.paymentPreference === null && paymentPreference === "cash_on_delivery");
+  const displayedOrderStatus = isCashOnDelivery
+    ? order.orderStatus === "confirmed" ? "Order accepted · Cash on delivery"
+      : order.orderStatus === "awaiting_payment" ? "Order request received · Cash on delivery"
+      : orderStatusLabel[order.orderStatus] ?? order.orderStatus.replaceAll("_", " ")
     : orderStatusLabel[order.orderStatus] ?? order.orderStatus.replaceAll("_", " ");
   const canSubmitPayment = !isCashOnDelivery
     && order.orderStatus === "awaiting_payment"
@@ -153,13 +157,16 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
         <span className="section-kicker">ORDER {order.orderNumber}</span>
         <h2>{displayedOrderStatus}</h2>
         <p>Thank you, {order.customerName}. {isCashOnDelivery
-          ? "Your order request is saved with cash on delivery selected. Please pay the delivery person when the order arrives; no online transfer is required."
+          ? order.orderStatus === "confirmed" ? "Your COD order has been accepted. Please pay the delivery person when it arrives; payment is not marked collected yet."
+            : order.orderStatus === "pending_stock_confirmation" ? "Your preorder is saved. Stock must be confirmed before the shop accepts and dispatches it. Cash on delivery is selected."
+            : "Your cash-on-delivery request is saved. The shop will confirm it before dispatch."
           : order.orderStatus === "pending_stock_confirmation"
             ? "Your pre-order is saved at the listed prices. The next stock drop is expected in 7–14 days, and your order reserves the items from that drop."
             : "Your order is saved. In-stock items are ready for payment using the form below."}</p>
         <div className="order-status-grid">
           <div><span>Order status</span><strong>{displayedOrderStatus}</strong></div>
           <div><span>Payment status</span><strong>{order.paymentStatus.replaceAll("_", " ")}</strong></div>
+          <div><span>Payment preference</span><strong>{isCashOnDelivery ? "Cash on delivery" : "Online payment"}</strong></div>
           <div><span>Delivery area</span><strong>{order.deliveryZone}, {order.deliveryCity}</strong></div>
           <div><span>Fulfilment</span><strong>{order.fulfilmentStatus.replaceAll("_", " ")}</strong></div>
         </div>
@@ -175,6 +182,12 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
         <button className="text-button" type="button" onClick={() => void refreshOrder()}>Refresh order status</button>
       </section>
 
+      <section className="notice-panel account-order-claim">
+        <strong>Keep your order in your account</strong>
+        <p>Create or sign in to a customer account to link this order and keep your order history together. Guest checkout stays available.</p>
+        <Link href={"/account/login?next=" + encodeURIComponent("/orders/" + orderId)} className="button button-secondary">Link order to account</Link>
+      </section>
+
       {order.orderStatus === "pending_stock_confirmation" ? (
         <section className="notice-panel"><strong>Pre-order saved for the next stock drop</strong><p>The next stock drop is expected in 7–14 days. Your listed item prices and order total are shown above, so no separate price confirmation is needed to place this pre-order. {isCashOnDelivery ? "This order is set to cash on delivery; pay the delivery person when it arrives." : "Please wait to send an online transfer until the stock arrives. The bKash/Nagad payment form will become available on this order when the stock is ready. In-stock-only orders can be paid immediately."}</p><p><a href={business.contact.whatsappUrl + "?text=" + encodeURIComponent("Hello Kundu Electronics, please check order " + order.orderNumber + ".")} target="_blank" rel="noreferrer">Message the shop on WhatsApp ↗</a> · <a href={"tel:" + business.contact.publicPhone}>Call the shop</a></p></section>
       ) : null}
@@ -183,6 +196,14 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
         <section className="notice-panel payment-cod">
           <strong>Cash on delivery selected</strong>
           <p>Please pay the delivery person when your order arrives. You do not need to send money to bKash or Nagad for this order. {order.orderStatus === "pending_stock_confirmation" ? "The next stock drop is expected in 7–14 days; your pre-order is saved." : "The shop will arrange delivery with you."}</p>
+        </section>
+      ) : null}
+
+      {order.fulfilmentStatus === "delivered" ? (
+        <section className="notice-panel payment-verified">
+          <strong>Your order is marked delivered</strong>
+          <p>We would love to hear how your experience was. Leave a quick rating or optional review.</p>
+          <Link href={`/orders/${orderId}/review`} className="button button-primary">Write a review</Link>
         </section>
       ) : null}
 

@@ -10,6 +10,7 @@ import { formatPriceBdt } from "@/lib/format";
 import { resolveCartLinePrice } from "@/lib/catalog/cart-pricing";
 import { parseCartProducts } from "@/lib/catalog/response";
 import { business } from "@/config/business";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 interface ProductRequest {
   ids: string;
@@ -21,6 +22,7 @@ interface CheckoutFormState {
 }
 type CheckoutPaymentChoice = "cash_on_delivery" | "online_payment";
 type PaymentMethod = "bkash" | "nagad";
+type SavedAddress = { id:string; label:string; recipient_name:string; phone:string; address_line_1:string; address_line_2:string|null; area:string|null; city:string; postal_code:string|null; delivery_zone_id:string|null; is_default:boolean };
 interface CreatedOrder {
   orderId: string; orderNumber: string; orderStatus: string; stockStatus: string;
   subtotalBdt: number; deliveryChargeBdt: number; totalBdt: number;
@@ -39,6 +41,8 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
   const { lines, hydrated, removeItem, setQuantity, clearCart } = useCart();
   const router = useRouter();
   const [form, setForm] = useState(emptyForm);
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
+  const [savedAddressId, setSavedAddressId] = useState("");
   const [zoneId, setZoneId] = useState(checkout.deliveryZones[0]?.id ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -59,6 +63,41 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
   const productIds = useMemo(() => [...new Set(lines.map((line) => line.productId))].sort(), [lines]);
   const productIdsKey = productIds.join(",");
   const productRequest = useMemo(() => ({ ids: productIdsKey }), [productIdsKey]);
+
+  useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) return;
+    let active = true;
+    void supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user || !active) return;
+      const [profileResult, addressResult] = await Promise.all([
+        supabase.from("customer_profiles").select("full_name,phone").eq("user_id", user.id).maybeSingle(),
+        supabase.from("customer_addresses").select("id,label,recipient_name,phone,address_line_1,address_line_2,area,city,postal_code,delivery_zone_id,is_default").eq("user_id", user.id).order("is_default", { ascending: false }).order("created_at", { ascending: false }),
+      ]);
+      if (!active) return;
+      const addresses = (addressResult.data ?? []) as SavedAddress[];
+      setSavedAddresses(addresses);
+      const preferred = addresses.find((address) => address.is_default) ?? addresses[0];
+      const profile = profileResult.data;
+      if (preferred) {
+        setSavedAddressId(preferred.id);
+        setForm((current) => ({ ...current, name: current.name || profile?.full_name || preferred.recipient_name, phone: current.phone || profile?.phone || preferred.phone, email: current.email || user.email || "", addressLine1: current.addressLine1 || preferred.address_line_1, addressLine2: current.addressLine2 || preferred.address_line_2 || "", area: current.area || preferred.area || "", city: current.city || preferred.city, postalCode: current.postalCode || preferred.postal_code || "" }));
+        if (preferred.delivery_zone_id && checkout.deliveryZones.some((zone) => zone.id === preferred.delivery_zone_id)) setZoneId(preferred.delivery_zone_id);
+      } else if (profile) {
+        setForm((current) => ({ ...current, name: current.name || profile.full_name, phone: current.phone || profile.phone, email: current.email || user.email || "" }));
+      }
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, [checkout.deliveryZones]);
+
+  function applySavedAddress(addressId: string) {
+    setSavedAddressId(addressId);
+    const address = savedAddresses.find((item) => item.id === addressId);
+    if (!address) return;
+    setForm((current) => ({ ...current, name: address.recipient_name, phone: address.phone, addressLine1: address.address_line_1, addressLine2: address.address_line_2 || "", area: address.area || "", city: address.city, postalCode: address.postal_code || "" }));
+    if (address.delivery_zone_id && checkout.deliveryZones.some((zone) => zone.id === address.delivery_zone_id)) setZoneId(address.delivery_zone_id);
+    idempotency.current = null;
+  }
 
   useEffect(() => {
     if (!hydrated || !productRequest.ids) return;
@@ -149,6 +188,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
       },
       items: validRows.map(({ line }) => ({ productId: line.productId, variantId: line.variantId, quantity: line.quantity })),
       deliveryZoneId: zoneId,
+      paymentPreference: paymentChoice,
     };
     const signature = JSON.stringify(payload);
     const digestBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(signature));
@@ -339,8 +379,13 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
               <p className="checkout-disclaimer">Your reference will be recorded as pending verification. The order is not marked as paid until the shop checks the transaction.</p>
             </form>
           ) : (
+            <>
+            <p className="checkout-account-hint"><Link href="/account/login?next=%2Fcart">Sign in or create an account</Link> to autofill saved details. Guest checkout remains available.</p>
             <form className="checkout-form" onSubmit={placeOrder}>
               <div className="checkout-fields">
+                {savedAddresses.length > 0 ? <label>Saved delivery address
+                  <select value={savedAddressId} onChange={(event) => applySavedAddress(event.target.value)}><option value="">Enter address manually</option>{savedAddresses.map((address) => <option key={address.id} value={address.id}>{address.label} · {address.city}</option>)}</select>
+                </label> : null}
                 <label>Recipient name<input required maxLength={160} value={form.name} onChange={(e) => updateField("name", e.target.value)} /></label>
                 <label>Phone number<input required type="tel" maxLength={32} value={form.phone} onChange={(e) => updateField("phone", e.target.value)} /></label>
                 <label>Email (optional)<input type="email" maxLength={254} value={form.email} onChange={(e) => updateField("email", e.target.value)} /></label>
@@ -419,6 +464,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
               </button>
               <p className="checkout-disclaimer">Product prices and delivery charges are recalculated by the server. Pre-order items can be ordered now; the next stock drop is expected in 7–14 days and online payment opens when it arrives. In-stock-only orders can be paid immediately. Online payment references remain pending until the shop verifies the transfer.</p>
             </form>
+            </>
         )}
       </section>
       <section className="order-channel-section">

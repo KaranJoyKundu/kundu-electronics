@@ -5,11 +5,13 @@ on:
     branches:
       - main
       - feat/launch-prep
+      - feat/orders-notifications-accounts-reviews
   push:
     branches:
       - main
       - feat/storefront-foundation
       - feat/launch-prep
+      - feat/orders-notifications-accounts-reviews
 
 permissions:
   contents: read

@@ -14,6 +14,7 @@ export interface CheckoutIdentityPayload {
   };
   items: Array<{ productId: string; variantId: string | null; quantity: number }>;
   deliveryZoneId: string;
+  paymentPreference: "cash_on_delivery" | "online_payment";
 }
 
 export function parseHmacSecret(secret: string | undefined): Buffer | null {
@@ -43,6 +44,8 @@ export function canonicalizeCheckoutPayload(payload: CheckoutIdentityPayload): s
       .sort((a, b) => a.productId.localeCompare(b.productId) || (a.variantId ?? "").localeCompare(b.variantId ?? ""))
       .map((item) => ({ productId: item.productId, variantId: item.variantId, quantity: item.quantity })),
     deliveryZoneId: payload.deliveryZoneId,
+    // Preserve legacy online-payment fingerprints; COD is the only new fingerprint field.
+    ...(payload.paymentPreference === "cash_on_delivery" ? { paymentPreference: "cash_on_delivery" } : {}),
   });
 }
 

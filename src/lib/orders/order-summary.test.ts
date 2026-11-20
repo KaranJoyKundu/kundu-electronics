@@ -12,6 +12,7 @@ const validOrder = {
     orderStatus: "awaiting_payment",
     stockStatus: "reserved",
     paymentStatus: "not_submitted",
+    paymentPreference: "online_payment",
     fulfilmentStatus: "unfulfilled",
     subtotalBdt: 500,
     deliveryChargeBdt: 60,
@@ -31,6 +32,12 @@ test("order summary parser accepts valid order snapshots and payment rejection d
   });
   assert.equal(parsed?.payment?.method, "bkash");
   assert.equal(parsed?.payment?.rejectionReason, "Reference not found");
+});
+
+test("order summary parser accepts nullable legacy payment preference and COD", () => {
+  assert.equal(parseOrderSummary({ order: { ...validOrder.order, paymentPreference: "cash_on_delivery" } })?.paymentPreference, "cash_on_delivery");
+  assert.equal(parseOrderSummary({ order: { ...validOrder.order, paymentPreference: null } })?.paymentPreference, null);
+  assert.equal(parseOrderSummary({ order: { ...validOrder.order, paymentPreference: "unsupported" } }), null);
 });
 
 test("order summary parser rejects unsafe amounts, unsupported payment methods and malformed lines", () => {

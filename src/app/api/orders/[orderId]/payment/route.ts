@@ -34,7 +34,8 @@ export async function POST(request: NextRequest, context: RouteContext) {
   });
   if (orderError || !order || typeof order !== "object") return jsonError(404, "Order not found.");
 
-  const summary = order as { orderStatus?: string; totalBdt?: number; paymentStatus?: string };
+  const summary = order as { orderStatus?: string; totalBdt?: number; paymentStatus?: string; paymentPreference?: string | null };
+  if (summary.paymentPreference === "cash_on_delivery") return jsonError(409, "Cash on delivery orders cannot submit an online transfer.");
   if (summary.orderStatus !== "awaiting_payment" || !Number.isSafeInteger(summary.totalBdt) || (summary.totalBdt ?? 0) <= 0) {
     return jsonError(409, "This order is not ready to receive payment information.");
   }

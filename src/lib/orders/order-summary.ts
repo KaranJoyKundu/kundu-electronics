@@ -7,6 +7,7 @@ export interface OrderSummary {
   orderStatus: string;
   stockStatus: string;
   paymentStatus: string;
+  paymentPreference: "cash_on_delivery" | "online_payment" | null;
   fulfilmentStatus: string;
   subtotalBdt: number;
   deliveryChargeBdt: number;
@@ -54,6 +55,7 @@ export function parseOrderSummary(payload: unknown): OrderSummary | null {
     || !isNonEmptyString(row.orderStatus)
     || !isNonEmptyString(row.stockStatus)
     || !isNonEmptyString(row.paymentStatus)
+    || !(row.paymentPreference === undefined || row.paymentPreference === null || row.paymentPreference === "cash_on_delivery" || row.paymentPreference === "online_payment")
     || !isNonEmptyString(row.fulfilmentStatus)
     || !isMoney(row.subtotalBdt)
     || !isMoney(row.deliveryChargeBdt)
@@ -113,6 +115,7 @@ export function parseOrderSummary(payload: unknown): OrderSummary | null {
     orderStatus: row.orderStatus,
     stockStatus: row.stockStatus,
     paymentStatus: row.paymentStatus,
+    paymentPreference: row.paymentPreference === undefined ? null : row.paymentPreference,
     fulfilmentStatus: row.fulfilmentStatus,
     subtotalBdt: row.subtotalBdt,
     deliveryChargeBdt: row.deliveryChargeBdt,

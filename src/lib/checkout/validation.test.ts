@@ -12,6 +12,7 @@ const ids = {
 const validCheckout = {
   idempotencyKey: ids.idempotencyKey,
   deliveryZoneId: ids.deliveryZoneId,
+  paymentPreference: "online_payment",
   customer: {
     name: "Test Buyer", phone: "+880 1700-000000", email: "buyer@example.com",
     addressLine1: "KUET campus", city: "Khulna",
@@ -25,6 +26,7 @@ test("checkout validation normalizes optional fields and accepts a valid guest o
   assert.equal(result.payload.customer.area, null);
   assert.equal(result.payload.customer.note, null);
   assert.equal(result.payload.items[0]?.quantity, 2);
+  assert.equal(result.payload.paymentPreference, "online_payment");
 });
 
 test("checkout validation merges duplicate product and variant lines", () => {
@@ -47,6 +49,13 @@ test("checkout rejects invalid identity, address, prices-as-quantities and out-o
   assert.equal(parseCheckoutBody({ ...validCheckout, items: [{ productId: ids.productId, quantity: 0 }] }), null);
   assert.equal(parseCheckoutBody({ ...validCheckout, items: [{ productId: ids.productId, quantity: 100 }] }), null);
   assert.equal(parseCheckoutBody({ ...validCheckout, items: [{ productId: ids.productId, quantity: 50 }, { productId: ids.productId, quantity: 50 }] }), null);
+});
+
+test("checkout accepts COD and rejects unsupported payment preferences", () => {
+  assert.equal(parseCheckoutBody({ ...validCheckout, paymentPreference: "cash_on_delivery" })?.payload.paymentPreference, "cash_on_delivery");
+  assert.equal(parseCheckoutBody({ ...validCheckout, paymentPreference: "rocket" }), null);
+  const legacy = { ...validCheckout }; delete (legacy as { paymentPreference?: string }).paymentPreference;
+  assert.equal(parseCheckoutBody(legacy)?.payload.paymentPreference, "online_payment");
 });
 
 test("checkout rejects an empty cart and more than forty lines", () => {

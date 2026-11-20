@@ -117,72 +117,15 @@ export type Database = {
         ]
       }
       customer_addresses: {
-        Row: {
-          address_line_1: string
-          address_line_2: string | null
-          area: string | null
-          city: string
-          created_at: string
-          id: string
-          is_default: boolean
-          phone: string
-          postal_code: string | null
-          recipient_name: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          address_line_1: string
-          address_line_2?: string | null
-          area?: string | null
-          city: string
-          created_at?: string
-          id?: string
-          is_default?: boolean
-          phone: string
-          postal_code?: string | null
-          recipient_name: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          address_line_1?: string
-          address_line_2?: string | null
-          area?: string | null
-          city?: string
-          created_at?: string
-          id?: string
-          is_default?: boolean
-          phone?: string
-          postal_code?: string | null
-          recipient_name?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
+        Row: { address_line_1: string; address_line_2: string | null; area: string | null; city: string; created_at: string; delivery_zone_id: string | null; id: string; is_default: boolean; label: string; phone: string; postal_code: string | null; recipient_name: string; updated_at: string; user_id: string }
+        Insert: { address_line_1: string; address_line_2?: string | null; area?: string | null; city: string; created_at?: string; delivery_zone_id?: string | null; id?: string; is_default?: boolean; label?: string; phone: string; postal_code?: string | null; recipient_name: string; updated_at?: string; user_id: string }
+        Update: { address_line_1?: string; address_line_2?: string | null; area?: string | null; city?: string; created_at?: string; delivery_zone_id?: string | null; id?: string; is_default?: boolean; label?: string; phone?: string; postal_code?: string | null; recipient_name?: string; updated_at?: string; user_id?: string }
+        Relationships: [{ foreignKeyName: "customer_addresses_delivery_zone_id_fkey"; columns: ["delivery_zone_id"]; isOneToOne: false; referencedRelation: "delivery_zones"; referencedColumns: ["id"] }]
       }
       customer_profiles: {
-        Row: {
-          created_at: string
-          full_name: string
-          phone: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          full_name: string
-          phone: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          full_name?: string
-          phone?: string
-          updated_at?: string
-          user_id?: string
-        }
+        Row: { avatar_path: string | null; created_at: string; full_name: string; phone: string; updated_at: string; user_id: string }
+        Insert: { avatar_path?: string | null; created_at?: string; full_name: string; phone: string; updated_at?: string; user_id: string }
+        Update: { avatar_path?: string | null; created_at?: string; full_name?: string; phone?: string; updated_at?: string; user_id?: string }
         Relationships: []
       }
       delivery_zones: {
@@ -416,6 +359,7 @@ export type Database = {
           idempotency_key: string
           order_access_token_hash: string
           order_number: string
+          payment_preference: Database["public"]["Enums"]["checkout_payment_preference"] | null
           order_status: Database["public"]["Enums"]["order_status"]
           payment_status: Database["public"]["Enums"]["payment_status"]
           request_fingerprint: string
@@ -444,6 +388,7 @@ export type Database = {
           idempotency_key: string
           order_access_token_hash: string
           order_number: string
+          payment_preference?: Database["public"]["Enums"]["checkout_payment_preference"] | null
           order_status?: Database["public"]["Enums"]["order_status"]
           payment_status?: Database["public"]["Enums"]["payment_status"]
           request_fingerprint: string
@@ -472,6 +417,7 @@ export type Database = {
           idempotency_key?: string
           order_access_token_hash?: string
           order_number?: string
+          payment_preference?: Database["public"]["Enums"]["checkout_payment_preference"] | null
           order_status?: Database["public"]["Enums"]["order_status"]
           payment_status?: Database["public"]["Enums"]["payment_status"]
           request_fingerprint?: string
@@ -486,6 +432,94 @@ export type Database = {
             columns: ["delivery_zone_id"]
             isOneToOne: false
             referencedRelation: "delivery_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_reviews: {
+        Row: {
+          id: string
+          order_id: string
+          customer_user_id: string | null
+          reviewer_display_name: string | null
+          rating: number
+          review_text: string | null
+          status: "pending" | "approved" | "rejected"
+          moderator_user_id: string | null
+          moderated_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          customer_user_id?: string | null
+          reviewer_display_name?: string | null
+          rating: number
+          review_text?: string | null
+          status?: "pending" | "approved" | "rejected"
+          moderator_user_id?: string | null
+          moderated_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          customer_user_id?: string | null
+          reviewer_display_name?: string | null
+          rating?: number
+          review_text?: string | null
+          status?: "pending" | "approved" | "rejected"
+          moderator_user_id?: string | null
+          moderated_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_telegram_notifications: {
+        Row: {
+          id: string
+          order_id: string
+          status: "sending" | "sent" | "failed"
+          sent_at: string | null
+          failure_code: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          status?: "sending" | "sent" | "failed"
+          sent_at?: string | null
+          failure_code?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          status?: "sending" | "sent" | "failed"
+          sent_at?: string | null
+          failure_code?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_telegram_notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
             referencedColumns: ["id"]
           },
         ]
@@ -1209,6 +1243,37 @@ export type Database = {
           total_bdt: number
         }[]
       }
+      create_checkout_order_with_preference: {
+        Args: {
+          p_customer_details: Json
+          p_customer_user_id?: string
+          p_delivery_zone_id: string
+          p_idempotency_key: string
+          p_items: Json
+          p_order_access_token_hash: string
+          p_request_fingerprint: string
+          p_payment_preference: Database["public"]["Enums"]["checkout_payment_preference"]
+        }
+        Returns: {
+          delivery_charge_bdt: number
+          order_id: string
+          order_number: string
+          order_status: Database["public"]["Enums"]["order_status"]
+          stock_status: Database["public"]["Enums"]["stock_status"]
+          subtotal_bdt: number
+          total_bdt: number
+        }[]
+      }
+      claim_guest_order: { Args: { p_order_id: string; p_order_access_token_hash: string; p_user_id: string }; Returns: undefined }
+      set_customer_default_address: { Args: { p_address_id: string }; Returns: undefined }
+            confirm_cash_on_delivery_order: { Args: { p_order_id: string; p_note?: string }; Returns: undefined }
+      mark_cash_on_delivery_collected: { Args: { p_order_id: string; p_note?: string }; Returns: undefined }
+      submit_customer_review: {
+        Args: { p_order_id: string; p_order_access_token_hash: string; p_rating: number; p_review_text?: string | null; p_reviewer_display_name?: string | null }
+        Returns: string
+      }
+      get_public_store_stats: { Args: never; Returns: Json }
+      auto_deliver_shipped_orders: { Args: never; Returns: number }
       expire_stock_reservations: { Args: never; Returns: number }
       get_guest_order_summary: {
         Args: { p_order_access_token_hash: string; p_order_id: string }
@@ -1305,7 +1370,8 @@ export type Database = {
         | "awaiting_payment"
         | "confirmed"
         | "cancelled"
-      payment_event_type: "submitted" | "verified" | "rejected"
+      checkout_payment_preference: "cash_on_delivery" | "online_payment"
+            payment_event_type: "submitted" | "verified" | "rejected"
       payment_method: "bkash" | "nagad"
       payment_status:
         | "not_submitted"
@@ -1484,7 +1550,8 @@ export const Constants = {
         "confirmed",
         "cancelled",
       ],
-      payment_event_type: ["submitted", "verified", "rejected"],
+      checkout_payment_preference: ["cash_on_delivery", "online_payment"],
+            payment_event_type: ["submitted", "verified", "rejected"],
       payment_method: ["bkash", "nagad"],
       payment_status: [
         "not_submitted",
