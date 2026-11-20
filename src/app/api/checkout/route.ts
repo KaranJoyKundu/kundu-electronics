@@ -40,7 +40,7 @@ async function notifyTelegramOrder(admin: NonNullable<ReturnType<typeof createAd
   }
 
   const [orderResult, itemsResult] = await Promise.all([
-    admin.from("orders").select("order_number,customer_name,customer_phone,customer_email,delivery_address_line_1,delivery_area,delivery_city,delivery_zone_name_snapshot,subtotal_bdt,delivery_charge_bdt,total_bdt,order_status,stock_status,payment_status,created_at").eq("id", orderId).maybeSingle(),
+    admin.from("orders").select("order_number,customer_name,customer_phone,customer_email,delivery_address_line_1,delivery_area,delivery_city,delivery_zone_name_snapshot,payment_preference,subtotal_bdt,delivery_charge_bdt,total_bdt,order_status,stock_status,payment_status,created_at").eq("id", orderId).maybeSingle(),
     admin.from("order_items").select("sku_snapshot,product_name_snapshot,variant_name_snapshot,quantity,line_total_bdt").eq("order_id", orderId),
   ]);
   if (orderResult.error || !orderResult.data || itemsResult.error) {
@@ -64,6 +64,7 @@ async function notifyTelegramOrder(admin: NonNullable<ReturnType<typeof createAd
     area: order.delivery_area,
     city: order.delivery_city,
     deliveryZone: order.delivery_zone_name_snapshot,
+    paymentPreference: order.payment_preference,
     orderStatus: order.order_status,
     stockStatus: order.stock_status,
     paymentStatus: order.payment_status,
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest) {
     if (data.user && isUuid(data.user.id)) customerUserId = data.user.id;
   }
 
-  const { data, error } = await admin.rpc("create_checkout_order", {
+  const { data, error } = await admin.rpc("create_checkout_order_with_preference", {
     p_idempotency_key: parsed.idempotencyKey,
     p_request_fingerprint: credentials.fingerprint,
     p_order_access_token_hash: credentials.accessTokenHash,
@@ -120,6 +121,7 @@ export async function POST(request: NextRequest) {
     p_items: parsed.payload.items,
     p_delivery_zone_id: parsed.payload.deliveryZoneId,
     p_customer_user_id: customerUserId,
+    p_payment_preference: parsed.payload.paymentPreference,
   });
 
   if (error || !Array.isArray(data) || !data[0]) {
@@ -144,6 +146,7 @@ export async function POST(request: NextRequest) {
     subtotalBdt: order.subtotal_bdt,
     deliveryChargeBdt: order.delivery_charge_bdt,
     totalBdt: order.total_bdt,
+    paymentPreference: parsed.payload.paymentPreference,
   }, { status: 201, headers: { "Cache-Control": "no-store" } });
 
   response.cookies.set(`ke_order_${order.order_id}`, credentials.accessToken, {

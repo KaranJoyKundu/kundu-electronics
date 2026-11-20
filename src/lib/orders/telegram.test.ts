@@ -11,11 +11,11 @@ test("order alert includes essential order/customer/address/totals and admin lin
     orderNumber: "KE-123", customerName: "Ada", customerPhone: "+880123456789",
     customerEmail: "ada@example.test", addressLine: "Road 1", area: "Campus", city: "Khulna",
     deliveryZone: "KUET", orderStatus: "awaiting_payment", stockStatus: "in_stock",
-    paymentStatus: "not_submitted", subtotalBdt: 250, deliveryBdt: 60, totalBdt: 310,
+    paymentStatus: "not_submitted", paymentPreference: "cash_on_delivery", subtotalBdt: 250, deliveryBdt: 60, totalBdt: 310,
     createdAt: "Nov 20, 2026", items: [{ name: "Breadboard", variant: "Full size", sku: "BB-01", quantity: 2, lineTotalBdt: 250 }],
     adminUrl: "https://shop.example/admin/orders",
   });
-  for (const expected of ["KE-123", "Ada", "+880123456789", "Road 1", "Khulna", "Breadboard", "৳310", "admin/orders"]) {
+  for (const expected of ["KE-123", "Ada", "+880123456789", "Road 1", "Khulna", "Breadboard", "৳310", "Cash on delivery", "admin/orders"]) {
     assert.ok(message.includes(expected), `Expected Telegram message to include ${expected}`);
   }
 });

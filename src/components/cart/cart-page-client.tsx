@@ -149,6 +149,7 @@ export function CartPageClient({ checkout }: { checkout: PublicCheckoutConfig })
       },
       items: validRows.map(({ line }) => ({ productId: line.productId, variantId: line.variantId, quantity: line.quantity })),
       deliveryZoneId: zoneId,
+      paymentPreference: paymentChoice,
     };
     const signature = JSON.stringify(payload);
     const digestBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(signature));

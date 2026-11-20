@@ -332,6 +332,30 @@ export async function updateFulfilment(form: FormData) {
   finish("/admin/orders");
 }
 
+export async function confirmCashOnDeliveryOrder(form: FormData) {
+  const { supabase } = await requireStaff();
+  const orderId = text(form, "orderId", 36);
+  const note = optionalText(form, "note", 500);
+  if (!orderId || note === undefined) finish("/admin/orders", "invalid");
+  const { error } = await supabase.rpc("confirm_cash_on_delivery_order", {
+    p_order_id: orderId, p_note: note,
+  });
+  if (error) finish("/admin/orders", "action-failed");
+  finish("/admin/orders");
+}
+
+export async function markCashOnDeliveryCollected(form: FormData) {
+  const { supabase } = await requireStaff();
+  const orderId = text(form, "orderId", 36);
+  const note = optionalText(form, "note", 500);
+  if (!orderId || note === undefined) finish("/admin/orders", "invalid");
+  const { error } = await supabase.rpc("mark_cash_on_delivery_collected", {
+    p_order_id: orderId, p_note: note,
+  });
+  if (error) finish("/admin/orders", "action-failed");
+  finish("/admin/orders");
+}
+
 export async function verifyPayment(form: FormData) {
   const { principal, supabase } = await requireStaff();
   if (principal.role !== "admin") redirect("/admin?reason=admin-only");

@@ -140,9 +140,12 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
   if (loadError || !order) return <section className="notice-panel"><strong>Order unavailable</strong><p>{loadError || "Order not found."}</p></section>;
 
   const selectedMethod = checkout.paymentMethods.find((item) => item.method === method);
-  const isCashOnDelivery = paymentPreference === "cash_on_delivery";
-  const displayedOrderStatus = isCashOnDelivery && order.orderStatus === "awaiting_payment"
-    ? "Order request received · Cash on delivery"
+  const isCashOnDelivery = order.paymentPreference === "cash_on_delivery"
+    || (order.paymentPreference === null && paymentPreference === "cash_on_delivery");
+  const displayedOrderStatus = isCashOnDelivery
+    ? order.orderStatus === "confirmed" ? "Order accepted · Cash on delivery"
+      : order.orderStatus === "awaiting_payment" ? "Order request received · Cash on delivery"
+      : orderStatusLabel[order.orderStatus] ?? order.orderStatus.replaceAll("_", " ")
     : orderStatusLabel[order.orderStatus] ?? order.orderStatus.replaceAll("_", " ");
   const canSubmitPayment = !isCashOnDelivery
     && order.orderStatus === "awaiting_payment"
@@ -154,13 +157,16 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
         <span className="section-kicker">ORDER {order.orderNumber}</span>
         <h2>{displayedOrderStatus}</h2>
         <p>Thank you, {order.customerName}. {isCashOnDelivery
-          ? "Your order request is saved with cash on delivery selected. Please pay the delivery person when the order arrives; no online transfer is required."
+          ? order.orderStatus === "confirmed" ? "Your COD order has been accepted. Please pay the delivery person when it arrives; payment is not marked collected yet."
+            : order.orderStatus === "pending_stock_confirmation" ? "Your preorder is saved. Stock must be confirmed before the shop accepts and dispatches it. Cash on delivery is selected."
+            : "Your cash-on-delivery request is saved. The shop will confirm it before dispatch."
           : order.orderStatus === "pending_stock_confirmation"
             ? "Your pre-order is saved at the listed prices. The next stock drop is expected in 7–14 days, and your order reserves the items from that drop."
             : "Your order is saved. In-stock items are ready for payment using the form below."}</p>
         <div className="order-status-grid">
           <div><span>Order status</span><strong>{displayedOrderStatus}</strong></div>
           <div><span>Payment status</span><strong>{order.paymentStatus.replaceAll("_", " ")}</strong></div>
+          <div><span>Payment preference</span><strong>{isCashOnDelivery ? "Cash on delivery" : "Online payment"}</strong></div>
           <div><span>Delivery area</span><strong>{order.deliveryZone}, {order.deliveryCity}</strong></div>
           <div><span>Fulfilment</span><strong>{order.fulfilmentStatus.replaceAll("_", " ")}</strong></div>
         </div>

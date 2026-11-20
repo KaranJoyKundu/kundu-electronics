@@ -18,6 +18,7 @@ export interface TelegramOrderNotification {
   orderStatus: string;
   stockStatus: string;
   paymentStatus: string;
+  paymentPreference?: "cash_on_delivery" | "online_payment" | null;
   subtotalBdt: number;
   deliveryBdt: number;
   totalBdt: number;
@@ -67,6 +68,7 @@ export function formatTelegramOrderMessage(order: TelegramOrderNotification): st
     `Subtotal: ${price(order.subtotalBdt)}`,
     `Delivery: ${price(order.deliveryBdt)}`,
     `💰 <b>Total: ${price(order.totalBdt)}</b>`,
+    `Payment preference: ${order.paymentPreference === "cash_on_delivery" ? "Cash on delivery" : order.paymentPreference === "online_payment" ? "Online payment" : "Legacy / unspecified"}`,
     "",
     `Order status: ${escapeTelegramHtml(safeText(order.orderStatus.replaceAll("_", " "), 80))}`,
     `Stock status: ${escapeTelegramHtml(safeText(order.stockStatus.replaceAll("_", " "), 80))}`,

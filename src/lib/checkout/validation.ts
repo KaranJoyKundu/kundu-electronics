@@ -22,6 +22,8 @@ export function parseCheckoutBody(value: unknown): ParsedCheckoutBody | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const body = value as Record<string, unknown>;
   if (!isUuid(body.idempotencyKey) || !isUuid(body.deliveryZoneId)) return null;
+  const paymentPreference = body.paymentPreference === undefined ? "online_payment" : body.paymentPreference;
+  if (paymentPreference !== "cash_on_delivery" && paymentPreference !== "online_payment") return null;
   if (!body.customer || typeof body.customer !== "object" || Array.isArray(body.customer)) return null;
 
   const customerInput = body.customer as Record<string, unknown>;
@@ -60,6 +62,7 @@ export function parseCheckoutBody(value: unknown): ParsedCheckoutBody | null {
       customer: { name, phone, email, addressLine1, addressLine2, area, city, postalCode, note },
       items: [...merged.values()],
       deliveryZoneId: body.deliveryZoneId,
+      paymentPreference,
     },
   };
 }

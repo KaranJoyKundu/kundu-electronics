@@ -23,6 +23,7 @@ const payload: CheckoutIdentityPayload = {
     { productId: "22222222-2222-4222-8222-222222222222", variantId: "33333333-3333-4333-8333-333333333333", quantity: 1 },
   ],
   deliveryZoneId: "44444444-4444-4444-8444-444444444444",
+  paymentPreference: "online_payment",
 };
 
 test("HMAC secret requires exactly 32 bytes of hexadecimal material", () => {
@@ -52,6 +53,9 @@ test("changed checkout data changes the fingerprint and order access token", () 
   const second = createCheckoutCredentials(secret, "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", changed);
   assert.notEqual(first.fingerprint, second.fingerprint);
   assert.notEqual(first.accessToken, second.accessToken);
+  const cod = { ...payload, paymentPreference: "cash_on_delivery" as const };
+  const third = createCheckoutCredentials(secret, "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", cod);
+  assert.notEqual(first.fingerprint, third.fingerprint);
 });
 
 test("UUID validation rejects malformed identifiers", () => {
