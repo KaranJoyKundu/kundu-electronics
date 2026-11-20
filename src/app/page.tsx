@@ -4,6 +4,7 @@ import { ArrowRightIcon } from "@/components/icons";
 import { getStorefrontCatalogue } from "@/data/storefront";
 import { formatPriceBdt } from "@/lib/format";
 import { ProductPhoto } from "@/components/product-photo";
+import { HomeReviews } from "@/components/home-reviews";
 
 export default async function HomePage() {
   const { products } = await getStorefrontCatalogue(250);
@@ -60,6 +61,8 @@ export default async function HomePage() {
           <article><span className="principle-number">03</span><h3>Human payment checks</h3><p>Manual mobile payments will remain pending until the transaction is checked by the shop.</p></article>
         </div>
       </section>
+
+      <HomeReviews />
 
       <section className="help-strip"><div className="container help-strip-inner"><div><span className="section-kicker">04 — NEED SOMETHING?</span><h2>Not sure which part you need?</h2><p>Get product guidance or ask about availability through the shop’s verified contact channels.</p></div><Link href="/contact" className="button button-outline">Contact the shop <ArrowRightIcon /></Link></div></section>
     </>

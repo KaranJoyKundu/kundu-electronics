@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { formatPriceBdt } from "@/lib/format";
 import type { PublicCheckoutConfig } from "@/data/storefront";
 import { parseOrderSummary, type OrderSummary } from "@/lib/orders/order-summary";
@@ -183,6 +184,14 @@ export function OrderConfirmationClient({ orderId, checkout, paymentPreference }
         <section className="notice-panel payment-cod">
           <strong>Cash on delivery selected</strong>
           <p>Please pay the delivery person when your order arrives. You do not need to send money to bKash or Nagad for this order. {order.orderStatus === "pending_stock_confirmation" ? "The next stock drop is expected in 7–14 days; your pre-order is saved." : "The shop will arrange delivery with you."}</p>
+        </section>
+      ) : null}
+
+      {order.fulfilmentStatus === "delivered" ? (
+        <section className="notice-panel payment-verified">
+          <strong>Your order is marked delivered</strong>
+          <p>We would love to hear how your experience was. Leave a quick rating or optional review.</p>
+          <Link href={`/orders/${orderId}/review`} className="button button-primary">Write a review</Link>
         </section>
       ) : null}
 

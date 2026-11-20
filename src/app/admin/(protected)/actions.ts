@@ -367,6 +367,21 @@ export async function setCheckoutEnabled(form: FormData) {
   finish("/admin/settings");
 }
 
+export async function moderateCustomerReview(form: FormData) {
+  const { principal } = await requireStaff();
+  const reviewId = text(form, "reviewId", 36);
+  const status = text(form, "status", 12);
+  if (!reviewId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(reviewId)
+    || (status !== "approved" && status !== "rejected")) finish("/admin/reviews", "invalid");
+  const admin = createAdminSupabaseClient();
+  if (!admin) finish("/admin/reviews", "server-not-configured");
+  const { data, error } = await admin.from("customer_reviews").update({
+    status, moderator_user_id: principal.id, moderated_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+  }).eq("id", reviewId).eq("status", "pending").select("id").maybeSingle();
+  if (error || !data) finish("/admin/reviews", "action-failed");
+  finish("/admin/reviews");
+}
+
 export async function signOutAdmin() {
   const supabase = await createServerSupabaseClient();
   if (supabase) await supabase.auth.signOut();
