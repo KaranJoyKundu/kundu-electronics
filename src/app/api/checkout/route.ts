@@ -1,12 +1,93 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
 import { createCheckoutCredentials, parseHmacSecret, isUuid } from "@/lib/checkout/security";
 import { parseCheckoutBody } from "@/lib/checkout/validation";
 import { consumeRequestRateLimit, isAllowedMutationOrigin, jsonError, readJsonBody } from "@/lib/security/request";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { formatTelegramOrderMessage, sendTelegramMessage } from "@/lib/orders/telegram";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+async function notifyTelegramOrder(admin: NonNullable<ReturnType<typeof createAdminSupabaseClient>>, orderId: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
+  if (!token || !chatId) return;
+
+  // A unique order ledger entry makes checkout retries idempotent for notifications.
+  const { data: inserted, error: ledgerError } = await admin
+    .from("order_telegram_notifications")
+    .insert({ order_id: orderId, status: "sending" })
+    .select("id")
+    .maybeSingle();
+
+  let notificationId = inserted?.id as string | undefined;
+  if (!notificationId && ledgerError) {
+    // Permit retry after a prior failed delivery, but only one concurrent retry can claim it.
+    const { data: retryClaim } = await admin
+      .from("order_telegram_notifications")
+      .update({ status: "sending", failure_code: null, updated_at: new Date().toISOString() })
+      .eq("order_id", orderId)
+      .eq("status", "failed")
+      .select("id")
+      .maybeSingle();
+    notificationId = retryClaim?.id as string | undefined;
+  }
+  if (!notificationId) {
+    // Ledger missing (migration not applied) or already sending/sent. Do not risk duplicate alerts.
+    if (ledgerError && ledgerError.code !== "23505") console.warn("Telegram order notification ledger unavailable.");
+    return;
+  }
+
+  const [orderResult, itemsResult] = await Promise.all([
+    admin.from("orders").select("order_number,customer_name,customer_phone,delivery_address_line_1,delivery_area,delivery_city,delivery_zone_name_snapshot,subtotal_bdt,delivery_charge_bdt,total_bdt,order_status,stock_status,payment_status,created_at").eq("id", orderId).maybeSingle(),
+    admin.from("order_items").select("sku_snapshot,product_name_snapshot,variant_name_snapshot,quantity,line_total_bdt").eq("order_id", orderId),
+  ]);
+  if (orderResult.error || !orderResult.data || itemsResult.error) {
+    await admin.from("order_telegram_notifications").update({
+      status: "failed", failure_code: "order-read-failed", updated_at: new Date().toISOString(),
+    }).eq("id", notificationId);
+    console.warn("Telegram order notification skipped: order snapshot unavailable.");
+    return;
+  }
+
+  const order = orderResult.data;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  let adminUrl = "";
+  try { adminUrl = new URL("/admin/orders", siteUrl).toString(); } catch { /* site origin is misconfigured */ }
+  const message = formatTelegramOrderMessage({
+    orderNumber: order.order_number,
+    customerName: order.customer_name,
+    customerPhone: order.customer_phone,
+    addressLine: order.delivery_address_line_1,
+    area: order.delivery_area,
+    city: order.delivery_city,
+    deliveryZone: order.delivery_zone_name_snapshot,
+    orderStatus: order.order_status,
+    stockStatus: order.stock_status,
+    paymentStatus: order.payment_status,
+    subtotalBdt: Number(order.subtotal_bdt),
+    deliveryBdt: Number(order.delivery_charge_bdt),
+    totalBdt: Number(order.total_bdt),
+    createdAt: new Date(order.created_at).toLocaleString("en-BD", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Dhaka" }),
+    items: (itemsResult.data ?? []).map((item) => ({
+      name: item.product_name_snapshot,
+      variant: item.variant_name_snapshot,
+      sku: item.sku_snapshot,
+      quantity: Number(item.quantity),
+      lineTotalBdt: Number(item.line_total_bdt),
+    })),
+    adminUrl,
+  });
+  const result = await sendTelegramMessage(token, chatId, message);
+  await admin.from("order_telegram_notifications").update({
+    status: result.ok ? "sent" : "failed",
+    sent_at: result.ok ? new Date().toISOString() : null,
+    failure_code: result.failureCode ?? null,
+    updated_at: new Date().toISOString(),
+  }).eq("id", notificationId);
+  if (!result.ok) console.warn("Telegram order notification delivery failed:", result.failureCode);
+}
 
 export async function POST(request: NextRequest) {
   if (!isAllowedMutationOrigin(request)) return jsonError(403, "Request origin is not allowed.");
@@ -50,6 +131,9 @@ export async function POST(request: NextRequest) {
     subtotal_bdt: number; delivery_charge_bdt: number; total_bdt: number;
   };
   if (!isUuid(order.order_id)) return jsonError(500, "The order could not be confirmed.");
+
+  // Next's after() runs after the response, so Telegram latency/failure never blocks checkout.
+  after(() => notifyTelegramOrder(admin, order.order_id));
 
   const response = NextResponse.json({
     orderId: order.order_id,
