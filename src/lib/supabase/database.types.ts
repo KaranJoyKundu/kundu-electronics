@@ -117,72 +117,15 @@ export type Database = {
         ]
       }
       customer_addresses: {
-        Row: {
-          address_line_1: string
-          address_line_2: string | null
-          area: string | null
-          city: string
-          created_at: string
-          id: string
-          is_default: boolean
-          phone: string
-          postal_code: string | null
-          recipient_name: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          address_line_1: string
-          address_line_2?: string | null
-          area?: string | null
-          city: string
-          created_at?: string
-          id?: string
-          is_default?: boolean
-          phone: string
-          postal_code?: string | null
-          recipient_name: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          address_line_1?: string
-          address_line_2?: string | null
-          area?: string | null
-          city?: string
-          created_at?: string
-          id?: string
-          is_default?: boolean
-          phone?: string
-          postal_code?: string | null
-          recipient_name?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
+        Row: { address_line_1: string; address_line_2: string | null; area: string | null; city: string; created_at: string; delivery_zone_id: string | null; id: string; is_default: boolean; label: string; phone: string; postal_code: string | null; recipient_name: string; updated_at: string; user_id: string }
+        Insert: { address_line_1: string; address_line_2?: string | null; area?: string | null; city: string; created_at?: string; delivery_zone_id?: string | null; id?: string; is_default?: boolean; label?: string; phone: string; postal_code?: string | null; recipient_name: string; updated_at?: string; user_id: string }
+        Update: { address_line_1?: string; address_line_2?: string | null; area?: string | null; city?: string; created_at?: string; delivery_zone_id?: string | null; id?: string; is_default?: boolean; label?: string; phone?: string; postal_code?: string | null; recipient_name?: string; updated_at?: string; user_id?: string }
+        Relationships: [{ foreignKeyName: "customer_addresses_delivery_zone_id_fkey"; columns: ["delivery_zone_id"]; isOneToOne: false; referencedRelation: "delivery_zones"; referencedColumns: ["id"] }]
       }
       customer_profiles: {
-        Row: {
-          created_at: string
-          full_name: string
-          phone: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          full_name: string
-          phone: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          full_name?: string
-          phone?: string
-          updated_at?: string
-          user_id?: string
-        }
+        Row: { avatar_path: string | null; created_at: string; full_name: string; phone: string; updated_at: string; user_id: string }
+        Insert: { avatar_path?: string | null; created_at?: string; full_name: string; phone: string; updated_at?: string; user_id: string }
+        Update: { avatar_path?: string | null; created_at?: string; full_name?: string; phone?: string; updated_at?: string; user_id?: string }
         Relationships: []
       }
       delivery_zones: {
@@ -1321,7 +1264,9 @@ export type Database = {
           total_bdt: number
         }[]
       }
-      confirm_cash_on_delivery_order: { Args: { p_order_id: string; p_note?: string }; Returns: undefined }
+      claim_guest_order: { Args: { p_order_id: string; p_order_access_token_hash: string; p_user_id: string }; Returns: undefined }
+      set_customer_default_address: { Args: { p_address_id: string }; Returns: undefined }
+            confirm_cash_on_delivery_order: { Args: { p_order_id: string; p_note?: string }; Returns: undefined }
       mark_cash_on_delivery_collected: { Args: { p_order_id: string; p_note?: string }; Returns: undefined }
       submit_customer_review: {
         Args: { p_order_id: string; p_order_access_token_hash: string; p_rating: number; p_review_text?: string | null; p_reviewer_display_name?: string | null }
