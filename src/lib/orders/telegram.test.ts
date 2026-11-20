@@ -23,7 +23,7 @@ test("order alert includes essential order/customer/address/totals and admin lin
 test("order notification truncates oversized Telegram messages", () => {
   const message = formatTelegramOrderMessage({
     orderNumber: "KE-999", customerName: "A".repeat(200), customerPhone: "+880123456789",
-    addressLine: "X".repeat(1000), city: "Khulna", orderStatus: "awaiting_payment",
+    addressLine: "X".repeat(4_000), city: "Khulna", orderStatus: "awaiting_payment",
     stockStatus: "in_stock", paymentStatus: "not_submitted", subtotalBdt: 100, deliveryBdt: 50, totalBdt: 150,
     createdAt: "now", items: [], adminUrl: "https://shop.example/admin/orders",
   });
