@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { CartIcon, CloseIcon, MenuIcon } from "@/components/icons";
+import { AccountIcon, CartIcon, CloseIcon, MenuIcon } from "@/components/icons";
 import { SearchBox } from "@/components/search-box";
 import { useCart } from "@/components/cart/cart-provider";
 
@@ -30,6 +30,7 @@ export function SiteHeader() {
           </Link>
           <div className="header-search"><SearchBox /></div>
           <div className="header-actions">
+            <Link href="/account" className="account-link" onClick={() => setMenuOpen(false)}><AccountIcon /><span>Account</span></Link>
             <Link href="/cart" className="cart-link"><CartIcon /><span>Cart</span><span className="cart-count">{itemCount}</span></Link>
             <button className="mobile-menu-toggle" type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}>
               {menuOpen ? <CloseIcon /> : <MenuIcon />}
