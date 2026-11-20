@@ -40,7 +40,7 @@ async function notifyTelegramOrder(admin: NonNullable<ReturnType<typeof createAd
   }
 
   const [orderResult, itemsResult] = await Promise.all([
-    admin.from("orders").select("order_number,customer_name,customer_phone,delivery_address_line_1,delivery_area,delivery_city,delivery_zone_name_snapshot,subtotal_bdt,delivery_charge_bdt,total_bdt,order_status,stock_status,payment_status,created_at").eq("id", orderId).maybeSingle(),
+    admin.from("orders").select("order_number,customer_name,customer_phone,customer_email,delivery_address_line_1,delivery_area,delivery_city,delivery_zone_name_snapshot,subtotal_bdt,delivery_charge_bdt,total_bdt,order_status,stock_status,payment_status,created_at").eq("id", orderId).maybeSingle(),
     admin.from("order_items").select("sku_snapshot,product_name_snapshot,variant_name_snapshot,quantity,line_total_bdt").eq("order_id", orderId),
   ]);
   if (orderResult.error || !orderResult.data || itemsResult.error) {
@@ -59,6 +59,7 @@ async function notifyTelegramOrder(admin: NonNullable<ReturnType<typeof createAd
     orderNumber: order.order_number,
     customerName: order.customer_name,
     customerPhone: order.customer_phone,
+    customerEmail: order.customer_email,
     addressLine: order.delivery_address_line_1,
     area: order.delivery_area,
     city: order.delivery_city,
