@@ -964,3 +964,13 @@ button { cursor: pointer; }
   .customer-reviews-heading { align-items: flex-start; }
   .order-review-layout { margin-top: 18px; }
 }
+
+/* Customer account pages */
+.account-page{padding-block:clamp(32px,6vw,76px);max-width:1040px;margin-inline:auto}
+.account-page-heading{margin-bottom:28px}.account-page-heading h1{margin:.35em 0}.account-page-heading p{max-width:62ch;color:var(--muted,inherit)}
+.account-profile-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-block:24px}
+.account-panel{min-width:0;border:1px solid var(--line);background:var(--surface,white);padding:clamp(16px,2.5vw,26px);border-radius:var(--radius,14px);display:grid;align-content:start;gap:14px}
+.account-panel h2{margin:0}.account-section-heading,.account-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.account-form{display:grid;gap:14px}.account-form label{display:grid;gap:7px;font-size:.92rem}.account-form input,.account-form select{min-width:0;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface,white);color:inherit;font:inherit}
+.account-address-card,.account-order-card,.account-review-card{border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:9px}.account-address-card h3,.account-order-card h3{margin:0}.account-actions{justify-content:flex-start}.account-login-card{width:min(100%,560px);margin:24px auto;padding:clamp(18px,3vw,30px);border:1px solid var(--line);border-radius:12px;display:grid;gap:14px}.account-login-card h2{margin:0}.account-login-email{margin:0;color:var(--muted,inherit)}.account-back-link{background:none;border:0;text-decoration:underline;cursor:pointer;padding:8px;color:inherit}.account-login-page{min-height:60vh}
+@media(max-width:760px){.account-profile-layout{grid-template-columns:1fr}.account-panel{padding:16px}}
