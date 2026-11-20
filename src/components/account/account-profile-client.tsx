@@ -16,7 +16,7 @@ export function AccountProfileClient({userId,email}:{userId:string;email:string}
  const [p,a,z,o,r]=await Promise.all([
  sb.from("customer_profiles").select("user_id,full_name,phone,avatar_path").eq("user_id",userId).maybeSingle(),
  sb.from("customer_addresses").select("id,label,recipient_name,phone,address_line_1,address_line_2,area,city,postal_code,delivery_zone_id,is_default").eq("user_id",userId).order("is_default",{ascending:false}),
- sb.from("delivery_zones").select("id,name").eq("is_active",true).order("sort_order"),
+ sb.from("delivery_zones").select("id,name").eq("is_enabled",true).order("sort_order"),
  sb.from("orders").select("id,order_number,created_at,total_bdt,order_status,fulfilment_status,payment_status").eq("customer_user_id",userId).order("created_at",{ascending:false}).limit(50),
  sb.from("customer_reviews").select("id,rating,review_text,status,created_at").eq("customer_user_id",userId).order("created_at",{ascending:false}).limit(20)]);
  setProfile(p.data as Profile|null);setName(p.data?.full_name||"");setPhone(p.data?.phone||"");setAddresses((a.data||[]) as Address[]);setZones((z.data||[]) as typeof zones);setOrders((o.data||[]) as Order[]);setReviews((r.data||[]) as Review[]);
